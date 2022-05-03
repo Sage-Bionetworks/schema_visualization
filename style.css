@@ -1,3 +1,4 @@
+/* d3 */
 .link{
     fill: none;
     stroke-width: 2;
@@ -8,3 +9,65 @@
     stroke-width: 3;
     fill: white;
   }
+
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    /* align-items: center;
+    justify-content: center; */
+    margin-top: 30px;
+}
+h1 {
+    padding: 10px;
+}
+.main {
+    height: 100px;
+    padding: 10px;
+}
+
+/* dropdown */
+/* .dropdown_button {
+    background-color: #0979ad;
+    color: white;
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    width: 200px;
+    font-family: montserrat;
+    border: 1px solid #ffffff;
+}
+
+.schema {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    min-width: 200px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+.schema li {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    list-style: none;
+    background-color: white;
+    font-family: montserrat;
+    border: 1px solid white;
+}
+
+.schema li a {
+    text-decoration: none;
+    color: white;
+    display: block;
+    padding: 10px;
+}
+
+.schema li:hover {
+    background-color: #0979ad;
+    color: white;
+} */
