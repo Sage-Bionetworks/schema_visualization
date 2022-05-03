@@ -18,6 +18,12 @@ const svg = d3.select('body')
 
 const graphGroup = svg.append('g')
     .attr('transform', "translate(" + margins.left + "," + margins.top + ")");
+
+// const get_tangled_tree_data = () =>{
+
+// }
+
+
 const levels = [[{ "id": "BulkRNA-seqLevel3" }], [{ "id": "PseudoAlignmentUsed", "parents": ["BulkRNA-seqLevel3"] }, { "id": "DataCategory", "parents": ["BulkRNA-seqLevel3"] }, { "id": "ExpressionUnits", "parents": ["BulkRNA-seqLevel3"] }, { "id": "MatrixType", "parents": ["BulkRNA-seqLevel3"] }, { "id": "FusionGeneDetected", "parents": ["BulkRNA-seqLevel3"] }, { "id": "HTANParentDataFileID", "parents": ["BulkRNA-seqLevel3"] }, { "id": "filename", "parents": ["BulkRNA-seqLevel3"] }, { "id": "fileFormat", "parents": ["BulkRNA-seqLevel3"] }, { "id": "HTANDataFileID", "parents": ["BulkRNA-seqLevel3"] }, { "id": "FusionGeneIdentity", "parents": ["BulkRNA-seqLevel3"] }], [{ "id": "WorkflowLink", "parents": ["PseudoAlignmentUsed"] }, { "id": "SoftwareandVersion", "parents": ["PseudoAlignmentUsed"] }, { "id": "GenomicReference", "parents": ["PseudoAlignmentUsed"] }, { "id": "GenomicReferenceURL", "parents": ["PseudoAlignmentUsed"] }, { "id": "SpecifyOtherFusionGene", "parents": ["FusionGeneIdentity"] }]]
 // const levels = [
 //     [{

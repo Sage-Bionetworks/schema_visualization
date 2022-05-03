@@ -9,11 +9,40 @@
 
     <h1>Schema visualization</h1>
 
+
+    <!-- <div class="dropdown_list">
+        <button class="dropdown_button" onclick="show_list()">
+            Choose a Schema type
+        </button>
+
+        <div id="schema_id" class="schema" onclick="schema_selected()">
+            <li>NF Tools Registry </li>
+            <li>HTAN</li>
+            <li>HTAN Component RequiresDependency</li>
+            <li>AmpAD</li>
+            <li>AmpAD view Dependencies</li>
+        </div> -->
+    <div class="main">
+        Choose a Schema type
+        <select name="schema" onchange="selectSchema()" id="schema">
+            <option value="NF Tools Registry">NF Tools Registry</option>
+            <option value="HTAN">HTAN</option>
+            <option value="HTAN Component RequiresDependency">HTAN Component RequiresDependency</option>
+            <option value="AmpAD">AmpAD</option>
+            <option value="AmpAD view Dependencies">AmpAD view Dependencies</option>
+        </select>
+
+        Choose a dataset type
+    </div>
+
+
+
 </body>
 
 
 <script src="https://d3js.org/d3.v5.js"></script>
 <script src="visualization.js"></script>
+<script type="text/javascript" src="utils.js"></script>
 
 
 </html>
