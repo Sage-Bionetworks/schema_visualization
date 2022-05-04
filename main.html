@@ -2,26 +2,13 @@
 <html>
 
 <head>
-    <link rel="stylesheet" href="style.css" type="text/css">
+    <link rel="stylesheet" href="style3.css" type="text/css">
 </head>
 
 <body>
 
     <h1>Schema visualization</h1>
 
-
-    <!-- <div class="dropdown_list">
-        <button class="dropdown_button" onclick="show_list()">
-            Choose a Schema type
-        </button>
-
-        <div id="schema_id" class="schema" onclick="schema_selected()">
-            <li>NF Tools Registry </li>
-            <li>HTAN</li>
-            <li>HTAN Component RequiresDependency</li>
-            <li>AmpAD</li>
-            <li>AmpAD view Dependencies</li>
-        </div> -->
     <div class="main">
         Choose a Schema type
         <select name="schema" onchange="selectSchema()" id="schema">
@@ -36,6 +23,10 @@
 
         Choose a dataset type
         <select id="dataset" onchange="selectDataset()"></select>
+    </div>
+
+    <div id="visualization">
+
     </div>
 
 
@@ -54,8 +45,9 @@
 <script src="js/constructTangleLayout.js"></script>
 <!-- <script src="js/visualization.js"></script> -->
 <script type="text/javascript" src="js/utils.js"></script>
-<script type="text/javascript" src="js/PrepareRender.js"></script>
+<!-- <script type="text/javascript" src="js/svg.js"></script> -->
 <script src="js/renderChart.js"></script>
-<!-- <script type="text/javascript" src="js/parse_csv.js"></script> -->
+<script type="text/javascript" src="js/PrepareRender2.js"></script>
+<script type="text/javascript" src="js/visualization2.js"></script>
 
 </html>

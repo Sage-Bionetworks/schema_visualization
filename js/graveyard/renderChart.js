@@ -1,9 +1,18 @@
+function renderChart(tangled_tree_data, normalDependenciesGrouped, highlightDependenciesGrouped, selectedDatasetOption) {
+    //var svg = d3.select("body").append("svg")
+    var background_color = "white"
+    var highlight_color = "#FAEFC2"
+    var box_color = "#F8F6EF"
+    const color = d3.scaleOrdinal(d3.schemeDark2)
 
-function renderChart(tangled_tree_data, normalDependenciesGrouped) {
     const tangleLayout = constructTangleLayout(_.cloneDeep(tangled_tree_data));
 
     function normaltext_to_load(normal_dependencies_grouped) {
-        return normal_dependencies_grouped.get(datatype);
+        return normal_dependencies_grouped.get(selectedDatasetOption);
+    }
+
+    function highlights_to_load(highlight_dependencies_grouped) {
+        return highlight_dependencies_grouped.get(selectedDatasetOption);
     }
 
     function filter_normal_nodes(d) {
@@ -12,7 +21,7 @@ function renderChart(tangled_tree_data, normalDependenciesGrouped) {
         );
     }
     function filter_highlight_nodes(d) {
-        return highlights_to_load.some(
+        return highlights_to_load(highlightDependenciesGrouped).some(
             (filterEl) => d[filterEl.type] === filterEl.name
         );
     }

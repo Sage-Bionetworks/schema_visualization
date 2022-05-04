@@ -33,9 +33,8 @@ function selectSchema() {
 
 }
 
-// function normaltext_to_load(normal_dependencies_grouped) {
-//     return normal_dependencies_grouped.get(datatype);
-// }
+
+
 
 function selectDataset() {
     var selectedSchemaOption = document.getElementById("schema").value;
@@ -47,25 +46,49 @@ function selectDataset() {
     if (selectedSchemaOption === "HTAN") {
         var tangled_tree_data = parseJSON('files/JSON/HTAN_tangled_tree@2.json');
         var normal_dependencies = parseCSVFiles('files/NormalDependencies/normal_dependencies@1.csv');
+        var highlight_dependencies = parseCSVFiles('files/HighlighDepedencies/highlight_dependencies@1.csv');
 
     }
 
     normal_dependencies.then(data => {
-        console.log('csv data', data);
         const normalDependenciesGrouped = GroupDependencies(data);
-        console.log('normal dependencies grouped', normalDependenciesGrouped);
+        highlight_dependencies.then(data => {
+            const highlightDependenciesGrouped = GroupDependencies(data);
 
-        tangled_tree_data.then(data => {
-            console.log('this is json data', data)
+            //functions for processing highlight and normal data
+            function normaltext_to_load(normal_dependencies_grouped) {
+                return normal_dependencies_grouped.get(selectedDatasetOption);
+            }
 
-            renderChart(data, normalDependenciesGrouped);
+            function highlights_to_load(highlight_dependencies_grouped) {
+                return highlight_dependencies_grouped.get(selectedDatasetOption);
+            }
+
+            function filter_normal_nodes(d) {
+                return normaltext_to_load(normalDependenciesGrouped).some(
+                    (filterEl) => d[filterEl.type] === filterEl.name
+                );
+            }
+            function filter_highlight_nodes(d) {
+                return highlights_to_load(highlightDependenciesGrouped).some(
+                    (filterEl) => d[filterEl.type] === filterEl.name
+                );
+            }
+
+            tangled_tree_data.then(tangled_tree_dta => {
+                //get tangle tree layout, normal data, and highlight data
+                var chart_dta = chart(tangled_tree_dta);
+                var normal_data = chart_dta.nodes.filter(filter_normal_nodes);
+                var highlight_data = chart_dta.nodes.filter(filter_highlight_nodes);
+
+                console.log(normal_data);
+                console.log(highlight_data);
+
+
+                draw(chart_dta, highlight_data, normal_data);
+            })
         })
 
+
     })
-
-    // tangled_tree_data.then(data => {
-    //     console.log('this is json data', data)
-
-    //     renderChart(data, normalDependenciesGrouped);
-    // })
 }
