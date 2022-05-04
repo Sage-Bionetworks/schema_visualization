@@ -1,9 +1,9 @@
 # schema_visualization
-This repository is for extracting D3 and Javascript code from observable to produce a stand-alone visualization. Please view links to the original design and Mialy's work in the last section. 
+This repository is for extracting D3 and Javascript code from observables to produce a stand-alone visualization. Please view links to the original design and Mialy's work in the last section. 
 
-# journey of figuring this out
+# journey of figuring things out
 
-Main difficulty: the origin design is on Observable, and we could not just copy and paste all the code to make it work. For one thing, code on observable is not entirely Javascript(see [here](https://observablehq.com/@observablehq/observables-not-javascript)). For another, there are some built-in funcitons that Observable is using under the hood. For example, take a look at this code taken from the original tangled tree design: 
+Main difficulty: the origin design is on Observable, and we could not just copy and paste all the code to make it work. For one thing, code on observables is not entirely Javascript(see [here](https://observablehq.com/@observablehq/observables-not-javascript)). For another, there are some built-in functions that Observable is using under the hood. For example, take a look at this code taken from the original tangled tree design: 
 
 ```
     return svg`<svg width="${tangleLayout.layout.width}" height="${tangleLayout.layout.height
@@ -67,4 +67,5 @@ By doing the above, we are also appending the `path` HTML element with the retur
 # Other resources
 * [The original design](https://observablehq.com/@nitaku/tangled-tree-visualization-ii) 
 * [Mialy's work on observable](https://observablehq.com/d/c3fd85acfb34db59) -- You might need to request access before viewing 
-* [Simplier tangled tree design](https://observablehq.com/@nettly/tangled-tree-sourcing-facts)
+* [Simpler tangled tree design](https://observablehq.com/@nettly/tangled-tree-sourcing-facts)
+
