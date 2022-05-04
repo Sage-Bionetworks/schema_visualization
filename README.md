@@ -1,6 +1,10 @@
 # schema_visualization
 This repository is for extracting D3 and Javascript code from observables to produce a stand-alone visualization. Please view links to the original design and Mialy's work in the last section. 
 
+# Running the code
+
+Simply clone the repository and run `python3 -m http.server`
+
 # journey of figuring things out
 
 Main difficulty: the origin design is on Observable, and we could not just copy and paste all the code to make it work. For one thing, code on observables is not entirely Javascript(see [here](https://observablehq.com/@observablehq/observables-not-javascript)). For another, there are some built-in functions that Observable is using under the hood. For example, take a look at this code taken from the original tangled tree design: 
