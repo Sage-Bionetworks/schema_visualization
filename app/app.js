@@ -39,7 +39,7 @@ app.get('/attribute/visualization', function (req, res) {
     console.log('selected schema', selectedSchema);
 
     if (selectedSchema == "HTAN") {
-        var requestedUrl = "http://localhost:3001/v1/visualize/attributes?schema_url=https%3A%2F%2Fraw.githubusercontent.com%2FSage-Bionetworks%2Fschematic%2Fdevelop%2Ftests%2Fdata%2Fexample.model.jsonld"
+        var requestedUrl = "http://localhost:3001/v1/visualize/attributes?schema_url=https%3A%2F%2Fraw.githubusercontent.com%2Fmialy-defelice%2Fdata_models%2Fmain%2FHTAN%2FHTAN_schema_v21_10.model.jsonld"
     }
     else if (selectedSchema == "NF") {
         var requestedUrl = "http://localhost:3001/v1/visualize/attributes?schema_url=https%3A%2F%2Fraw.githubusercontent.com%2FSage-Bionetworks%2Fschematic%2Fdevelop%2Ftests%2Fdata%2Fexample.model.jsonld"
@@ -47,11 +47,13 @@ app.get('/attribute/visualization', function (req, res) {
         var requestedUrl = "http://localhost:3001/v1/visualize/attributes?schema_url=https%3A%2F%2Fraw.githubusercontent.com%2FSage-Bionetworks%2Fschematic%2Fdevelop%2Ftests%2Fdata%2Fexample.model.jsonld"
     }
     request(requestedUrl, function (error, response, body) {
-        console.log('error:', error);
-        console.log('statusCode:', response && response.statusCode);
+        //console.log('error:', error);
+        //console.log('statusCode:', response && response.statusCode);
+        console.log('body is returend')
         console.log('body:', body);
-        res.json(body);
+        //res.json(body);
     });
+
 });
 
 

@@ -36,7 +36,35 @@ function GroupDependencies(dependencies) {
     return group_data
 }
 
+// async function fetchAsync(url) {
+//     let response = await fetch(url, { mode: "no-cors" });
+//     console.log('response', response);
+//     let data = await response.json();
+//     return data;
+// }
 
+// function fetchAsync(url) {
+//     fetch(url, { mode: "no-cors" })
+//         .then(response => {
+//             console.log('response', response);
+//             var data = response.json;
+//             console.log('this is data', data);
+//             return data
+//         })
+// }
+
+// var HttpClient = function() {
+//     this.get = function(aUrl, aCallback) {
+//         var anHttpRequest = new XMLHttpRequest();
+//         anHttpRequest.onreadystatechange = function() { 
+//             if (anHttpRequest.readyState == 4 && anHttpRequest.status == 200)
+//                 aCallback(anHttpRequest.responseText);
+//         }
+
+//         anHttpRequest.open( "GET", aUrl, true );            
+//         anHttpRequest.send( null );
+//     }
+// }
 
 
 // function normaltext_to_load(normal_dependencies_grouped) {

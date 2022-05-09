@@ -5,36 +5,48 @@ function selectSchema() {
     if (selectedSchemaOption == "HTAN" || selectedSchemaOption == "HTAN RequiresDependency" || selectedSchemaOption == "HTAN Component RequiresDependency") {
         const url = "http://localhost:8000/attribute/visualization?schema=HTAN"
         var merged_data_2 = fetch(url)
-            .then(response => response.json())
+            .then(response => {
+                response.json()
+                console.log('response is here', response)
+            })
             .then(data => {
+                console.log(data)
                 return data
             })
             .catch(err => console.error(err));
+        console.log('merged_data_2', merged_data_2)
+
+
+        //var merged_data_2 = parseCSVContent(csv_HTAN)
 
     } else if (selectedSchemaOption == "NF Tools Registry") {
         const url = "http://localhost:8000/attribute/visualization?schema=NF"
-        //var merged_data_2 = parseCSVFiles('files/NF_merged.vis_data.csv')
+        var merged_data_2 = parseCSVFiles('files/NF_merged.vis_data.csv')
     } else if (selectedSchemaOption == "AmpAD" || selectedSchemaOption == "AmpAD view Dependencies") {
         const url = "http://localhost:8000/attribute/visualization?schema=AmpAD"
         //var merged_data_2 = parseCSVFiles('files/ampad_merged@3.vis_data.csv')
     }
 
-    var merged_data_2 = fetch(url)
-        .then(response => response.json())
-        .then(data => {
-            return data
-        })
-        .catch(err => console.error(err));
+    // var merged_data_2 = fetch(url)
+    //     .then(response => response.json())
+    //     .then(data => {
+    //         return data
+    //     })
+    //     .catch(err => console.error(err));
 
     //get all_attribute_info
     merged_data_2.then(data => {
         var merged_data = data
-
-        var all_attribute_info = d3.group(merged_data, (d) => d.Component)
+        //console.log('merged_data', merged_data)
+        var all_attribute_info = d3.group(merged_data,
+            (d) => d.Component)
+        //console.log('all attribute info', all_attribute_info)
 
         var keys = Array.from(all_attribute_info.keys())
 
         var keys_sorted = keys.sort();
+
+        //console.log(keys_sorted)
 
         //dynamically create option 
         var dataSetSelect = document.getElementById('dataset');

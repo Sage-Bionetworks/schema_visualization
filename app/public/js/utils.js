@@ -6,6 +6,16 @@ function parseCSVFiles(file_name) {
     return merged_data_2
 }
 
+function parseCSVContent(content) {
+    csv_json = JSON.stringify(content);
+    console.log(csv_json)
+    // const merged_data_2 = d3.csvParse(content).then((data) => {
+    //     return data
+    // })
+    // return merged_data_2
+}
+
+
 //parse json file
 function parseJSON(file_name) {
     const json_data = d3.json(file_name).then((data) => {
