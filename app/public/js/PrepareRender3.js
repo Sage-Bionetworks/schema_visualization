@@ -3,18 +3,52 @@ function selectSchema() {
     var selectedSchemaOption = document.getElementById("schema").value;
 
     if (selectedSchemaOption == "HTAN" || selectedSchemaOption == "HTAN RequiresDependency" || selectedSchemaOption == "HTAN Component RequiresDependency") {
-        const url = "http://localhost:8000/attribute/visualization?schema=HTAN"
-        var merged_data_2 = fetch(url)
-            .then(response => {
-                response.json()
-                console.log('response is here', response)
-            })
-            .then(data => {
+        // const url = "http://localhost:8000/attribute/visualization?schema=HTAN"
+        // var merged_data_2 = fetch(url)
+        //     .then(response => {
+        //         response.json()
+        //         console.log('response is here', response)
+        //     })
+        //     .then(data => {
+        //         console.log(data)
+        //         return data
+        //     })
+        //     .catch(err => console.error(err));
+        // console.log('merged_data_2', merged_data_2)
+
+        // const url = "http://localhost:8000/testing"
+        // let req = fetch(url)
+        // req.then(response => {
+        //     console.log(response)
+        // })
+        //     .then(data => {
+        //         console.log(data)
+        //         return data
+        //     })
+
+        const url = "http://localhost:8000/testing"
+
+        const getRequestWithFetch = () => {
+            fetch(url).then(async (response) => {
+                const data = await (response.text())
                 console.log(data)
+
                 return data
             })
-            .catch(err => console.error(err));
-        console.log('merged_data_2', merged_data_2)
+        }
+
+        getRequestWithFetch();
+
+        // var merged_data_2 = fetch(url)
+        //     .then(response => {
+        //         response.json()
+        //         console.log('response is here', response)
+        //     })
+        //     .then(data => {
+        //         console.log(data)
+        //         return data
+        //     })
+        //     .catch(err => console.error(err));
 
 
         //var merged_data_2 = parseCSVContent(csv_HTAN)
