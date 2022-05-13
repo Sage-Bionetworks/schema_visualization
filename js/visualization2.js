@@ -92,9 +92,9 @@ function chart(data) {
     })
 
     // layout
-    const padding = 8
+    const padding = 10
     const node_height = 22
-    const node_width = 70
+    const node_width = 145
     const bundle_width = 14
     const level_y_padding = 16
     const metro_d = 4
