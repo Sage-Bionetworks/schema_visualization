@@ -175,7 +175,7 @@ function draw(chart, highlight_data, normal_data) {
     const color = d3.scaleOrdinal(d3.schemeDark2);
 
     const height = 900;
-    const width = 900;
+    const width = 1000;
 
     const totalWidth = width + margins.left + margins.right;
 
@@ -189,6 +189,20 @@ function draw(chart, highlight_data, normal_data) {
         .attr('height', chart.layout.height)
         .attr('id', 'myViz');
 
+    const g = svg.append('g');
+
+    //add zoom
+    var zoom = d3.zoom()
+        .extent([[0, 0], [width + 100, height + 100]])
+        .scaleExtent([1, 8])
+        .on("zoom", function () {
+            g.attr('transform', d3.event.transform)
+        });
+
+    g.call(zoom);
+
+
+
     chart.bundles.map(b => {
         let d = b.links.map(l => `
               M${l.xt} ${l.yt}
@@ -199,13 +213,13 @@ function draw(chart, highlight_data, normal_data) {
               L${l.xs} ${l.ys}`
         ).join("");
 
-        const path = d3.select('#myViz').append('path')
+        const path = g.append('path')
             .attr('class', 'link')
             .attr('d', d)
             .attr('stroke', 'white')
             .attr('stroke-width', 5);
 
-        const path_two = d3.select('#myViz').append('path')
+        const path_two = g.append('path')
             .attr('class', 'link')
             .attr('d', d)
             .attr('stroke-width', 2)
@@ -213,20 +227,20 @@ function draw(chart, highlight_data, normal_data) {
     })
 
     normal_data.map(n => {
-        const path_three = d3.select('#myViz').append('path')
+        const path_three = g.append('path')
             .attr('class', 'selectable node')
             .attr('data-id', n.id)
             .attr('stroke', 'black')
             .attr('stroke-width', 8)
             .attr('d', `M${n.x} ${n.y - n.height / 2} L${n.x} ${n.y + n.height / 2}`);
 
-        const path_four = d3.select('#myViz').append('path')
+        const path_four = g.append('path')
             .attr('class', 'node')
             .attr('stroke', 'white')
             .attr('stroke-width', 4)
             .attr('d', `M${n.x} ${n.y - n.height / 2} L${n.x} ${n.y + n.height / 2}`);
 
-        const text_one = d3.select('#myViz').append('text')
+        const text_one = g.append('text')
             .attr('class', 'selectable')
             .attr('data-id', `${n.id}`)
             .attr('x', `${n.x + 4}`)
@@ -236,7 +250,7 @@ function draw(chart, highlight_data, normal_data) {
 
         text_one.html(n.id)
 
-        const text_two = d3.select('#myViz').append('text')
+        const text_two = g.append('text')
             .attr('x', `${n.x + 4}`)
             .attr('y', `${n.y - n.height / 2 - 4}`)
             .attr('style', "pointer-events: none");
@@ -248,18 +262,18 @@ function draw(chart, highlight_data, normal_data) {
     })
 
     highlight_data.map((n) => {
-        const path_five = d3.select('#myViz').append('path')
+        const path_five = g.append('path')
             .attr('class', 'selectable node')
             .attr('stroke', 'black')
             .attr('stroke-width', 8)
             .attr('d', `M${n.x} ${n.y - n.height / 2} L${n.x} ${n.y + n.height / 2}`);
 
-        const path_six = d3.select('#myViz').append('path')
+        const path_six = g.append('path')
             .attr('stroke', 'white')
             .attr('stroke-width', 4)
             .attr('d', `M${n.x} ${n.y - n.height / 2} L${n.x} ${n.y + n.height / 2}`);
 
-        const text_three = d3.select('#myViz').append('text')
+        const text_three = g.append('text')
             .attr('class', 'selectable')
             .attr('data-id', n.id)
             .attr('x', `${n.x + 5}`)
@@ -269,7 +283,7 @@ function draw(chart, highlight_data, normal_data) {
             .attr('stroke-width', '4')
         text_three.html(n.id)
 
-        const text_four = d3.select('#myViz').append('text')
+        const text_four = g.append('text')
             .attr('x', `${n.x + 4}`)
             .attr('y', `${n.y - n.height / 2 - 4}`)
             .attr('font-weight', 'bold')
