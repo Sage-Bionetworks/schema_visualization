@@ -78,14 +78,16 @@ function selectDataset() {
             tangled_tree_data.then(tangled_tree_dta => {
                 //get tangle tree layout, normal data, and highlight data
                 var chart_dta = chart(tangled_tree_dta);
+                console.log(chart_dta)
                 var normal_data = chart_dta.nodes.filter(filter_normal_nodes);
-                var highlight_data = chart_dta.nodes.filter(filter_highlight_nodes);
+                //var highlight_data = chart_dta.nodes.filter(filter_highlight_nodes);
+
 
                 console.log(normal_data);
-                console.log(highlight_data);
 
 
-                draw(chart_dta, highlight_data, normal_data);
+                //draw(chart_dta, highlight_data, normal_data);
+                createCollapsibleTree(chart_dta);
             })
         })
 
