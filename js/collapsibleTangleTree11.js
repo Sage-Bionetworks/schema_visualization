@@ -253,79 +253,51 @@ function createCollapsibleTree(chart) {
         //UPDATE
         var NodeUpdate = NodeEnter.merge(node);
 
-        // //Control exiting node and adding new node
-        // var flexibleNode = svg.select("g").selectAll("path").data(filteredInteractiveNode);
-        // flexibleNode.enter().append('path');
-        // var nodeExit = flexibleNode.exit().remove();
-    }
 
-    //var NodeContainer = { 'collapsed': [] };
+        //control links
+        NodeEnter.insert('path', 'g')
+            .attr('class', 'link')
+            .attr('d', function (b) {
+                if (b.bundles && b.bundles.links) {
+                    let d = b.bundles.links.map(l => `
+                                M${l.xt} ${l.yt}
+                                L${l.xb - l.c1} ${l.yt}
+                                A${l.c1} ${l.c1} 90 0 1 ${l.xb} ${l.yt + l.c1}
+                                L${l.xb} ${l.ys - l.c2}
+                                A${l.c2} ${l.c2} 90 0 0 ${l.xb + l.c2} ${l.ys}
+                                L${l.xs} ${l.ys}`).join("");
+                    return d
+                }
+            })
+            .attr('stroke', 'white')
+            .attr('stroke-width', 5)
 
-    function relayCollapsedChild(poolNode, selectedChildren) {
-        poolNode.forEach(item => {
-            var childrenArr = item.children;
-            if (childrenArr !== null && childrenArr.length > 0) {
-                selectedChildren.forEach(elem => {
-                    //if the collapsed child is also a child of other parent 
-                    if (childrenArr.includes(elem)) {
-                        //remove the collpased child also from other parent
-                        removeElemFromArr(elem, childrenArr)
-                        // addElemToArray(elem, item._children)
-                        //push the child and saved it in _children container
-                        if (item._children == null) {
-                            item._children = [];
-                            item._children.push(elem)
-                        } else {
-                            //check if the element already exists
-                            //if it doesn't exist, push the element
-                            item._children.indexOf(elem) === -1 && item._children.push(elem)
-                        }
 
+        NodeEnter.insert('path', 'g')
+            .attr('class', 'link')
+            .attr('d', function (b) {
+                if (b.bundles) {
+                    if (b.bundles[0]) {
+                        var firstElem = b.bundles[0][0].links
+
+                        let d = firstElem.map(l => `
+                        M${l.xt} ${l.yt}
+                        L${l.xb - l.c1} ${l.yt}
+                        A${l.c1} ${l.c1} 90 0 1 ${l.xb} ${l.yt + l.c1}
+                        L${l.xb} ${l.ys - l.c2}
+                        A${l.c2} ${l.c2} 90 0 0 ${l.xb + l.c2} ${l.ys}
+                        L${l.xs} ${l.ys}`).join("");
+                        return d
                     }
 
-                })
-            }
-        })
+                }
+            })
+            .attr('stroke', function (b) {
+                return color(b.id)
+            })
+            .attr('stroke-width', 2)
 
-        //console.log('poolNode', poolNode)
     }
-
-    function relayExpandedChild(poolNode, selectedChildren) {
-        poolNode.forEach(item => {
-            //children of parents
-            var childrenArr = item._children
-            if (childrenArr != null && childrenArr.length > 0) {
-                selectedChildren.forEach(elem => {
-                    //if this child is also another parent's child
-                    if (childrenArr.includes(elem)) {
-                        //add the expanded child to other parents if it doesn't already exists
-                        //addElemToArray(elem, item.children)
-                        removeElemFromArr(elem, childrenArr)
-                        if (item.children == null) {
-                            item.children = [];
-                            item.children.push(elem)
-                        } else {
-                            //check if the element already exists
-                            //if it doesn't exist, push the element
-                            item.children.indexOf(elem) === -1 && item.children.push(elem)
-                        }
-
-                    }
-                    // } else {
-                    //     //remove that child from item._children
-                    //     removeElemFromArr(elem, item._children)
-                    // }
-                })
-
-            }
-
-
-        })
-
-        console.log('poolNode', poolNode)
-    }
-
-
 
 
 
@@ -338,7 +310,6 @@ function createCollapsibleTree(chart) {
             if (e['visible'] === undefined) {
                 e['visible'] = false //set default as hiding children when click
             } else {
-                //e['visible'] = !e['visible']
                 e['visible'] = visibility
             }
         })
@@ -350,59 +321,138 @@ function createCollapsibleTree(chart) {
 
     }
 
+    function HidePath(clickElem, childrenArray, poolNode) {
+        //even though "targetNode" appears to be a segment of the "poolNode", any changes that you applied to "targetNode"
+        //would get automatically apply to "poolNode" because filterArrayIfInArray function simply filters the original array
+        //get the parent node that you want to change
+        targetNode = filterArrayIfInArray(poolNode, [clickElem], 'id')
+
+        //get the link element of the target node
+        var bundles = targetNode[0]['bundles']
+
+        //hide links
+        if (bundles) {
+            bundles.forEach(bundle => {
+                var linkArray = bundle[0]['links']
+                //save the links to _link container for future use
+                if (bundle[0]['_links'] == null) {
+                    bundle[0]['_links'] = linkArray
+                } else {
+                    //add new element to _links if it doesn't exit
+                    linkArray.forEach(elem => {
+                        bundle[0]['_links'].indexOf(elem) === -1 && bundle[0]['_links'].push(elem)
+                    })
+                }
+
+                //remove the parent to children paths from link array
+                //for children that have multiple parents, make sure not touching paths that lead to other parents while collapsing
+                var filteredLinkArray = linkArray.filter(i => ![clickElem].includes(i['target']['id']) && childrenArray.includes(i['source']['id']))
+
+                //if there's a child that also belongs to other parents 
+                if (filteredLinkArray != null && filteredLinkArray.length > 0) {
+                    //make sure that child is still in the 'links' bucket
+                    bundle[0]['links'] = filteredLinkArray
+                } else {
+                    //otherwise, we could just set 'links' to an empty list since we have backed up the links in _links
+                    bundle[0]['links'] = [];
+                }
+
+            })
+        }
+
+    }
+
+    function addPath(clickElem, childrenArray, poolNode) {
+        //get the parent node that you want to change
+        //similar to HidePath function, chhanges will also get applied 
+        targetNode = filterArrayIfInArray(poolNode, [clickElem], 'id')
+
+        var bundles = targetNode[0]['bundles']
+        if (bundles) {
+            bundles.forEach(bundle => {
+                if (bundle[0]['links'] == null) {
+                    bundle[0]['links'] = [];
+                }
+
+                //add new element to links if it doesn't exist
+                //only add links specific to the parent that gets clicked. 
+                //make sure not touching the links between children and other parents
+                bundle[0]['_links'].forEach(elem => {
+                    bundle[0]['links'].indexOf(elem) === -1 && [clickElem].includes(elem['target']['id']) && bundle[0]['links'].push(elem)
+                })
+
+            })
+
+
+        }
+
+    }
+
+    function relayChildren(poolNode, selectedChildren, visibility) {
+        //if the collapsed child is also a child of other parent,
+        //we will update the visibility attribute of the child again to make sure that child still shows up
+
+        poolNode.forEach(item => {
+            var childrenArr = item.children;
+
+            if (childrenArr !== null && childrenArr.length > 0) {
+                selectedChildren.forEach(elem => {
+                    //if other parents also share this children
+                    if (childrenArr.includes(elem)) {
+                        //for collapsing(if statement triggering), set the visibility of that special child to 'true'
+                        SetVisibilityChildren([elem], poolNode, visibility)
+                    }
+
+                })
+            }
+        })
+
+        return poolNode
+
+
+    }
+
+
 
 
     function click(d) {
-        //run the "if" statement if the following happens: 
-        //(d.collapsed == null || d.collapsed == false) && 
+        //the if statement controls collapsing node, and the else statement controls expanding nodes. 
         if (d.children && d.children.length > 0) {
-            //create an element to track collapsed node
-            //d.collapsed = true;
+            console.log('triggering if')
+
+            var childrenSelected = d.children;
 
             //children of this node is no longer visible -> set visible = false
             var NewInteractiveNode = SetVisibilityChildren(d.children, InteractivePartNode, false)
 
-            //let other parents know that its child has already been collapsed by removing other parent's children from "d.children"
-            // in this case, d._children might not always be an empty container. 
-            if (d._children == null) {
-                d._children = d.children
-            } else {
-                var childrenContainer = Array.from(d._children) //array like object
-                var childrenArr = Array.from(d.children) //array like object
-                d._children = childrenContainer.concat(childrenArr);
-            }
-            var childrenSelected = d.children;
-            d.children = null;
-            relayCollapsedChild(NewInteractiveNode, childrenSelected);
+            //handle the link from children to parents
+            HidePath(d.id, d.children, NewInteractiveNode);
 
-            console.log('triggering if')
+            d._children = d.children;
+            d.children = null;
+
+            //update visbility attribute of some children 
+            //if those children is also under other parents (and those parents have not yet been collapsed) -> set visibility = true
+            //this step is not needed when expanding nodes
+            relayChildren(InteractivePartNode, childrenSelected, true)
             console.log('New interactive node', NewInteractiveNode)
 
-        } else {
-            //we are expanding the nodes
-            //d.collapsed = false;
 
-            //do we also need to let other parents know that their children have been created? 
-            // var childrenSelected = d._children
+        } else {
+            var childrenSelected = d.children;
+
             //set visibility to true
             var NewInteractiveNode = SetVisibilityChildren(d._children, InteractivePartNode, true)
 
-            //d.children = d._children;
-            if (d.children == null) {
-                d.children = d._children
-            } else {
-                var childrenContainer = Array.from(d._children) //array like object
-                var childrenArr = Array.from(d.children) //array like object
-                d.children = childrenContainer.concat(childrenArr);
-            }
-            //let other parents know that its child has already been expanded by pushing other parent's children to "d._children"
-            var childrenSelected = d._children
-            d._children = null;
-            relayExpandedChild(NewInteractiveNode, childrenSelected)
+            //add links back from parents to children 
+            addPath(d.id, d._children, NewInteractiveNode);
 
-            console.log('triggering else')
+            d.children = d._children;
+            d._children = null;
+
             console.log('triggering interactive node', NewInteractiveNode)
         }
+
 
         //keep children based on visibility
         // we want to keep the nodes as long as visible is not false
@@ -412,43 +462,6 @@ function createCollapsibleTree(chart) {
         });
 
         console.log('my experiment nodes', ChangeableNode)
-
-
-
-        //var InteractivePartNodeNew = replaceObjInArry(InteractivePartNode, [d])
-        //collapsing
-        // if (d.children && d.children.length > 0) {
-        //     console.log('triggering if')
-        //     d._children = d.children;
-        //     //shrink the dataset
-        //     //removing all the children
-        //     console.log('NodeContainer', NodeContainer)
-        //     var ChangeableNode = filterArrayIfNotInArray(InteractivePartNode, d.children, 'id');
-
-        //     //save the nodes that are collapsed
-        //     NodeContainer['collapsed'] = ChangeableNode;
-
-        //     //let other parents know if their children have been collapsed
-        //     var childrenSelected = d.children;
-        //     d.children = null;
-        //     relayCollapsedChild(InteractivePartNode, childrenSelected);
-        //     console.log('new interactive node ', InteractivePartNode);
-
-
-
-        // } else {
-        //     //expanding
-        //     console.log('triggering else')
-        //     d.children = d._children;
-        //     //returning all the children
-        //     var NodesToAdd = filterArrayIfInArray(InteractivePartNode, d.children, 'id');
-        //     var ChangeableNode = NodesToAdd.concat(NodeContainer['collapsed'])
-        //     d._children = null;
-        // }
-
-
-
-
         //update(ChangeableNode);
 
         //Control exiting node and adding new node
@@ -476,61 +489,58 @@ function createCollapsibleTree(chart) {
         flexibleNode.exit().remove();
         flexibleText.exit().remove();
 
-        console.log('flexibleNode', flexibleNode);
-        console.log('flexibletext', flexibleText);
-
         //control links
-        // var link = svg.selectAll('path.link').data(ChangeableNode);
-        // var flexibleLinkEnter = link.enter();
+        var link = svg.select("g").selectAll("path.link").data(ChangeableNode);
+        var flexibleLinkEnter = link.enter();
 
-        // flexibleLinkEnter.insert('path', 'g').merge(link)
-        //     .attr('class', 'link')
-        //     .attr('d', function (b) {
-        //         if (b.bundles && b.bundles.links) {
-        //             let d = b.bundles.links.map(l => `
-        //                         M${l.xt} ${l.yt}
-        //                         L${l.xb - l.c1} ${l.yt}
-        //                         A${l.c1} ${l.c1} 90 0 1 ${l.xb} ${l.yt + l.c1}
-        //                         L${l.xb} ${l.ys - l.c2}
-        //                         A${l.c2} ${l.c2} 90 0 0 ${l.xb + l.c2} ${l.ys}
-        //                         L${l.xs} ${l.ys}`).join("");
-        //             return d
-        //         }
-        //     })
-        //     .attr('stroke', 'white')
-        //     .attr('stroke-width', 5)
-
-        // flexibleLinkEnter.insert('path', 'g')
-        //     .attr('class', 'link')
-        //     .attr('d', function (b) {
-        //         if (b.bundle && b.bundle.links) {
-        //             let d = b.bundle.links.map(l => `
-        //                     M${l.xt} ${l.yt}
-        //                     L${l.xb - l.c1} ${l.yt}
-        //                     A${l.c1} ${l.c1} 90 0 1 ${l.xb} ${l.yt + l.c1}
-        //                     L${l.xb} ${l.ys - l.c2}
-        //                     A${l.c2} ${l.c2} 90 0 0 ${l.xb + l.c2} ${l.ys}
-        //                     L${l.xs} ${l.ys}`).join("");
-        //             return d
-        //         }
-        //     })
-        //     .attr('stroke', function (b) {
-        //         return color(b.id)
-        //     })
-        //     .attr('stroke-width', 2)
+        flexibleLinkEnter.insert('path', 'g').merge(link)
+            .attr('class', 'link')
+            .attr('d', function (b) {
+                if (b.bundles && b.bundles.links) {
+                    let d = b.bundles.links.map(l => `
+                                M${l.xt} ${l.yt}
+                                L${l.xb - l.c1} ${l.yt}
+                                A${l.c1} ${l.c1} 90 0 1 ${l.xb} ${l.yt + l.c1}
+                                L${l.xb} ${l.ys - l.c2}
+                                A${l.c2} ${l.c2} 90 0 0 ${l.xb + l.c2} ${l.ys}
+                                L${l.xs} ${l.ys}`).join("");
+                    return d
+                }
+            })
+            .attr('stroke', 'white')
+            .attr('stroke-width', 5)
 
 
+        flexibleLinkEnter.insert('path', 'g').merge(link)
+            .attr('class', 'link')
+            .attr('d', function (b) {
+                if (b.bundles) {
+                    if (b.bundles[0]) {
+                        var firstElem = b.bundles[0][0].links
 
+                        let d = firstElem.map(l => `
+                        M${l.xt} ${l.yt}
+                        L${l.xb - l.c1} ${l.yt}
+                        A${l.c1} ${l.c1} 90 0 1 ${l.xb} ${l.yt + l.c1}
+                        L${l.xb} ${l.ys - l.c2}
+                        A${l.c2} ${l.c2} 90 0 0 ${l.xb + l.c2} ${l.ys}
+                        L${l.xs} ${l.ys}`).join("");
+                        return d
+                    }
 
-        // // var flexibleNode = svgDoc.select("g").selectAll("path").data(filteredInteractiveNode);
-        // // flexibleNode.enter().append('path').on('click', click);
-        // // flexibleNode.exit().remove();
-        // var nodeEnter = flexibleNode.enter().append('path');
-        // var nodeExit = flexibleNode.exit().remove();
+                }
+            })
+            .attr('stroke', function (b) {
+                return color(b.id)
+            })
+            .attr('stroke-width', 2)
 
-        // console.log(flexibleNode)
+        flexibleLinkEnter.exit().remove();
+
+        console.log('flexibleLinkEnter', flexibleLinkEnter)
     }
 
 
 
 }
+

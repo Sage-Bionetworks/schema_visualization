@@ -102,7 +102,6 @@ function chart(data) {
     const min_family_height = 16
 
     // THIS relates to size and placement of nodes
-
     nodes.forEach(n => n.height = (Math.max(1, n.bundles.length) - 1) * metro_d)
 
     var x_offset = padding
@@ -116,71 +115,6 @@ function chart(data) {
             y_offset += node_height + n.height
         })
     })
-    //after the two blocks above, we have the x and y coordinates of nodes. 
-
-    // console.log('this is node', Object.keys(nodes[0]))
-
-    // //Collapse after the second level --testing
-    // nodes.forEach((element) => {
-    //     if (element.level >= 1) {
-    //         element = null
-    //     }
-    // })
-
-    // console.log('nodes', nodes) //nothing changes. this is not working
-
-    // update the nodes ...
-
-
-    function update(source) {
-        var node = svg.selectAll('path.node').data(nodes);
-        var nodeEnter = node.enter().append('g').attr('transform', function (d) {
-            return "translate(" + source.y0 + "," + source.x0 + ")"
-        }).on('clilck', click)
-
-        nodeEnter.append('text').attr("dy", "0.35em")
-            .attr("x", function (d) {
-                return d.level || d._level ? -13 : 13;
-            })
-            .attr("text-anchor", function (d) {
-                return d.level || d._level ? "end" : "start";
-            })
-            .text(function (d) {
-                return d.id;
-            })
-    }
-
-    function click(d) {
-        if (d.level) {
-            d._level = d.level;
-            d.level = null;
-        } else {
-            d.level = d._level;
-            d._level = null;
-        }
-        update(d);
-    }
-
-    var i = 0,
-        duration = 750,
-        source;
-
-    var source = d3.hierarchy(levels, function (d) {
-        return d.level
-    })
-
-    const height = 900;
-    source.x0 = height / 2;
-    source.y0 = 0
-
-    console.log('this is levels', levels)
-    console.log('this is root', source)
-
-    update(source);
-
-
-
-
 
     var i = 0
     levels.forEach(l => {
@@ -227,9 +161,6 @@ function chart(data) {
 
 }
 
-
-
-
 function draw(chart, highlight_data, normal_data) {
 
     console.log('draw chart function is being used');
@@ -244,7 +175,7 @@ function draw(chart, highlight_data, normal_data) {
     const color = d3.scaleOrdinal(d3.schemeDark2);
 
     const height = 900;
-    const width = 1000;
+    const width = 900;
 
     const totalWidth = width + margins.left + margins.right;
 
@@ -258,20 +189,6 @@ function draw(chart, highlight_data, normal_data) {
         .attr('height', chart.layout.height)
         .attr('id', 'myViz');
 
-    const g = svg.append('g');
-
-    //add zoom
-    var zoom = d3.zoom()
-        .extent([[0, 0], [width + 100, height + 100]])
-        .scaleExtent([1, 8])
-        .on("zoom", function () {
-            g.attr('transform', d3.event.transform)
-        });
-
-    g.call(zoom);
-
-
-
     chart.bundles.map(b => {
         let d = b.links.map(l => `
               M${l.xt} ${l.yt}
@@ -282,13 +199,13 @@ function draw(chart, highlight_data, normal_data) {
               L${l.xs} ${l.ys}`
         ).join("");
 
-        const path = g.append('path')
+        const path = d3.select('#myViz').append('path')
             .attr('class', 'link')
             .attr('d', d)
             .attr('stroke', 'white')
             .attr('stroke-width', 5);
 
-        const path_two = g.append('path')
+        const path_two = d3.select('#myViz').append('path')
             .attr('class', 'link')
             .attr('d', d)
             .attr('stroke-width', 2)
@@ -296,20 +213,20 @@ function draw(chart, highlight_data, normal_data) {
     })
 
     normal_data.map(n => {
-        const path_three = g.append('path')
+        const path_three = d3.select('#myViz').append('path')
             .attr('class', 'selectable node')
             .attr('data-id', n.id)
             .attr('stroke', 'black')
             .attr('stroke-width', 8)
             .attr('d', `M${n.x} ${n.y - n.height / 2} L${n.x} ${n.y + n.height / 2}`);
 
-        const path_four = g.append('path')
+        const path_four = d3.select('#myViz').append('path')
             .attr('class', 'node')
             .attr('stroke', 'white')
             .attr('stroke-width', 4)
             .attr('d', `M${n.x} ${n.y - n.height / 2} L${n.x} ${n.y + n.height / 2}`);
 
-        const text_one = g.append('text')
+        const text_one = d3.select('#myViz').append('text')
             .attr('class', 'selectable')
             .attr('data-id', `${n.id}`)
             .attr('x', `${n.x + 4}`)
@@ -319,7 +236,7 @@ function draw(chart, highlight_data, normal_data) {
 
         text_one.html(n.id)
 
-        const text_two = g.append('text')
+        const text_two = d3.select('#myViz').append('text')
             .attr('x', `${n.x + 4}`)
             .attr('y', `${n.y - n.height / 2 - 4}`)
             .attr('style', "pointer-events: none");
@@ -331,18 +248,18 @@ function draw(chart, highlight_data, normal_data) {
     })
 
     highlight_data.map((n) => {
-        const path_five = g.append('path')
+        const path_five = d3.select('#myViz').append('path')
             .attr('class', 'selectable node')
             .attr('stroke', 'black')
             .attr('stroke-width', 8)
             .attr('d', `M${n.x} ${n.y - n.height / 2} L${n.x} ${n.y + n.height / 2}`);
 
-        const path_six = g.append('path')
+        const path_six = d3.select('#myViz').append('path')
             .attr('stroke', 'white')
             .attr('stroke-width', 4)
             .attr('d', `M${n.x} ${n.y - n.height / 2} L${n.x} ${n.y + n.height / 2}`);
 
-        const text_three = g.append('text')
+        const text_three = d3.select('#myViz').append('text')
             .attr('class', 'selectable')
             .attr('data-id', n.id)
             .attr('x', `${n.x + 5}`)
@@ -352,7 +269,7 @@ function draw(chart, highlight_data, normal_data) {
             .attr('stroke-width', '4')
         text_three.html(n.id)
 
-        const text_four = g.append('text')
+        const text_four = d3.select('#myViz').append('text')
             .attr('x', `${n.x + 4}`)
             .attr('y', `${n.y - n.height / 2 - 4}`)
             .attr('font-weight', 'bold')
@@ -366,219 +283,4 @@ function draw(chart, highlight_data, normal_data) {
     })
 
 
-
-
-}
-
-
-
-var treeData =
-{
-    "name": "Top Level",
-    "children": [
-        {
-            "name": "Level 2: A",
-            "children": [
-                { "name": "Son of A" },
-                { "name": "Daughter of A" }
-            ]
-        },
-        { "name": "Level 2: B" }
-    ]
-};
-
-// Set the dimensions and margins of the diagram
-var margin = { top: 20, right: 90, bottom: 30, left: 90 },
-    width = 960 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
-
-// append the svg object to the body of the page
-// appends a 'group' element to 'svg'
-// moves the 'group' element to the top left margin
-var svg = d3.select("body").append("svg")
-    .attr("width", width + margin.right + margin.left)
-    .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-    .attr("transform", "translate("
-        + margin.left + "," + margin.top + ")");
-
-var i = 0,
-    duration = 750,
-    root;
-
-// declares a tree layout and assigns the size
-var treemap = d3.tree().size([height, width]);
-console.log('treemap', treemap)
-
-// Assigns parent, children, height, depth
-root = d3.hierarchy(treeData, function (d) { return d.children; });
-root.x0 = height / 2;
-root.y0 = 0;
-
-console.log('this is root', root);
-
-// Collapse after the second level
-root.children.forEach(collapse);
-
-console.log('root after collapse', root)
-
-update(root);
-
-// Collapse the node and all it's children
-function collapse(d) {
-    if (d.children) {
-        d._children = d.children
-        d._children.forEach(collapse)
-        d.children = null
-    }
-}
-
-function update(source) {
-
-    // Assigns the x and y position for the nodes
-    var treeData = treemap(root);
-
-    console.log('this is threeData', treeData)
-
-    // Compute the new tree layout.
-    var nodes = treeData.descendants(),
-        links = treeData.descendants().slice(1);
-
-    // Normalize for fixed-depth.
-    nodes.forEach(function (d) { d.y = d.depth * 180 });
-
-    // ****************** Nodes section ***************************
-
-    // Update the nodes...
-    var node = svg.selectAll('g.node')
-        .data(nodes, function (d) { return d.id || (d.id = ++i); });
-
-    console.log('node is here', node)
-    console.log('nodes are here', nodes)
-    // Enter any new modes at the parent's previous position.
-    var nodeEnter = node.enter().append('g')
-        .attr('class', 'node')
-        .attr("transform", function (d) {
-            console.log('what is source', source)
-            return "translate(" + source.y0 + "," + source.x0 + ")";
-        })
-        .on('click', click);
-
-
-    // Add Circle for the nodes
-    nodeEnter.append('circle')
-        .attr('class', 'node')
-        .attr('r', 1e-6)
-        .style("fill", function (d) {
-            return d._children ? "lightsteelblue" : "#fff";
-        });
-
-    // Add labels for the nodes
-    nodeEnter.append('text')
-        .attr("dy", ".35em")
-        .attr("x", function (d) {
-            return d.children || d._children ? -13 : 13;
-        })
-        .attr("text-anchor", function (d) {
-            console.log('d children', d)
-            console.log('d_children', d._children)
-            return d.children || d._children ? "end" : "start";
-        })
-        .text(function (d) { return d.data.name; });
-
-    // UPDATE
-    var nodeUpdate = nodeEnter.merge(node);
-
-    // Transition to the proper position for the node
-    nodeUpdate.transition()
-        .duration(duration)
-        .attr("transform", function (d) {
-            return "translate(" + d.y + "," + d.x + ")";
-        });
-
-    // Update the node attributes and style
-    nodeUpdate.select('circle.node')
-        .attr('r', 10)
-        .style("fill", function (d) {
-            return d._children ? "lightsteelblue" : "#fff";
-        })
-        .attr('cursor', 'pointer');
-
-
-    // Remove any exiting nodes
-    var nodeExit = node.exit().transition()
-        .duration(duration)
-        .attr("transform", function (d) {
-            return "translate(" + source.y + "," + source.x + ")";
-        })
-        .remove();
-
-    // On exit reduce the node circles size to 0
-    nodeExit.select('circle')
-        .attr('r', 1e-6);
-
-    // On exit reduce the opacity of text labels
-    nodeExit.select('text')
-        .style('fill-opacity', 1e-6);
-
-    // ****************** links section ***************************
-
-    // Update the links...
-    var link = svg.selectAll('path.link')
-        .data(links, function (d) { return d.id; });
-
-    // Enter any new links at the parent's previous position.
-    var linkEnter = link.enter().insert('path', "g")
-        .attr("class", "link")
-        .attr('d', function (d) {
-            var o = { x: source.x0, y: source.y0 }
-            return diagonal(o, o)
-        });
-
-    // UPDATE
-    var linkUpdate = linkEnter.merge(link);
-
-    // Transition back to the parent element position
-    linkUpdate.transition()
-        .duration(duration)
-        .attr('d', function (d) { return diagonal(d, d.parent) });
-
-    // Remove any exiting links
-    var linkExit = link.exit().transition()
-        .duration(duration)
-        .attr('d', function (d) {
-            var o = { x: source.x, y: source.y }
-            return diagonal(o, o)
-        })
-        .remove();
-
-    // Store the old positions for transition.
-    nodes.forEach(function (d) {
-        d.x0 = d.x;
-        d.y0 = d.y;
-    });
-
-    // Creates a curved (diagonal) path from parent to the child nodes
-    function diagonal(s, d) {
-
-        path = `M ${s.y} ${s.x}
-            C ${(s.y + d.y) / 2} ${s.x},
-              ${(s.y + d.y) / 2} ${d.x},
-              ${d.y} ${d.x}`
-
-        return path
-    }
-
-    // Toggle children on click.
-    function click(d) {
-        if (d.children) {
-
-            d._children = d.children;
-            d.children = null;
-        } else {
-            d.children = d._children;
-            d._children = null;
-        }
-        update(d);
-    }
 }

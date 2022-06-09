@@ -95,6 +95,7 @@
             // Compute the new tree layout.
             var nodes = treeData.descendants(),
                 links = treeData.descendants().slice(1);
+            console.log('links are here', links)
 
             // Normalize for fixed-depth.
             nodes.forEach(function (d) { d.y = d.depth * 180 });
@@ -209,6 +210,8 @@
                 d.x0 = d.x;
                 d.y0 = d.y;
             });
+
+            console.log('linkEnter', linkEnter)
 
             // Creates a curved (diagonal) path from parent to the child nodes
             function diagonal(s, d) {
