@@ -199,15 +199,17 @@ function createCollapsibleTree(chart) {
         .attr('id', 'myViz');
 
     //separate two types of nodes
-    var dataBulk = SeparateInteractiveAndSteady(chart);
-    var InteractivePartNode = dataBulk[0];
-    var steadyPartNode = dataBulk[1];
+    //var dataBulk = SeparateInteractiveAndSteady(chart);
+    //var InteractivePartNode = dataBulk[0];
+    //var steadyPartNode = dataBulk[1];
 
     //draw steady part 
-    createSteadyPartNode(steadyPartNode, svg);
+    //createSteadyPartNode(steadyPartNode, svg);
 
     //begin to draw interactive part
 
+    //update(InteractivePartNode);
+    var InteractivePartNode = chart['nodes']
     update(InteractivePartNode);
 
     //when we have the default position, the nodes that have children have not yet been expanded
@@ -236,6 +238,7 @@ function createCollapsibleTree(chart) {
         var node = g.selectAll("path").data(filteredInteractiveNode)
         var NodeEnter = node.enter();
 
+        //control node
         NodeEnter.append('path')
             .attr('class', 'selectable node')
             .attr('stroke', 'orange')
@@ -244,6 +247,8 @@ function createCollapsibleTree(chart) {
                 return `M${d.x} ${d.y - d.height / 2} L${d.x} ${d.y + d.height / 2}`
             }).on('click', click);
 
+
+        //control text
         NodeEnter.append('text')
             .attr('style', 'pointer-events: none')
             .attr('x', function (d) { return (d.x + 5) })

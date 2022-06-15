@@ -1,4 +1,39 @@
 
+//separarte interactive part and steady part
+function SeparateInteractiveAndSteady(chart) {
+    var interactiveKeys = FilterNode(chart);
+
+    var InteractivePartNode = filterArrayIfInArray(chart['nodes'], interactiveKeys, 'id')
+    var steadyPartNode = filterArrayIfNotInArray(chart['nodes'], interactiveKeys, 'id')
+
+    return [InteractivePartNode, steadyPartNode]
+}
+
+//create steady part tree
+
+function createSteadyPartNode(steadyPartNode, svg) {
+
+
+    steadyPartNode.map(n => {
+
+        const path_three = svg.append('path')
+            .attr('class', 'selectable node')
+            .attr('data-id', `${n.id}`)
+            .attr('stroke', 'black')
+            .attr('stroke-width', 8)
+            .attr('d', `M${n.x} ${n.y - n.height / 2} L${n.x} ${n.y + n.height / 2}`);
+
+        const path_four = svg.append('path')
+            .attr('class', 'node')
+            .attr('stroke', 'white')
+            .attr('stroke-width', 4)
+            .attr('d', `M${n.x} ${n.y - n.height / 2} L${n.x} ${n.y + n.height / 2}`);
+
+    })
+
+
+}
+
 //within the if statement
 //for relay collapsed child: 
 //            //let other parents know that its child has already been collapsed by removing other parent's children from "d.children"
