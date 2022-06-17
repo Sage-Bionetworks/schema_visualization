@@ -23,11 +23,36 @@
 
         Choose a dataset type
         <select id="dataset" onchange="selectDataset()"></select>
+
+
+        <div>
+            <form name="table">
+                <label>Please select an option:</label>&nbsp;&nbsp;
+                <input type="radio" name="attribute" id="is_allAttributes" value="All Attributes" , />
+                <label>All Attributes</label>
+
+                <input type="radio" name="attribute" id="is_requiredAttributes" value="Required Attributes" , />
+                <label>Required Attributes</label>
+
+                <input type="radio" name="attribute" id="is_conditionallyRequired"
+                    value="Conditionally Required Attributes" />
+                <label>Conditionally Required Attributes</label>
+
+                <input type="radio" name="attribute" id="is_conditionallyAndRequired"
+                    value="Required and Conditionally Required Attributes" />
+                <label>Required and Conditionally Required Attributes</label>
+            </form>
+        </div>
+
     </div>
+
 
     <div id="visualization">
 
     </div>
+
+    <div id="table"></div>
+
 
 
 

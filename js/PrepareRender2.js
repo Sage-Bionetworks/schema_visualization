@@ -47,7 +47,7 @@ function selectDataset() {
         var tangled_tree_data = parseJSON('files/JSON/HTAN_tangled_tree@2.json');
         var normal_dependencies = parseCSVFiles('files/NormalDependencies/normal_dependencies@1.csv');
         var highlight_dependencies = parseCSVFiles('files/HighlighDepedencies/highlight_dependencies@1.csv');
-
+        var merged_data = parseCSVFiles('files/Merged/merged_HTAN.csv');
     }
 
     normal_dependencies.then(data => {
@@ -86,9 +86,15 @@ function selectDataset() {
 
 
                 draw(chart_dta, highlight_data, normal_data);
+
             })
         })
 
-
     })
+
+    merged_data.then(data => {
+        drawTable(data, selectedDatasetOption)
+    })
+
+
 }
