@@ -63,3 +63,8 @@ table td, table th{
 table thead{
 	background:#ccc;
 }
+
+.center {
+  display: flex;
+  justify-content: center;
+}
