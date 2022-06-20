@@ -473,7 +473,8 @@
                     .attr("fill-opacity", 0)
                     .attr("stroke-opacity", 0)
                     .on("click", (event, d) => {
-                        console.log('children here: ', d)
+                        //if we switch to d3 version 5, this function here onclick and console log would only show index 
+                        console.log('children of clicked node: ', d._children)
                         d.children = d.children ? null : d._children;
                         update(d);
                     });
@@ -495,7 +496,9 @@
 
                 // Transition nodes to their new position.
                 const nodeUpdate = node.merge(nodeEnter)
-                    .attr("transform", d => `translate(${d.y},${d.x})`)
+                    .attr("transform", function (d) {
+                        return `translate(${d.y},${d.x})`
+                    })
                     .attr("fill-opacity", 1)
                     .attr("stroke-opacity", 1);
 
@@ -527,10 +530,10 @@
                     });
 
                 // Stash the old positions for transition.
-                root.eachBefore(d => {
-                    d.x0 = d.x;
-                    d.y0 = d.y;
-                });
+                // root.eachBefore(d => {
+                //     d.x0 = d.x;
+                //     d.y0 = d.y;
+                // });
             }
 
             update(root);
