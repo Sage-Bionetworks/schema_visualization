@@ -79,6 +79,17 @@ function replaceObjInArry(arrayofObjBase, arrayofObjReplacement) {
 //preprocessing data -- now is a hard-coded function
 //assume that we could let biospecimen node knows all its children
 function preprocessChart(chart) {
+    //console.log(chart)
+
+    ///////////////////////NF
+    // chart['nodes'].forEach(element => {
+    //     if (element['id'] == "") {
+
+    //     }
+    // })
+
+
+    ////////////////////////HTAN
     chart['nodes'].forEach(element => {
         if (element['id'] == 'Biospecimen') {
             element['children'] = ['ScRNA-seqLevel1', 'BulkRNA-seqLevel1',
@@ -114,6 +125,8 @@ function preprocessChart(chart) {
         }
 
     })
+    // return chart
+
     return chart
 }
 
@@ -165,18 +178,12 @@ function createCollapsibleTree(chart) {
 
     //begin to draw tree
     var InteractivePartNode = chart['nodes']
-    console.log('chart', chart)
+    var links = chart['links']
+
+    //by default, all the children have been expanded. 
     update(InteractivePartNode);
 
-    //when we have the default position, the nodes that have children have not yet been expanded
-    function update(InteractivePartNode, clickElem = null) {
-
-        //store the old positions for transition 
-        InteractivePartNode.forEach(function (d) {
-            d.x0 = d.x;
-            d.y0 = d.y;
-        });
-
+    function update(InteractivePartNode) {
         ///////////////do not touch the following section
         //always bind the changed data to our node element
         // var svgDoc = d3.select('#visualization').append('svg')
@@ -188,38 +195,45 @@ function createCollapsibleTree(chart) {
         // flexibleNode.enter().append('path').on('click', click);
         // flexibleNode.exit().remove();
 
-        // //////////Control exiting node and adding new node
+        ///////////////control nodes 
+
+        //create g element to store all the nodes 
         var g = svg.append("g")
+
+        //create nodes
+        //only select path that have class "node"
         var flexibleNode = svg.select("g").selectAll("path.node").data(InteractivePartNode);
-        //console.log('my changeable node', InteractivePartNode)
         var flexibleNodeEnter = flexibleNode.enter()
 
-
+        //create nodes
         flexibleNodeEnter.append('path').merge(flexibleNode)
             .attr('class', 'selectable node')
-            // .attr('stroke', 'orange')
             .attr('stroke', function (d) {
+                //if nodes could be expanded, we change its color to orange
                 return d._children && d._children.length > 0 && otherThanNull(d._children) ? "orange" : "#575757"
             })
-            .attr('stroke-width', 8)
-            .attr('transform', "translate(0,0)")
+            .attr('stroke-width', 8) //size of node
             .attr('d', function (d, i) {
-                return `M${d.x} ${d.y - d.height / 2} L${d.x} ${d.y + d.height / 2}`
+                return `M${d.x} ${d.y - d.height / 2} L${d.x} ${d.y + d.height / 2}` //location of the nodes
             }).on('click', click);
 
+        //exiting nodes
+        flexibleNode.exit().remove();
 
-        if (clickElem == null) {
-            flexibleNode.exit().remove();
-        } else {
-            flexibleNode.exit().transition().duration(250).attr("transform", function (b) {
-                return (`translate(${-(clickElem.y - clickElem.height / 2)}, ${-clickElem.x})`)
-                //return `translate(-328, -276)`
-            }).remove()
+        ///////////////might be useful for transitioning
+        // if (clickElem == null) {
+        //     flexibleNode.exit().remove();
+        // } else {
+        //     flexibleNode.exit().transition().duration(250).attr("transform", function (b) {
+        //         return (`translate(${-(clickElem.y - clickElem.height / 2)}, ${-clickElem.x})`)
+        //         //return `translate(-328, -276)`
+        //     }).remove()
 
-        }
+        // }
+        //////////////////////////////
 
-
-        //control text
+        ///////////////control text
+        //only select "text" element and bind those elements to data
         var flexibleText = svg.selectAll('text').data(InteractivePartNode);
         var flexibletTextEnter = flexibleText.enter();
 
@@ -229,34 +243,33 @@ function createCollapsibleTree(chart) {
             .attr('y', function (d) { return (d.y - d.height / 2 - 4) })
             .text(function (d) { return d.id });
 
-
-        // //flexibleNode.exit().remove();
         flexibleText.exit().remove();
 
-        // //control links
+        ///////////////control links
+        //only select paths that have class "link"
         var link = svg.select("g").selectAll("path.link").data(InteractivePartNode);
         var flexibleLinkEnter = link.enter();
 
-        //flexibleLinkEnter.insert('path', 'g').merge(link)
-        flexibleLinkEnter.append('path').merge(link)
-            .attr('class', 'link')
-            .attr('d', function (b) {
-                if (b.bundles && b.bundles.links) {
-                    let d = b.bundles.links.map(l => `
-                                        M${l.xt} ${l.yt}
-                                        L${l.xb - l.c1} ${l.yt}
-                                        A${l.c1} ${l.c1} 90 0 1 ${l.xb} ${l.yt + l.c1}
-                                        L${l.xb} ${l.ys - l.c2}
-                                        A${l.c2} ${l.c2} 90 0 0 ${l.xb + l.c2} ${l.ys}
-                                        L${l.xs} ${l.ys}`).join("");
-                    return d
-                }
-            })
-            .attr('stroke', 'white')
-            .attr('stroke-width', 5)
+        //this part is only create links that have stroke white. 
+        //this helps with styling
+        // flexibleLinkEnter.append('path').merge(link)
+        //     .attr('class', 'link')
+        //     .attr('d', function (b) {
+        //         if (b.bundles && b.bundles.links) {
+        //             let d = b.bundles.links.map(l => `
+        //                                 M${l.xt} ${l.yt}
+        //                                 L${l.xb - l.c1} ${l.yt}
+        //                                 A${l.c1} ${l.c1} 90 0 1 ${l.xb} ${l.yt + l.c1}
+        //                                 L${l.xb} ${l.ys - l.c2}
+        //                                 A${l.c2} ${l.c2} 90 0 0 ${l.xb + l.c2} ${l.ys}
+        //                                 L${l.xs} ${l.ys}`).join("");
+        //             return d
+        //         }
+        //     })
+        //     .attr('stroke', 'white')
+        //     .attr('stroke-width', 5)
 
-
-        //flexibleLinkEnter.insert('path', 'g').merge(link)
+        //create actual links
         flexibleLinkEnter.append('path').merge(link)
             .attr('class', 'link')
             .attr('d', function (b) {
@@ -281,26 +294,15 @@ function createCollapsibleTree(chart) {
             })
             .attr('stroke-width', 2)
 
-
-
         link.exit().remove();
 
-
-
-
-        // Store the old positions for transition.
-        InteractivePartNode.forEach(function (d) {
-            d.x0 = d.x;
-            d.y0 = d.y;
-        });
 
     }
 
     function click(d) {
         //the if statement controls collapsing node, and the else statement controls expanding nodes. 
         if (d.children && d.children.length > 0) {
-            var childrenSelected = d.children;
-
+            //for collapsing nodes 
             //children of this node is no longer visible -> set visible = false
             var NewInteractiveNode = SetVisibilityChildren(d.children, InteractivePartNode, false)
 
@@ -313,6 +315,11 @@ function createCollapsibleTree(chart) {
             //tell the parents of higher level that their children have been collapsed
             relayCollapsedChildren(d.id, d.children, NewInteractiveNode)
 
+            //update visbility attribute of some children 
+            //if those children is also under other parents (and those parents have not yet been collapsed) -> set visibility = true
+            //this step is not needed when expanding nodes
+            ShowSharedChildren(NewInteractiveNode, d.children, d.id)
+
             if (d._children == null) {
                 d._children = d.children;
             } else {
@@ -323,14 +330,8 @@ function createCollapsibleTree(chart) {
 
             d.children = null;
 
-            //update visbility attribute of some children 
-            //if those children is also under other parents (and those parents have not yet been collapsed) -> set visibility = true
-            //this step is not needed when expanding nodes
-            relayChildren(InteractivePartNode, childrenSelected, d.id)
-
             console.log('triggering if')
             console.log('New interactive node', NewInteractiveNode)
-
 
         } else {
             var childrenSelected = d.children;
@@ -367,7 +368,7 @@ function createCollapsibleTree(chart) {
         });
 
         //update(d)
-        update(ChangeableNode, clickElem = d);
+        update(ChangeableNode);
 
 
     }
@@ -385,7 +386,6 @@ function SetVisibilityChildren(childrenArray, poolNode, visibility) {
     //get all children nodes from the pool
     var changeableNode = filterArrayIfInArray(poolNode, childrenArray, 'id')
 
-
     //set the attribute "visible"
     changeableNode.forEach(e => {
         if (e['visible'] === undefined) {
@@ -394,7 +394,6 @@ function SetVisibilityChildren(childrenArray, poolNode, visibility) {
             e['visible'] = visibility
         }
     })
-
 
     //add changed nodes back to the pool and replace old ones
     var NewPoolArray = replaceObjInArry(poolNode, changeableNode)
@@ -444,6 +443,7 @@ function CollapseSubsequentChildren(childrenArray, poolNode) {
 function HidePath(clickElem, childrenArray, poolNode) {
     //even though "targetNode" appears to be a segment of the "poolNode", any changes that you applied to "targetNode"
     //would get automatically apply to "poolNode" because filterArrayIfInArray function simply filters the original array
+
     //get the parent node that you want to change
     targetNode = filterArrayIfInArray(poolNode, [clickElem], 'id')
 
@@ -542,7 +542,6 @@ function HidePathByLevel(ChildrenArray, poolNode) {
 
     })
 
-    //console.log('immediate children nodes', ImmediateChildrenNodes)
 
 }
 
@@ -571,9 +570,6 @@ function relayCollapsedChildren(clickElem, childrenArray, poolNode) {
 
         }
     })
-
-    //console.log('after transformation', poolNode)
-
 
 }
 
@@ -618,14 +614,17 @@ function checkLevel(poolNode, element) {
     return level
 }
 
-function relayChildren(poolNode, selectedChildren, clickElem) {
+function ShowSharedChildren(poolNode, selectedChildren, clickElem) {
     //if the collapsed child is also a child of other parent,
     //we will update the visibility attribute of the child again to make sure that child still shows up
 
     //level of the clicked element
     var levelClicked = checkLevel(poolNode, clickElem)
 
-    poolNode.forEach(item => {
+    //get the remianing nodes other than the one gets clicked
+    var filteredNode = filterArrayIfNotInArray(poolNode, [clickElem], 'id')
+
+    filteredNode.forEach(item => {
         var childrenArr = item.children;
         var level = item.level
         if (childrenArr !== null && childrenArr.length > 0) {
@@ -643,7 +642,7 @@ function relayChildren(poolNode, selectedChildren, clickElem) {
         }
     })
 
-    return poolNode
+    return filteredNode
 
 
 }
