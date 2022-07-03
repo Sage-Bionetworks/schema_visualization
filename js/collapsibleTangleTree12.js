@@ -355,7 +355,7 @@ function createCollapsibleTree(chart) {
             })
 
             //relay expanded children 
-            //if the children that get expanded are also part of other parents
+            //if the children that get expanded are also part of other parents from a higher level
             relayExpandedChildren(d.id, immediateChildren, NewInteractiveNode)
         }
 
@@ -583,9 +583,9 @@ function relayExpandedChildren(clickElem, childrenArray, poolNode) {
 
         if (childrenArr != null && childrenArr.length > 0) {
             childrenArr.forEach(child => {
-                //if the children that we are collapsing also belong to other parents from higher level
+                //if the children that we are expanding also belong to other parents from higher level
                 if (childrenArray.includes(child) && levelClicked > level) {
-                    // then we want to let those parents know that their grand children have been collapsed
+                    // then we want to let those parents know that their grand children have been expanded
                     item._children = removeElemFromArr(child, childrenArr)
                     // and save it to container 
                     if (item.children == null) {
