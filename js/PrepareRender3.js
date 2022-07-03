@@ -47,8 +47,14 @@ function selectDataset() {
         var tangled_tree_data = parseJSON('files/JSON/HTAN_tangled_tree@2.json');
         var normal_dependencies = parseCSVFiles('files/NormalDependencies/normal_dependencies@1.csv');
         var highlight_dependencies = parseCSVFiles('files/HighlighDepedencies/highlight_dependencies@1.csv');
-
     }
+
+    else if (selectedSchemaOption === "NF Tools Registry") {
+        var tangled_tree_data = parseJSON('files/JSON/nf_tangled_tree.json');
+        var normal_dependencies = parseCSVFiles('files/NormalDependencies/nf_normal_dependencies.csv');
+        var highlight_dependencies = parseCSVFiles('files/HighlighDepedencies/nf_highlight_dependencies.csv');
+    }
+
 
     normal_dependencies.then(data => {
         const normalDependenciesGrouped = GroupDependencies(data);
@@ -78,14 +84,8 @@ function selectDataset() {
             tangled_tree_data.then(tangled_tree_dta => {
                 //get tangle tree layout, normal data, and highlight data
                 var chart_dta = chart(tangled_tree_dta);
-                console.log(chart_dta)
                 var normal_data = chart_dta.nodes.filter(filter_normal_nodes);
-                //var highlight_data = chart_dta.nodes.filter(filter_highlight_nodes);
-
-
-                console.log(normal_data);
-
-
+                var highlight_data = chart_dta.nodes.filter(filter_highlight_nodes);
                 //draw(chart_dta, highlight_data, normal_data);
                 createCollapsibleTree(chart_dta);
             })
