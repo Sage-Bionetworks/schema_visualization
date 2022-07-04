@@ -285,3 +285,80 @@ function relayCollapsedPath(clickElem, poolNode) {
 
 
 }
+
+function collapseDirectChildren(e) {
+    if (e._children == null) {
+        e._children = [];
+    }
+
+    e.children.forEach(elem => {
+        e._children.indexOf(elem) === -1 && e._children.push(elem)
+    })
+
+    e.children = null;
+
+}
+
+
+function ShowSharedChildren(poolNode, selectedChildren, clickElem) {
+    //if the collapsed child is also a child of other parent,
+    //we will update the visibility attribute of the child again to make sure that child still shows up
+
+    //level of the clicked element
+    var levelClicked = checkLevel(poolNode, clickElem)
+
+    //get the remianing nodes other than the one gets clicked
+    var filteredNode = filterArrayIfNotInArray(poolNode, [clickElem], 'id')
+
+    filteredNode.forEach(item => {
+        var childrenArr = item.children;
+        var level = item.level
+        if (childrenArr !== null && childrenArr.length > 0) {
+            selectedChildren.forEach(elem => {
+                //if other parents also share this children
+                //and if other parents have the same level as "clicked" element
+                if ((childrenArr.includes(elem) && level == levelClicked) || (childrenArr.includes(elem) && !childrenArr.includes(clickElem))) {
+                    //for collapsing, set the visibility of that special child to 'true'
+                    //console.log('elem to show', elem)
+                    SetVisibilityChildren([elem], poolNode, true)
+                }
+
+            })
+        }
+    })
+
+    return filteredNode
+
+
+}
+
+
+function relayCollapsedChildren(clickElem, childrenArray, poolNode) {
+    var levelClicked = checkLevel(poolNode, clickElem)
+
+    poolNode.forEach(item => {
+        var childrenArr = item.children; //children array of other parents
+        var level = item.level; //level of other parents
+
+        if (childrenArr instanceof Array && childrenArr.length > 0) {
+            childrenArr.forEach(child => {
+                //if the children that we are collapsing also belong to other parents from higher level
+                if (childrenArray.includes(child) && levelClicked > level) {
+                    // then we want to let those parents know that their grand children have been collapsed
+                    item.children = removeElemFromArr(child, childrenArr)
+                    // and save it to container 
+                    if (item._children == null) {
+                        item._children = []
+                    }
+
+                    item._children.indexOf(child) === -1 && item._children.push(child)
+
+                }
+            })
+
+
+
+        }
+    })
+
+}

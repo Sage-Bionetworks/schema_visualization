@@ -293,57 +293,6 @@ function createCollapsibleTree(chart) {
 
         console.log('bundles', bundles)
 
-        //this part is only create links that have stroke white. 
-        //this helps with styling
-        // flexibleLinkEnter.append('path').merge(link)
-        //     .attr('class', 'link')
-        //     .attr('d', function (b) {
-        //         if (b.bundles && b.bundles.links) {
-        //             let d = b.bundles.links.map(l => `
-        //                                 M${l.xt} ${l.yt}
-        //                                 L${l.xb - l.c1} ${l.yt}
-        //                                 A${l.c1} ${l.c1} 90 0 1 ${l.xb} ${l.yt + l.c1}
-        //                                 L${l.xb} ${l.ys - l.c2}
-        //                                 A${l.c2} ${l.c2} 90 0 0 ${l.xb + l.c2} ${l.ys}
-        //                                 L${l.xs} ${l.ys}`).join("");
-        //             return d
-        //         }
-        //     })
-        //     .attr('stroke', 'white')
-        //     .attr('stroke-width', 5)
-
-        //create actual links
-        // flexibleLinkEnter.append('path').merge(link)
-        //     .attr('class', 'link')
-        //     .attr('d', function (b) {
-        //         console.log(b.id)
-        //         if (b.bundles) {
-        //             if (b.bundles[0]) {
-        //                 //
-        //                 var firstElem = b.bundles[0][0].links
-        //                 //console.log(b.bundles[0]) -- this add links that other parents at the same level have
-        //                 //console.log(b.bundles[1]) -- this add the pure children
-        //                 console.log(b.bundles)
-
-        //                 let d = firstElem.map(l => `
-        //                         M${l.xt} ${l.yt}
-        //                         L${l.xb - l.c1} ${l.yt}
-        //                         A${l.c1} ${l.c1} 90 0 1 ${l.xb} ${l.yt + l.c1}
-        //                         L${l.xb} ${l.ys - l.c2}
-        //                         A${l.c2} ${l.c2} 90 0 0 ${l.xb + l.c2} ${l.ys}
-        //                         L${l.xs} ${l.ys}`).join("");
-        //                 //console.log(d)
-        //                 return d
-        //             }
-
-        //         }
-        //     })
-        //     .attr('stroke', function (b) {
-        //         return color(b.id)
-        //     })
-        //     .attr('stroke-width', 2)
-
-        //var bundleId = [];
         flexibleLinkEnter.append('path').merge(link)
             .attr('class', 'link')
             .attr('d', function (b) {
@@ -383,21 +332,20 @@ function createCollapsibleTree(chart) {
             //children of this node is no longer visible -> set visible = false
             var NewInteractiveNode = SetVisibilityChildren(d.children, InteractivePartNode, false)
 
-
             //handle the link from children to parents
-            // // HidePath(d.id, d.children, NewInteractiveNode);
             HidePathNew(d.id, d.children, notCollapsed, bundles)
 
             //for all the children that will be collapsed, tell them that their children have also been collapsed
             CollapseSubsequentChildren(filteredChildrenArr, NewInteractiveNode)
 
             //tell other parents that their children have also been collapsed
+            //not restrict to higher level parents 
             relayCollapsedChildrenNew(filteredChildrenArr, NewInteractiveNode)
+            //relayCollapsedChildren(d.id, filteredChildrenArr, NewInteractiveNode)
 
-            // // //update visbility attribute of some children 
-            // // //if those children is also under other parents (and those parents have not yet been collapsed) -> set visibility = true
-            // // //this step is not needed when expanding nodes
-            // //ShowSharedChildren(NewInteractiveNode, d.children, d.id)
+            //update visbility attribute of some children 
+            //if those children is also under other parents (and those parents have not yet been collapsed) -> set visibility = true
+            //this step is not needed when expanding nodes
             showSharedChildrenNew(notCollapsed, NewInteractiveNode)
 
             if (d._children == null) {
@@ -416,23 +364,18 @@ function createCollapsibleTree(chart) {
         } else {
             var childrenSelected = d.children;
 
-            //get immediate children of a given node
-            //var immediateChildren = GetImmediateChildren(InteractivePartNode, d.id, d.level)
             //get only "direct" children (these children here are directly related to the clicked node)
+            //note: "direct" children could be across multiple levels
+            //for example, for "CellLine" in NF, the direct children are: "Resource" and "Mutation"
             var directChildren = FilterChildrenIfDirectParent(d.id, d._children, InteractivePartNode)
 
-
             // add children nodes back
-            //var NewInteractiveNode = SetVisibilityChildren(immediateChildren, InteractivePartNode, true)
             var NewInteractiveNode = SetVisibilityChildren(directChildren, InteractivePartNode, true)
 
             //add links back from parents to children 
-            //addPath(d.id, NewInteractiveNode);
-            //HidePathByLevel(d._children, NewInteractiveNode)
             addPathNew(d.id, bundles)
 
-            //only keep immediate children in d.children
-            //d.children = immediateChildren;
+            //only keep direct children in d.children
             d.children = directChildren
 
             // still hiding children that are not immediate children
@@ -441,9 +384,10 @@ function createCollapsibleTree(chart) {
             })
 
             //relay expanded children 
-            //if the children that get expanded are also part of other parents
-            //relayExpandedChildren(d.id, immediateChildren, NewInteractiveNode)
-            relayExpandedChildrenNew(directChildren, NewInteractiveNode)
+            // tell parents from higher level that their grand children have been expanded. 
+            // without this step, when the node from higher level collapse, it would ignore collapsing the grand children 
+            // example: collapse "Biospecimen" -> expand "ScRNA-seqLevel1" -> collapse "Biospecimen" again
+            relayExpandedChildren(d.id, directChildren, NewInteractiveNode)
         }
 
 
@@ -489,21 +433,6 @@ function SetVisibilityChildren(childrenArray, poolNode, visibility) {
 
 }
 
-// function GetImmediateChildren(poolNode, node, nodeLevel) {
-//     var immediateChildren = [];
-
-//     poolNode.forEach(elem => {
-//         var level = elem.level
-//         var parentArray = elem.parents
-//         let parents = parentArray.map(a => a.id)
-
-//         if (parents.includes(node) && (level - nodeLevel == 1)) {
-//             immediateChildren.indexOf(elem) === -1 && immediateChildren.push(elem.id)
-//         }
-//     })
-
-//     return immediateChildren
-// }
 
 function removeArrFromArr(baseArr, toRemove) {
     //////
@@ -516,41 +445,7 @@ function removeArrFromArr(baseArr, toRemove) {
     return baseArr
 }
 
-// function checkIfOwnChildren(childrenNode, childrenArray) {
-//     var toRemove = [];
-//     childrenNode.forEach(elem => {
-//         //children array of children node 
-//         var children = elem['children']
-//         //if children here overlaps with childrenArray
-//         //then it means that this element contains other children
-//         const contains = children.some(element => {
-//             return childrenArray.indexOf(element)
-//         })
 
-//         if (contains) {
-//             toRemove.indexOf(elem.id) === -1 && toRemove.push(elem.id)
-//         }
-//     })
-
-//     return toRemove
-// }
-
-function collapseDirectChildren(e) {
-    if (e._children == null) {
-        e._children = [];
-    }
-
-    e.children.forEach(elem => {
-        e._children.indexOf(elem) === -1 && e._children.push(elem)
-    })
-
-    e.children = null;
-
-}
-
-function expandNode(e) {
-    //if the node is part of ""
-}
 
 function checkSharedChildren(childrenArray, clickElem, poolNode) {
     /*this function finds out the children that have not yet been collapsed by other direct parents*/
@@ -571,13 +466,6 @@ function checkSharedChildren(childrenArray, clickElem, poolNode) {
         //ignore the current node that gets clicked
         var otherParents = removeArrFromArr(parents, clickElem)
 
-        //if there's also another parent that will get temporarily collapsed, we ignore that as well
-        // if (temporaryCollapsible) {
-        //     console.log('temporary collapsible', temporaryCollapsible)
-        //     var otherParents = removeArrFromArr(parents, temporaryCollapsible)
-        //     console.log('other parents in this case', otherParents)
-        // }
-
         //nodes of other parents
         var otherParentsNodes = filterArrayIfInArray(poolNode, otherParents, 'id')
 
@@ -594,11 +482,6 @@ function checkSharedChildren(childrenArray, clickElem, poolNode) {
             if (children && children.includes(e.id)) {
                 NotCollapsed.indexOf(e.id) === -1 && NotCollapsed.push(e.id)
             }
-            // childrenArray.forEach(child => {
-            //     if (children && children.includes(child)) {
-            //         NotCollapsed.indexOf(child) === -1 && NotCollapsed.push(child)
-            //     }
-            // })
         })
 
         //if a node is going to get collapsed in this round, save it in a different bucket
@@ -609,91 +492,7 @@ function checkSharedChildren(childrenArray, clickElem, poolNode) {
     })
 
     console.log('not collapsed', NotCollapsed)
-    console.log('otherparentsnode', childrenNode)
     return NotCollapsed
-
-
-
-
-
-
-
-    // //get id of all the nodes
-    // var allNodes = poolNode.map(elem => elem.id)
-
-    // //ignore the node that is being clicked
-    // var filtered = removeArrFromArr(allNodes, clickElem)
-
-    // //also ignore the child that owns other children 
-    // //for example, when clicking on "CellLine", "Resource" also owns "Biobank" and "ResourceApplication"
-    // //We want to ignore "Resource" as a "shared" parent
-    // var childrenNode = filterArrayIfInArray(poolNode, childrenArray, 'id')
-    // var toRemove = checkIfOwnChildren(childrenNode, childrenArray)
-    // var filteredNew = removeArrFromArr(filtered, toRemove)
-
-    // //now, begin to look at these nodes and see if they share children with the node being clicked
-    // var filteredNode = filterArrayIfInArray(poolNode, filteredNew, 'id')
-    // filteredNode.forEach(elem => {
-    //     //children array of children node 
-    //     var children = elem['children']
-
-    //     //check which children also have other parents
-    //     childrenArray.forEach(child => {but
-    //         if (children && children.includes(child)) {
-    //             console.log('elem that owns the children', elem)
-    //             console.log('child', child)
-    //             NotCollapsed.indexOf(child) === -1 && NotCollapsed.push(child)
-    //         }
-    //     })
-    // })
-
-    // console.log('not collapsed list', NotCollapsed)
-
-
-    // return NotCollapsed
-
-
-
-
-    // console.log('pool node in checksharedChildren', poolNode)
-
-    // var childrenNode = filterArrayIfInArray(poolNode, childrenArray, 'id')
-
-    // //check if any children are also owned by other parents 
-    // //if so, and if other parents have not yet collapsed those, then we dont want to collapse the children of these children
-    // var NotCollapsed = [];
-    // childrenNode.forEach(e => {
-    //     //get a list of parents
-    //     var parents = getLstParents(e)
-
-    //     //ignore current parent
-    //     var filteredParents = removeArrFromArr(parents, clickElem)
-    //     console.log('more original list', filteredParents)
-
-    //     //if current children also owns other current children, ignore those
-    //     var filteredParentNew = filteredParents.filter(item => !childrenArray.includes(item))
-    //     console.log('children node', e)
-    //     console.log('filteredParents', filteredParentNew)
-
-    //     //get parent nodes 
-    //     var parentNode = filterArrayIfInArray(poolNode, filteredParentNew, 'id')
-
-    //     //console.log('parent node', parentNode)
-
-    //     // see if any children nodes are also part of other parents
-    //     parentNode.forEach(elem => {
-    //         var childrenContainer = elem.children
-    //         if (childrenContainer && childrenContainer.includes(e.id)) {
-    //             //save it if it doesn't already exists
-    //             //console.log('who is the parent that owns you', elem)
-    //             NotCollapsed.indexOf(e.id) === -1 && NotCollapsed.push(e.id)
-    //         }
-    //     })
-    // })
-
-    // //console.log('not collapsed', NotCollapsed)
-
-    // return NotCollapsed
 
 }
 
@@ -756,47 +555,6 @@ function HidePathNew(clickElem, childrenArray, notCollapsed, bundles) {
     })
 }
 
-function HidePath(clickElem, childrenArray, poolNode) {
-    //even though "targetNode" appears to be a segment of the "poolNode", any changes that you applied to "targetNode"
-    //would get automatically apply to "poolNode" because filterArrayIfInArray function simply filters the original array
-
-    //get the parent node that you want to change
-    targetNode = filterArrayIfInArray(poolNode, [clickElem], 'id')
-
-    //get the link element of the target node
-    var bundles = targetNode[0]['bundles']
-
-    //hide links
-    if (bundles) {
-        bundles.forEach(bundle => {
-            var linkArray = bundle[0]['links']
-            //save the links to _link container for future use
-            if (bundle[0]['_links'] == null) {
-                bundle[0]['_links'] = linkArray
-            } else {
-                //add new element to _links if it doesn't exit
-                linkArray.forEach(elem => {
-                    bundle[0]['_links'].indexOf(elem) === -1 && bundle[0]['_links'].push(elem)
-                })
-            }
-
-            //remove the parent to children paths from link array
-            //for children that have multiple parents, make sure not touching paths that lead to other parents while collapsing
-            var filteredLinkArray = linkArray.filter(i => ![clickElem].includes(i['target']['id']) && childrenArray.includes(i['source']['id']))
-
-            //if there's a child that also belongs to other parents 
-            if (filteredLinkArray != null && filteredLinkArray.length > 0) {
-                //make sure that child is still in the 'links' bucket
-                bundle[0]['links'] = filteredLinkArray
-            } else {
-                //otherwise, we could just set 'links' to an empty list since we have backed up the links in _links
-                bundle[0]['links'] = [];
-            }
-
-        })
-    }
-
-}
 
 function addPathNew(clickElem, bundles) {
     bundles.forEach(bundle => {
@@ -817,32 +575,6 @@ function addPathNew(clickElem, bundles) {
     })
 }
 
-function addPath(clickElem, poolNode) {
-    //get the parent node that you want to change
-    //similar to HidePath function, changes will also get applied 
-    targetNode = filterArrayIfInArray(poolNode, [clickElem], 'id')
-
-    var bundles = targetNode[0]['bundles']
-    if (bundles) {
-        bundles.forEach(bundle => {
-            if (bundle[0]['links'] == null) {
-                bundle[0]['links'] = [];
-            }
-
-            //add new element to links if it doesn't exist
-            //only add links specific to the parent that gets clicked. 
-            //make sure not touching the links between children and other parents
-            bundle[0]['_links'].forEach(elem => {
-                bundle[0]['links'].indexOf(elem) === -1 && [clickElem].includes(elem['target']['id']) && bundle[0]['links'].push(elem)
-            })
-
-        })
-
-
-    }
-
-
-}
 
 function getLstParents(node) {
     var parents = node['parents'].map(function (elem) { return elem.id })
@@ -867,43 +599,6 @@ function FilterChildrenIfDirectParent(ClickElem, ChildrenArray, poolNode) {
 
 }
 
-
-// function HidePathByLevel(ChildrenArray, poolNode) {
-//     //the 'Add Path' function adds the paths from the node being clicked to all its immediate children
-//     //To be able to expand "by level", we also have to hide the paths that lead to further levels
-//     var ImmediateChildrenNodes = filterArrayIfInArray(poolNode, ChildrenArray, 'id')
-
-//     //console.log('immediate children nodes before', ImmediateChildrenNodes)
-
-//     //get the link element of the target node
-//     ImmediateChildrenNodes.forEach(elem => {
-//         var bundles = elem['bundles']
-
-//         //hide links
-//         if (bundles) {
-//             bundles.forEach(bundle => {
-//                 var linkArray = bundle[0]['links']
-//                 //save the links to _link container for future use
-//                 if (bundle[0]['_links'] == null) {
-//                     bundle[0]['_links'] = linkArray
-//                 } else {
-//                     //add new element to _links if it doesn't exit
-//                     linkArray.forEach(elem => {
-//                         bundle[0]['_links'].indexOf(elem) === -1 && bundle[0]['_links'].push(elem)
-//                     })
-//                 }
-
-//                 bundle[0]['links'] = [];
-
-//             })
-
-
-//         }
-
-//     })
-
-
-// }
 
 function relayCollapsedChildrenNew(childrenArray, poolNode) {
     poolNode.forEach(item => {
@@ -930,65 +625,6 @@ function relayCollapsedChildrenNew(childrenArray, poolNode) {
 
     console.log('pool node after replay collapsed', poolNode)
 }
-
-
-function relayExpandedChildrenNew(childrenArray, poolNode) {
-    poolNode.forEach(item => {
-        var childrenArr = item._children; //children array of other parents
-        var level = item.level; //level of other parents
-
-        if (childrenArr != null && childrenArr.length > 0) {
-            childrenArr.forEach(child => {
-                //if the children that we are expanding also belong to other parents from higher level
-                if (childrenArray.includes(child)) {
-                    // then we want to let those parents know that their grand children have been expanded
-                    item._children = removeElemFromArr(child, childrenArr)
-                    // and save it to container 
-                    if (item.children == null) {
-                        item.children = []
-                    }
-
-                    item.children.indexOf(child) === -1 && item.children.push(child)
-
-                }
-            })
-
-        }
-    })
-
-    console.log('pool node after replay expanded', poolNode)
-}
-
-function relayCollapsedChildren(clickElem, childrenArray, poolNode) {
-    var levelClicked = checkLevel(poolNode, clickElem)
-
-    poolNode.forEach(item => {
-        var childrenArr = item.children; //children array of other parents
-        var level = item.level; //level of other parents
-
-        if (childrenArr instanceof Array && childrenArr.length > 0) {
-            childrenArr.forEach(child => {
-                //if the children that we are collapsing also belong to other parents from higher level
-                if (childrenArray.includes(child) && levelClicked > level) {
-                    // then we want to let those parents know that their grand children have been collapsed
-                    item.children = removeElemFromArr(child, childrenArr)
-                    // and save it to container 
-                    if (item._children == null) {
-                        item._children = []
-                    }
-
-                    item._children.indexOf(child) === -1 && item._children.push(child)
-
-                }
-            })
-
-
-
-        }
-    })
-
-}
-
 
 function relayExpandedChildren(clickElem, childrenArray, poolNode) {
     var levelClicked = checkLevel(poolNode, clickElem)
@@ -1036,218 +672,3 @@ function checkLevel(poolNode, element) {
 
     return level
 }
-
-
-function ShowSharedChildren(poolNode, selectedChildren, clickElem) {
-    //if the collapsed child is also a child of other parent,
-    //we will update the visibility attribute of the child again to make sure that child still shows up
-
-    //level of the clicked element
-    var levelClicked = checkLevel(poolNode, clickElem)
-
-    //get the remianing nodes other than the one gets clicked
-    var filteredNode = filterArrayIfNotInArray(poolNode, [clickElem], 'id')
-
-    filteredNode.forEach(item => {
-        var childrenArr = item.children;
-        var level = item.level
-        if (childrenArr !== null && childrenArr.length > 0) {
-            selectedChildren.forEach(elem => {
-                //if other parents also share this children
-                //and if other parents have the same level as "clicked" element
-                if ((childrenArr.includes(elem) && level == levelClicked) || (childrenArr.includes(elem) && !childrenArr.includes(clickElem))) {
-                    //for collapsing, set the visibility of that special child to 'true'
-                    //console.log('elem to show', elem)
-                    SetVisibilityChildren([elem], poolNode, true)
-                }
-
-            })
-        }
-    })
-
-    return filteredNode
-
-
-}
-
-
-
-
-// function click(d) {
-//     //the if statement controls collapsing node, and the else statement controls expanding nodes. 
-//     if (d.children && d.children.length > 0) {
-//         var childrenSelected = d.children;
-
-//         //children of this node is no longer visible -> set visible = false
-//         var NewInteractiveNode = SetVisibilityChildren(d.children, InteractivePartNode, false)
-
-//         //handle the link from children to parents
-//         HidePath(d.id, d.children, NewInteractiveNode);
-
-//         d._children = d.children;
-//         d.children = null;
-
-//         //update visbility attribute of some children 
-//         //if those children is also under other parents (and those parents have not yet been collapsed) -> set visibility = true
-//         //this step is not needed when expanding nodes
-//         relayChildren(InteractivePartNode, childrenSelected, true)
-//         console.log('New interactive node', NewInteractiveNode)
-
-
-//     } else {
-//         var childrenSelected = d.children;
-
-//         //set visibility to true
-//         var NewInteractiveNode = SetVisibilityChildren(d._children, InteractivePartNode, true)
-
-//         //add links back from parents to children 
-//         addPath(d.id, d._children, NewInteractiveNode);
-
-//         d.children = d._children;
-//         d._children = null;
-
-//         console.log('triggering interactive node', NewInteractiveNode)
-//     }
-
-
-//     //keep children based on visibility
-//     // we want to keep the nodes as long as visible is not false
-//     // if visible = true or a node doesn't have attribute 'visible', we would want to keep them
-//     var ChangeableNode = NewInteractiveNode.filter(function (obj) {
-//         return obj.visible != false;
-//     });
-
-//     update(ChangeableNode);
-
-    // //     //////////Control exiting node and adding new node
-    // var flexibleNode = svg.select("g").selectAll("path").data(ChangeableNode);
-    // console.log('my changeable node', ChangeableNode)
-    // var flexibleNodeEnter = flexibleNode.enter()
-    // flexibleNodeEnter.append('path').merge(flexibleNode)
-    //     .attr('class', 'selectable node')
-    //     .attr("transform", function (d) {
-    //         return "translate(0,0)"
-    //     })
-    //     .attr('stroke', 'orange')
-    //     .attr('stroke-width', 8)
-    //     .attr('d', function (d, i) {
-    //         return `M${d.x} ${d.y - d.height / 2} L${d.x} ${d.y + d.height / 2}`
-    //     }).on('click', click);
-
-    // console.log('flexible node here here here', flexibleNode)
-
-    // // const nodeExit = flexibleNode.exit().transition()
-    // //     .attr("transform", d => `translate(${d.y},${d.x})`)
-    // //     .duration(250).remove();
-
-    // //node transition
-    // // const nodeUpdate = flexibleNodeEnter.merge(flexibleNode);
-
-    // // nodeUpdate.transition()
-    // //     .duration(250)
-    // //     .attr('d', function (d) {
-    // //         return `M${d.x} ${d.y - d.height / 2} L${d.x} ${d.y + d.height / 2}`
-    // //     })
-
-
-    // // flexibleNodeEnter.transition()
-    // //     .duration(250)
-    // //     .attr("transform", function (d) {
-    // //         return ('translate(' + d.y + ',' + d.x + ')')
-    // //     })
-    // // var flexibleNodeUpdate = flexibleNodeEnter.merge(flexibleNode);
-
-    // // flexibleNodeUpdate.transition()
-    // //     .duration(250)
-    // //     .attr("transform", function (d) {
-    // //         return "translate(" + d.y + "," + d.x + ")";
-    // //     });
-
-
-    // //control text
-    // var flexibleText = svg.selectAll('text').data(ChangeableNode);
-    // var flexibletTextEnter = flexibleText.enter();
-
-    // flexibletTextEnter.append('text').merge(flexibleText)
-    //     .attr('style', 'pointer-events: none')
-    //     .attr('x', function (d) { return (d.x + 5) })
-    //     .attr('y', function (d) { return (d.y - d.height / 2 - 4) })
-    //     .text(function (d) { return d.id });
-
-    // // const nodeExit = flexibleNode.exit().transition()
-    // //     .attr("transform", d => `translate(${d.y},${d.x})`)
-    // //     .duration(250).remove();
-
-    // // flexibleText.exit()
-    // //     .transition().duration(250)
-    // //     .attr('d', function (d) {
-    // //         return `M${d.x} ${d.y - d.height / 2} L${d.x} ${d.y + d.height / 2}`
-    // //     }).remove();
-
-    // flexibleNode.exit().remove();
-    // flexibleText.exit().remove();
-
-    // //control links
-    // var link = svg.select("g").selectAll("path.link").data(ChangeableNode);
-    // var flexibleLinkEnter = link.enter();
-
-    // flexibleLinkEnter.insert('path', 'g').merge(link)
-    //     .attr('class', 'link')
-    //     .attr('d', function (b) {
-    //         if (b.bundles && b.bundles.links) {
-    //             let d = b.bundles.links.map(l => `
-    //                             M${l.xt} ${l.yt}
-    //                             L${l.xb - l.c1} ${l.yt}
-    //                             A${l.c1} ${l.c1} 90 0 1 ${l.xb} ${l.yt + l.c1}
-    //                             L${l.xb} ${l.ys - l.c2}
-    //                             A${l.c2} ${l.c2} 90 0 0 ${l.xb + l.c2} ${l.ys}
-    //                             L${l.xs} ${l.ys}`).join("");
-    //             return d
-    //         }
-    //     })
-    //     .attr('stroke', 'white')
-    //     .attr('stroke-width', 5)
-
-
-    // flexibleLinkEnter.insert('path', 'g').merge(link)
-    //     .attr('class', 'link')
-    //     .attr('d', function (b) {
-    //         if (b.bundles) {
-    //             if (b.bundles[0]) {
-    //                 var firstElem = b.bundles[0][0].links
-
-    //                 let d = firstElem.map(l => `
-    //                     M${l.xt} ${l.yt}
-    //                     L${l.xb - l.c1} ${l.yt}
-    //                     A${l.c1} ${l.c1} 90 0 1 ${l.xb} ${l.yt + l.c1}
-    //                     L${l.xb} ${l.ys - l.c2}
-    //                     A${l.c2} ${l.c2} 90 0 0 ${l.xb + l.c2} ${l.ys}
-    //                     L${l.xs} ${l.ys}`).join("");
-    //                 return d
-    //             }
-
-    //         }
-    //     })
-    //     .attr('stroke', function (b) {
-    //         return color(b.id)
-    //     })
-    //     .attr('stroke-width', 2)
-
-
-    // //flexibleLinkEnter.exit().transition().duration(250).remove();
-    // flexibleLinkEnter.exit().remove();
-
-    // console.log('flexibleLinkEnter', flexibleLinkEnter)
-
-    // // Store the old positions for transition.
-    // ChangeableNode.forEach(function (d) {
-    //     d.x0 = d.x;
-    //     d.y0 = d.y;
-    // });
-
-    // //}
-
-
-
-//}
-
