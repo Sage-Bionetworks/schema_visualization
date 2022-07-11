@@ -84,86 +84,86 @@ function preprocessChart(chart) {
     //console.log(chart)
 
     ///////////////////////NF
-    // chart['nodes'].forEach(element => {
-    //     if (element['id'] == "Donor") {
-    //         element['children'] = ['CellLine', 'AnimalModel', 'Resource', 'Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Mutation', 'Development']
-    //     }
-    //     else if (element['id'] == "CellLine") {
-    //         element['children'] = ['Resource', 'Mutation', 'Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Mutation', 'Development']
-    //     }
-    //     else if (element['id'] == "AnimalModel") {
-    //         element['children'] = ['Resource', 'Mutation', 'Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Mutation', 'Development']
-    //     }
-    //     else if (element['id'] == "GeneticReagent") {
-    //         element['children'] = ['Resource', 'Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Mutation', 'Development']
-    //     }
-    //     else if (element['id'] == "Antibody") {
-    //         element['children'] = ['Resource', 'Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Mutation', 'Development']
-    //     }
-    //     else if (element['id'] == "Resource") {
-    //         element['children'] = ['Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Mutation', 'Development']
-    //     }
-    //     else if (element['id'] == "Vendor") {
-    //         element['children'] = ['VendorItem']
-    //     }
-    //     else if (element['id'] == "MutationDetails") {
-    //         element['children'] = ['Mutation']
-    //     }
-    //     else if (element['id'] == "Investigator") {
-    //         element['children'] = ['Observation', 'Development']
-    //     }
-    //     else if (element['id'] == "Publication") {
-    //         element['children'] = ['Usage', 'Development']
-    //     }
-    //     else if (element['id'] == "Funder") {
-    //         element['children'] = ['Development']
-    //     }
-    //     else {
-    //         element['children'] = []
-    //     }
-
-    // })
-
-
-    ////////////////////////HTAN
     chart['nodes'].forEach(element => {
-        if (element['id'] == 'Biospecimen') {
-            element['children'] = ['ScRNA-seqLevel1', 'BulkRNA-seqLevel1',
-                'BulkWESLevel1', 'OtherAssay', 'ScATAC-seqLevel1', 'ImagingLevel2',
-                'ScRNA-seqLevel2', 'BulkRNA-seqLevel2', 'BulkWESLevel2',
-                'ScRNA-seqLevel3', 'BulkRNA-seqLevel3', 'BulkWESLevel3', 'ScRNA-seqLevel4']
+        if (element['id'] == "Donor") {
+            element['children'] = ['CellLine', 'AnimalModel', 'Resource', 'Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Mutation', 'Development']
         }
-        else if (element['id'] == 'ImagingLevel2Channels') {
-            element['children'] = ['ImagingLevel2']
-        } else if (element['id'] == 'ScRNA-seqLevel1') {
-            element['children'] = ['ScRNA-seqLevel2', 'ScRNA-seqLevel3', 'ScRNA-seqLevel4']
-        } else if (element['id'] == 'BulkRNA-seqLevel1') {
-            element['children'] = ['BulkRNA-seqLevel2', 'BulkRNA-seqLevel3']
-        } else if (element['id'] == 'BulkRNA-seqLevel2') {
-            element['children'] = ['BulkRNA-seqLevel3']
+        else if (element['id'] == "CellLine") {
+            element['children'] = ['Resource', 'Mutation', 'Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Mutation', 'Development']
         }
-
-        else if (element['id'] == 'BulkWESLevel1') {
-            element['children'] = ['BulkWESLevel2', 'BulkWESLevel3']
+        else if (element['id'] == "AnimalModel") {
+            element['children'] = ['Resource', 'Mutation', 'Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Mutation', 'Development']
         }
-        else if (element['id'] == 'BulkWESLevel2') {
-            element['children'] = ['BulkWESLevel3']
-
+        else if (element['id'] == "GeneticReagent") {
+            element['children'] = ['Resource', 'Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Mutation', 'Development']
         }
-        else if (element['id'] == 'ScRNA-seqLevel2') {
-            element['children'] = ['ScRNA-seqLevel3', 'ScRNA-seqLevel4']
+        else if (element['id'] == "Antibody") {
+            element['children'] = ['Resource', 'Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Mutation', 'Development']
         }
-        else if (element['id'] == 'ScRNA-seqLevel3') {
-            element['children'] = ['ScRNA-seqLevel4']
+        else if (element['id'] == "Resource") {
+            element['children'] = ['Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Mutation', 'Development']
+        }
+        else if (element['id'] == "Vendor") {
+            element['children'] = ['VendorItem']
+        }
+        else if (element['id'] == "MutationDetails") {
+            element['children'] = ['Mutation']
+        }
+        else if (element['id'] == "Investigator") {
+            element['children'] = ['Observation', 'Development']
+        }
+        else if (element['id'] == "Publication") {
+            element['children'] = ['Usage', 'Development']
+        }
+        else if (element['id'] == "Funder") {
+            element['children'] = ['Development']
         }
         else {
             element['children'] = []
         }
 
     })
-    return chart
 
-    //return chart
+
+    ////////////////////////HTAN
+    // chart['nodes'].forEach(element => {
+    //     if (element['id'] == 'Biospecimen') {
+    //         element['children'] = ['ScRNA-seqLevel1', 'BulkRNA-seqLevel1',
+    //             'BulkWESLevel1', 'OtherAssay', 'ScATAC-seqLevel1', 'ImagingLevel2',
+    //             'ScRNA-seqLevel2', 'BulkRNA-seqLevel2', 'BulkWESLevel2',
+    //             'ScRNA-seqLevel3', 'BulkRNA-seqLevel3', 'BulkWESLevel3', 'ScRNA-seqLevel4']
+    //     }
+    //     else if (element['id'] == 'ImagingLevel2Channels') {
+    //         element['children'] = ['ImagingLevel2']
+    //     } else if (element['id'] == 'ScRNA-seqLevel1') {
+    //         element['children'] = ['ScRNA-seqLevel2', 'ScRNA-seqLevel3', 'ScRNA-seqLevel4']
+    //     } else if (element['id'] == 'BulkRNA-seqLevel1') {
+    //         element['children'] = ['BulkRNA-seqLevel2', 'BulkRNA-seqLevel3']
+    //     } else if (element['id'] == 'BulkRNA-seqLevel2') {
+    //         element['children'] = ['BulkRNA-seqLevel3']
+    //     }
+
+    //     else if (element['id'] == 'BulkWESLevel1') {
+    //         element['children'] = ['BulkWESLevel2', 'BulkWESLevel3']
+    //     }
+    //     else if (element['id'] == 'BulkWESLevel2') {
+    //         element['children'] = ['BulkWESLevel3']
+
+    //     }
+    //     else if (element['id'] == 'ScRNA-seqLevel2') {
+    //         element['children'] = ['ScRNA-seqLevel3', 'ScRNA-seqLevel4']
+    //     }
+    //     else if (element['id'] == 'ScRNA-seqLevel3') {
+    //         element['children'] = ['ScRNA-seqLevel4']
+    //     }
+    //     else {
+    //         element['children'] = []
+    //     }
+
+    // })
+    // return chart
+
+    return chart
 }
 
 function removeElemFromArr(item, array) {
@@ -223,6 +223,15 @@ function createCollapsibleTree(chart) {
 
     //by default, all the children have been expanded. 
     update(InteractivePartNode, bundles);
+
+    //for styling
+    InteractivePartNode.map(n => {
+        d3.select('#myViz').append('path')
+            .attr('class', 'node')
+            .attr('stroke', 'white')
+            .attr('stroke-width', 3)
+            .attr('d', `M${n.x} ${n.y - n.height / 2} L${n.x} ${n.y + n.height / 2}`);
+    })
 
     function update(InteractivePartNode, bundles) {
         ///////////////do not touch the following section
@@ -318,7 +327,7 @@ function createCollapsibleTree(chart) {
 
     function click(d) {
         //the if statement controls collapsing node, and the else statement controls expanding nodes. 
-        if (d.children && d.children.length > 0) {
+        if (d.children && d.children.length > 0 && checkIfDirectLinkExist(d, InteractivePartNode, bundles)) {
             console.log('triggering if statement')
             console.log('begin if statement', InteractivePartNode)
 
@@ -406,6 +415,69 @@ function createCollapsibleTree(chart) {
 
 
 
+
+}
+
+function checkIfDirectLinkExist(node, InteractivePartNode, bundles) {
+    //this function is for figuring out if there's a direct link between the node being clicked and all its direct children
+    //if such links do not exist, we would still want to expand the node instead of collapse
+    //this function was created because we saw a problem with NF
+    //example: after collapse on "CellLine" and also "Resource", if we expand on "Resource" and then click on "CellLine" again, 
+    //the code would think that we want to collapse "CellLine". This shouldn't be the case since there's no link between "CellLine"
+    //and "Resource". 
+
+    var toCollapse = true
+
+    //concat array function
+    //this also works for combining an array and a null value
+    const concatArr = (...arrays) => [].concat(...arrays.filter(Array.isArray));
+
+    //get all children
+    var allChildren = concatArr(node.children, node._children)
+    //figure out direct children
+    var childrenNode = filterArrayIfInArray(InteractivePartNode, allChildren, 'id')
+    var directChildren = [];
+    childrenNode.forEach(child => {
+        var parents = getLstParents(child)
+        if (parents.includes(node.id)) {
+            directChildren.push(child.id) && directChildren.indexOf(child.id) === -1
+        }
+
+    })
+
+    console.log('direct children', directChildren)
+
+    var SavedLinks = [];
+
+    //looping through bundles
+    bundles.forEach(bundle => {
+        var parents = getLstParents(bundle)
+
+        //if this node's immediate parent is the node that is being clicked
+        if (parents.includes(node.id)) {
+            var linkArrContainer = bundle["_links"]
+
+            //if the link between the node being clicked and its direct children are hidden
+            if (linkArrContainer) {
+
+                linkArrContainer.forEach(elem => {
+                    if (directChildren.includes(elem.source.id) && node['id'] == elem.target.id) {
+                        SavedLinks.push(elem)
+                    }
+                })
+            }
+
+        }
+    })
+
+    console.log('this node is being clicked', node)
+    console.log('the link exist', SavedLinks)
+
+    if (SavedLinks.length > 0) {
+        toCollapse = false
+    }
+
+    return toCollapse
 
 }
 
