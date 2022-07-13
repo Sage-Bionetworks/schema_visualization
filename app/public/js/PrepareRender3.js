@@ -3,22 +3,7 @@ function selectSchema() {
     var selectedSchemaOption = document.getElementById("schema").value;
 
     if (selectedSchemaOption == "HTAN" || selectedSchemaOption == "HTAN RequiresDependency" || selectedSchemaOption == "HTAN Component RequiresDependency") {
-        //var merged_data_2 = parseCSVFiles('files/merged@20.vis_data.csv')
-        const url = "http://localhost:8000/visualize/attributes?schema=HTAN"
-
-        // const getRequestWithFetch = () => {
-        //     fetch(url).then(async (response) => {
-        //         const data = await (response.text())
-        //         console.log(response)
-
-        //         return data
-        //     })
-        // }
-
-        // var merged_data_2 = getRequestWithFetch();
-
-        // var merged_data_2 = fetchCSVFiles(url)
-
+        var url = "http://localhost:8000/visualize/attributes?schema=HTAN"
 
 
     } else if (selectedSchemaOption == "NF Tools Registry") {
@@ -27,8 +12,15 @@ function selectSchema() {
         var merged_data_2 = parseCSVFiles('files/ampad_merged@3.vis_data.csv')
     }
 
-    //get all_attribute_info
-    merged_data_2.then(data => {
+
+
+    // async function getRequestedCSV(url) {
+    //     let data = await fetch(url).then(response => response.json()).then(data => { return data })
+    //     return data
+    // }
+
+
+    getRequestedCSV(url).then(data => {
         var merged_data = data
 
         var all_attribute_info = d3.group(merged_data, (d) => d.Component)
