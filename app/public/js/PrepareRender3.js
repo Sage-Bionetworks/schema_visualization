@@ -5,20 +5,10 @@ function selectSchema() {
     if (selectedSchemaOption == "HTAN" || selectedSchemaOption == "HTAN RequiresDependency" || selectedSchemaOption == "HTAN Component RequiresDependency") {
         var url = "http://localhost:8000/visualize/attributes?schema=HTAN"
 
-
     } else if (selectedSchemaOption == "NF Tools Registry") {
-        var merged_data_2 = parseCSVFiles('files/NF_merged.vis_data.csv')
-    } else if (selectedSchemaOption == "AmpAD" || selectedSchemaOption == "AmpAD view Dependencies") {
-        var merged_data_2 = parseCSVFiles('files/ampad_merged@3.vis_data.csv')
+        // var merged_data_2 = parseCSVFiles('files/NF_merged.vis_data.csv')
+        var url = "http://localhost:8000/visualize/attributes?schema=NF"
     }
-
-
-
-    // async function getRequestedCSV(url) {
-    //     let data = await fetch(url).then(response => response.json()).then(data => { return data })
-    //     return data
-    // }
-
 
     getRequestedCSV(url).then(data => {
         var merged_data = data
@@ -52,53 +42,59 @@ function selectDataset() {
     console.log(selectedDatasetOption);
 
     if (selectedSchemaOption === "HTAN") {
-        var tangled_tree_data = parseJSON('files/JSON/HTAN_tangled_tree@2.json');
+        var url = "http://localhost:8000/visualize/tangled_tree/layers?schema=HTAN"
+        //var tangled_tree_data = parseJSON('files/JSON/HTAN_tangled_tree@2.json');
         var normal_dependencies = parseCSVFiles('files/NormalDependencies/normal_dependencies@1.csv');
         var highlight_dependencies = parseCSVFiles('files/HighlighDepedencies/highlight_dependencies@1.csv');
     }
 
     else if (selectedSchemaOption === "NF Tools Registry") {
-        var tangled_tree_data = parseJSON('files/JSON/nf_tangled_tree.json');
+        // var tangled_tree_data = parseJSON('files/JSON/nf_tangled_tree.json');
+        // tangled_tree_data.then(data => {
+        //     console.log('correct format', data)
+        // })
+        var url = "http://localhost:8000/visualize/tangled_tree/layers?schema=NF"
         var normal_dependencies = parseCSVFiles('files/NormalDependencies/nf_normal_dependencies.csv');
         var highlight_dependencies = parseCSVFiles('files/HighlighDepedencies/nf_highlight_dependencies.csv');
     }
 
+    var tangled_tree_data_arr = [];
 
-    normal_dependencies.then(data => {
-        const normalDependenciesGrouped = GroupDependencies(data);
-        highlight_dependencies.then(data => {
-            const highlightDependenciesGrouped = GroupDependencies(data);
 
-            //functions for processing highlight and normal data
-            function normaltext_to_load(normal_dependencies_grouped) {
-                return normal_dependencies_grouped.get(selectedDatasetOption);
-            }
+    getRequestedJSON(url).then(tangled_tree_data => {
+        //var tangled_tree_data_obj = JSON.parse(JSON.stringify(tangled_tree_data));
+        //var tangled_tree_data_str = tangled_tree_data.replace(/\\/g, '');
+        //console.log('tangled_tree_data_str', eval("(" + tangled_tree_data_str + ")"))
+        console.log('parsed json', $.parseJSON(tangled_tree_data))
+        var parsed_tangled_tree_data_arr1 = $.parseJSON(tangled_tree_data)
+        var count = 0
 
-            function highlights_to_load(highlight_dependencies_grouped) {
-                return highlight_dependencies_grouped.get(selectedDatasetOption);
-            }
-
-            function filter_normal_nodes(d) {
-                return normaltext_to_load(normalDependenciesGrouped).some(
-                    (filterEl) => d[filterEl.type] === filterEl.name
-                );
-            }
-            function filter_highlight_nodes(d) {
-                return highlights_to_load(highlightDependenciesGrouped).some(
-                    (filterEl) => d[filterEl.type] === filterEl.name
-                );
-            }
-
-            tangled_tree_data.then(tangled_tree_dta => {
-                //get tangle tree layout, normal data, and highlight data
-                var chart_dta = chart(tangled_tree_dta);
-                var normal_data = chart_dta.nodes.filter(filter_normal_nodes);
-                var highlight_data = chart_dta.nodes.filter(filter_highlight_nodes);
-                //draw(chart_dta, highlight_data, normal_data);
-                createCollapsibleTree(chart_dta);
-            })
+        parsed_tangled_tree_data_arr1.forEach(elem => {
+            parsed_elem = $.parseJSON(elem)
+            console.log(parsed_elem)
+            //count = count + 1
+            tangled_tree_data_arr.push(parsed_elem)
         })
 
+        console.log(count, 'count')
+
+
+        //console.log(tangled_tree_data_arr)
+        //console.log('tangled_tree_data', JSON.parse(tangled_tree_data))
+        var chart_dta = chart(tangled_tree_data_arr);
+        console.log('chart_dta', chart_dta)
+        //var normal_data = chart_dta.nodes.filter(filter_normal_nodes);
+        //var highlight_data = chart_dta.nodes.filter(filter_highlight_nodes);
+        createCollapsibleTree(chart_dta);
+
+        // tangled_tree_data.then(tangled_tree_dta => {
+        //     //get tangle tree layout, normal data, and highlight data
+        //     var chart_dta = chart(tangled_tree_dta);
+        //     var normal_data = chart_dta.nodes.filter(filter_normal_nodes);
+        //     var highlight_data = chart_dta.nodes.filter(filter_highlight_nodes);
+        //     //draw(chart_dta, highlight_data, normal_data);
+        //     createCollapsibleTree(chart_dta);
+        // })
 
     })
 }

@@ -3,9 +3,13 @@ async function getRequestedCSV(url) {
     return data
 }
 
+async function getRequestedJSON(url) {
+    let data = await fetch(url).then(response => response.json()).then(data => { return JSON.stringify(data) })
+    return data
+}
+
 function parseCSVFiles(file_name) {
     const merged_data_2 = d3.csv(file_name).then((data) => {
-        console.log('correct format', data)
         return data
     })
     return merged_data_2
@@ -14,6 +18,7 @@ function parseCSVFiles(file_name) {
 //parse json file
 function parseJSON(file_name) {
     const json_data = d3.json(file_name).then((data) => {
+        console.log('parse json', json_data)
         return data
     })
     return json_data

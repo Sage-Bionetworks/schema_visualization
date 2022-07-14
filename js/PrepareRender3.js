@@ -3,23 +3,7 @@ function selectSchema() {
     var selectedSchemaOption = document.getElementById("schema").value;
 
     if (selectedSchemaOption == "HTAN" || selectedSchemaOption == "HTAN RequiresDependency" || selectedSchemaOption == "HTAN Component RequiresDependency") {
-        //var merged_data_2 = parseCSVFiles('files/merged@20.vis_data.csv')
-        const url = "http://localhost:8000/visualize/attributes?schema=HTAN"
-
-        // const getRequestWithFetch = () => {
-        //     fetch(url).then(async (response) => {
-        //         const data = await (response.text())
-        //         console.log(response)
-
-        //         return data
-        //     })
-        // }
-
-        // var merged_data_2 = getRequestWithFetch();
-
-        // var merged_data_2 = fetchCSVFiles(url)
-
-
+        var merged_data_2 = parseCSVFiles('files/merged@20.vis_data.csv')
 
     } else if (selectedSchemaOption == "NF Tools Registry") {
         var merged_data_2 = parseCSVFiles('files/NF_merged.vis_data.csv')
@@ -100,10 +84,12 @@ function selectDataset() {
             tangled_tree_data.then(tangled_tree_dta => {
                 //get tangle tree layout, normal data, and highlight data
                 var chart_dta = chart(tangled_tree_dta);
-                var normal_data = chart_dta.nodes.filter(filter_normal_nodes);
-                var highlight_data = chart_dta.nodes.filter(filter_highlight_nodes);
+                console.log(chart_dta)
+                //var normal_data = chart_dta.nodes.filter(filter_normal_nodes);
+                //var highlight_data = chart_dta.nodes.filter(filter_highlight_nodes);
                 //draw(chart_dta, highlight_data, normal_data);
                 createCollapsibleTree(chart_dta);
+                console.log('chart data here', chart_dta)
             })
         })
 

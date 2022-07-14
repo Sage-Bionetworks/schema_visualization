@@ -188,8 +188,6 @@ function createCollapsibleTree(chart) {
     //preprocess data
     var chart = preprocessChart(chart);
 
-    console.log('chart', chart)
-
     console.log('nodes after processsing', chart['nodes'])
 
     //prepare for rendering charts
@@ -218,6 +216,7 @@ function createCollapsibleTree(chart) {
 
     //begin to draw tree
     var InteractivePartNode = chart['nodes']
+    var links = chart['links']
     var bundles = chart['bundles']
 
     //console.log('bundles', bundles)
