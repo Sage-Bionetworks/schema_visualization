@@ -101,7 +101,7 @@ function preprocessChart(chart) {
             element['children'] = ['Resource', 'Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Mutation', 'Development']
         }
         else if (element['id'] == "Resource") {
-            element['children'] = ['Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Mutation', 'Development']
+            element['children'] = ['Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Development']
         }
         else if (element['id'] == "Vendor") {
             element['children'] = ['VendorItem']
@@ -356,6 +356,8 @@ function createCollapsibleTree(chart) {
             //if those children is also under other parents (and those parents have not yet been collapsed) -> set visibility = true
             //this step is not needed when expanding nodes
             showSharedChildrenNew(notCollapsed, NewInteractiveNode)
+
+            console.log('InteractivePartnode', InteractivePartNode)
 
             if (d._children == null) {
                 d._children = d.children;
