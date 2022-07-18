@@ -1,3 +1,14 @@
+//get CSV file by using flask API
+function getRequestedCSV(schema_name) {
+    if (schema_name == 'HTAN') {
+        fetch('http://localhost:3001/v1/visualize/tangled_tree/layers?schema_url=https%3A%2F%2Fraw.githubusercontent.com%2Fmialy-defelice%2Fdata_models%2Fmain%2FHTAN%2FHTAN_schema_v21_10.model.jsonld&figure_type=component')
+            .then(response => response.json())
+            .then(data => console.log(data))
+
+    }
+
+}
+
 //parse CSV file and return an array (from d3-fetch library)
 function parseCSVFiles(file_name) {
     const merged_data_2 = d3.csv(file_name).then((data) => {
