@@ -89,7 +89,7 @@ function preprocessChart(chart) {
             element['children'] = ['CellLine', 'AnimalModel', 'Resource', 'Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Mutation', 'Development']
         }
         else if (element['id'] == "CellLine") {
-            element['children'] = ['Resource', 'Mutation', 'Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Mutation', 'Development']
+            element['children'] = ['Resource', 'Mutation', 'Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Development']
         }
         else if (element['id'] == "AnimalModel") {
             element['children'] = ['Resource', 'Mutation', 'Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Mutation', 'Development']
@@ -260,7 +260,10 @@ function createCollapsibleTree(chart) {
             .attr('class', 'selectable node')
             .attr('stroke', function (d) {
                 //if nodes could be expanded, we change its color to orange
-                return d._children && d._children.length > 0 && otherThanNull(d._children) ? "orange" : "#575757"
+                //return d._children && d._children.length > 0 && otherThanNull(d._children) ? "orange" : "#575757"
+                console.log('checking', d)
+                console.log('checkingggg', checkIfDirectLinkExist(d, InteractivePartNode, bundles))
+                return d._children && d._children.length > 0 && !checkIfDirectLinkExist(d, InteractivePartNode, bundles) ? "orange" : "#575757"
             })
             .attr('stroke-width', 8) //size of node
             .attr('d', function (d, i) {
@@ -329,7 +332,7 @@ function createCollapsibleTree(chart) {
         //the if statement controls collapsing node, and the else statement controls expanding nodes. 
         if (d.children && d.children.length > 0 && checkIfDirectLinkExist(d, InteractivePartNode, bundles)) {
             console.log('triggering if statement')
-            console.log('begin if statement', InteractivePartNode)
+            //console.log('begin if statement', InteractivePartNode)
 
             //make exceptions for children that owned by other parents that have not yet been collapsed
             var notCollapsed = checkSharedChildren(d.children, d.id, InteractivePartNode)
@@ -357,8 +360,6 @@ function createCollapsibleTree(chart) {
             //this step is not needed when expanding nodes
             showSharedChildrenNew(notCollapsed, NewInteractiveNode)
 
-            console.log('InteractivePartnode', InteractivePartNode)
-
             if (d._children == null) {
                 d._children = d.children;
             } else {
@@ -369,8 +370,34 @@ function createCollapsibleTree(chart) {
 
             d.children = null;
 
-            // console.log('triggering if')
-            // console.log('New interactive node', NewInteractiveNode)
+            console.log('triggering if')
+            console.log('New interactive node', NewInteractiveNode)
+
+        }
+        else if (d.children && d.children.length > 0 && !checkIfDirectLinkExist(d, InteractivePartNode, bundles)) {
+            //for special expansion
+            var directChildren = FilterChildrenIfDirectParent(d.id, d._children, InteractivePartNode)
+
+            // add children nodes back
+            var NewInteractiveNode = SetVisibilityChildren(directChildren, InteractivePartNode, true)
+
+            //get direct children back to "children container"
+            directChildren.forEach(elem => {
+                d.children.indexOf(elem) === -1 && d.children.push(elem)
+            })
+
+
+            addPathNew(d.id, bundles)
+
+            // still hiding children that are not in d.children
+            d._children = d._children.filter(function (el) {
+                return !d.children.includes(el)
+            })
+
+            //relay expanded children 
+            relayExpandedChildren(d.id, directChildren, NewInteractiveNode)
+
+            console.log('else if', NewInteractiveNode)
 
         } else {
             var childrenSelected = d.children;
@@ -399,6 +426,8 @@ function createCollapsibleTree(chart) {
             // without this step, when the node from higher level collapse, it would ignore collapsing the grand children 
             // example: collapse "Biospecimen" -> expand "ScRNA-seqLevel1" -> collapse "Biospecimen" again
             relayExpandedChildren(d.id, directChildren, NewInteractiveNode)
+
+            console.log('else statement', NewInteractiveNode)
         }
 
 
@@ -436,6 +465,8 @@ function checkIfDirectLinkExist(node, InteractivePartNode, bundles) {
 
     //get all children
     var allChildren = concatArr(node.children, node._children)
+    console.log('allChildren', allChildren)
+
     //figure out direct children
     var childrenNode = filterArrayIfInArray(InteractivePartNode, allChildren, 'id')
     var directChildren = [];
@@ -706,24 +737,36 @@ function relayExpandedChildren(clickElem, childrenArray, poolNode) {
     poolNode.forEach(item => {
         var childrenArr = item._children; //children array of other parents
         var level = item.level; //level of other parents
+        var toRemove = [];
 
         if (childrenArr != null && childrenArr.length > 0) {
+            console.log('item before transform', item)
+            console.log('children of other parents', childrenArr)
             childrenArr.forEach(child => {
                 //if the children that we are expanding also belong to other parents from higher level
                 if (childrenArray.includes(child) && levelClicked > level) {
-                    // then we want to let those parents know that their grand children have been expanded
-                    item._children = removeElemFromArr(child, childrenArr)
-                    // and save it to container 
+                    //console.log('the child that will move', child)
+
+                    //save it back to "children" container
                     if (item.children == null) {
                         item.children = []
                     }
 
                     item.children.indexOf(child) === -1 && item.children.push(child)
-
+                    toRemove.push(child)
                 }
             })
 
+            console.log('item', item)
+
         }
+        console.log('to remove', toRemove)
+
+        //make sure that _children container no longer contains children that have been moved to "children" container
+        if (item._children != null) {
+            item._children = removeArrFromArr(item._children, toRemove)
+        }
+
     })
 
     console.log('after transformation', poolNode)
