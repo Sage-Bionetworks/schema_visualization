@@ -77,52 +77,90 @@ function replaceObjInArry(arrayofObjBase, arrayofObjReplacement) {
 }
 
 
+function toObject(arr) {
+    var rv = {};
+    for (var i = 0; i < arr.length; ++i)
+        rv[i] = arr[i];
+    return rv;
+}
 ////////////////////////call create collapsible tree function to create my collapsible tree
 //preprocessing data -- now is a hard-coded function
 //assume that we could let biospecimen node knows all its children
+
 function preprocessChart(chart) {
     //console.log(chart)
+    console.log('chart nodes', chart['nodes'])
 
     ///////////////////////NF
     chart['nodes'].forEach(element => {
+        //by default, no nodes get collapsed
+        element['collapsed'] = false
+
+        //by default, all the nodes are visible
+        element['visible'] = true
+
         if (element['id'] == "Donor") {
             element['children'] = ['CellLine', 'AnimalModel', 'Resource', 'Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Mutation', 'Development']
+            element['directChildren'] = ['CellLine', 'AnimalModel']
         }
         else if (element['id'] == "CellLine") {
             element['children'] = ['Resource', 'Mutation', 'Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Development']
+            element['directChildren'] = ['Resource', 'Mutation']
         }
         else if (element['id'] == "AnimalModel") {
             element['children'] = ['Resource', 'Mutation', 'Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Mutation', 'Development']
+            element['directChildren'] = ['Resource', 'Mutation']
         }
         else if (element['id'] == "GeneticReagent") {
             element['children'] = ['Resource', 'Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Mutation', 'Development']
+            element['directChildren'] = ['Resource', 'Mutation']
         }
         else if (element['id'] == "Antibody") {
             element['children'] = ['Resource', 'Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Mutation', 'Development']
+            element['directChildren'] = ['Resource']
         }
         else if (element['id'] == "Resource") {
             element['children'] = ['Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Development']
+            element['directChildren'] = ['Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Development']
         }
         else if (element['id'] == "Vendor") {
             element['children'] = ['VendorItem']
+            element['directChildren'] = ['VendorItem']
         }
         else if (element['id'] == "MutationDetails") {
             element['children'] = ['Mutation']
+            element['directChildren'] = ['Mutation']
         }
         else if (element['id'] == "Investigator") {
             element['children'] = ['Observation', 'Development']
+            element['directChildren'] = ['Observation', 'Development']
         }
         else if (element['id'] == "Publication") {
             element['children'] = ['Usage', 'Development']
+            element['directChildren'] = ['Usage', 'Development']
         }
         else if (element['id'] == "Funder") {
             element['children'] = ['Development']
+            element['directChildren'] = ['Development']
         }
         else {
             element['children'] = []
+            element['directChildren'] = []
         }
 
-    })
+        //convert array to a list of object
+        if (element['children'].length > 0) {
+            element['children'] = element['children'].reduce((accumulator, value) => ({ ...accumulator, [value]: { collapsed: false } }), {})
+        }
+
+        // if (element['directChildren'].length > 0) {
+        //     element['directChildren'] = element['directChildren'].reduce((a, v) => ({ ...a, [v]: { collapsed: false } }), {})
+        // }
+
+    }
+
+
+    )
 
 
     ////////////////////////HTAN
@@ -183,12 +221,20 @@ function addElemToArray(newItem, array) {
 }
 
 
+const filterPureArray = (base, filter) => {
+    //if any elements are in "filter array", remove those from base
+    const filtered = base.filter(el => {
+        return filter.indexOf(el) === -1;
+    });
+    return filtered;
+};
+
 function createCollapsibleTree(chart) {
 
     //preprocess data
     var chart = preprocessChart(chart);
 
-    console.log('nodes after processsing', chart['nodes'])
+    console.log(chart)
 
     //prepare for rendering charts
     //draw tangled tree like we did before
@@ -261,8 +307,8 @@ function createCollapsibleTree(chart) {
             .attr('stroke', function (d) {
                 //if nodes could be expanded, we change its color to orange
                 //return d._children && d._children.length > 0 && otherThanNull(d._children) ? "orange" : "#575757"
-                console.log('checking', d)
-                console.log('checkingggg', checkIfDirectLinkExist(d, InteractivePartNode, bundles))
+                //console.log('checking', d)
+                //console.log(checkIfDirectLinkExist(d, InteractivePartNode, bundles))
                 return d._children && d._children.length > 0 && !checkIfDirectLinkExist(d, InteractivePartNode, bundles) ? "orange" : "#575757"
             })
             .attr('stroke-width', 8) //size of node
@@ -329,125 +375,181 @@ function createCollapsibleTree(chart) {
     }
 
     function click(d) {
-        //the if statement controls collapsing node, and the else statement controls expanding nodes. 
-        if (d.children && d.children.length > 0 && checkIfDirectLinkExist(d, InteractivePartNode, bundles)) {
+        if (!d.collapsed && checkIfDirectLinkExist(d, InteractivePartNode, bundles)) {
             console.log('triggering if statement')
-            //console.log('begin if statement', InteractivePartNode)
 
-            //make exceptions for children that owned by other parents that have not yet been collapsed
-            var notCollapsed = checkSharedChildren(d.children, d.id, InteractivePartNode)
-            console.log('not collapsed potential list', notCollapsed)
+            //collapse this node
+            d.collapsed = true
 
-            //remove the children that we don't want to collapse from the array
-            var filteredChildrenArr = removeArrFromArr(d.children, notCollapsed)
+            //list of children 
+            var childrenElem = d.children
+            var childrenArr = Object.keys(childrenElem)
 
-            //children of this node is no longer visible -> set visible = false
-            var NewInteractiveNode = SetVisibilityChildren(d.children, InteractivePartNode, false)
+            //collpase all the direct children
+            var directChildrenNodes = filterArrayIfInArray(InteractivePartNode, d.directChildren, 'id')
+            CollapseChildren(directChildrenNodes)
 
-            //handle the link from children to parents
-            HidePathNew(d.id, d.children, notCollapsed, bundles)
 
-            //for all the children that will be collapsed, tell them that their children have also been collapsed
-            CollapseSubsequentChildren(filteredChildrenArr, NewInteractiveNode)
+            //Find the children that won't disappear after the collapse interaction
+            //Those children usually have other parents that have not yet been collapsed
+            var notDisappear = checkSharedChildrenNew(childrenArr, InteractivePartNode)
+            var notDisappearArr = notDisappear.map(elem => elem.id)
+            console.log('a list of children nodes that would not disappear', notDisappearArr)
 
-            //tell other parents that their children have also been collapsed
-            //not restrict to higher level parents 
-            relayCollapsedChildrenNew(filteredChildrenArr, NewInteractiveNode)
-            //relayCollapsedChildren(d.id, filteredChildrenArr, NewInteractiveNode)
+            //now, we get a list of children that will need to disappear
+            var copyChildren = structuredClone(d.children);
+            var copyChildrenArr = Object.keys(copyChildren);
+            var disappearChildren = filterPureArray(copyChildrenArr, notDisappearArr)
+            var filteredChildrenNode = filterArrayIfInArray(InteractivePartNode, disappearChildren, 'id')
 
-            //update visbility attribute of some children 
-            //if those children is also under other parents (and those parents have not yet been collapsed) -> set visibility = true
-            //this step is not needed when expanding nodes
-            showSharedChildrenNew(notCollapsed, NewInteractiveNode)
+            //handle the link 
+            HidePathNew(d.id, childrenArr, notDisappear, bundles)
 
-            if (d._children == null) {
-                d._children = d.children;
-            } else {
-                d.children.forEach(elem => {
-                    d._children.indexOf(elem) === -1 && d._children.push(elem)
-                })
-            }
+            //for the node being clicked update children status 
+            UpdateChildrenStatus(d)
 
-            d.children = null;
+            //for all the children that will disappear, let's update the status of them to "collapsed"
+            UpdateChildrenNodes(filteredChildrenNode)
 
-            console.log('triggering if')
-            console.log('New interactive node', NewInteractiveNode)
+            //for all the nodes that will disppear, let's make them disappear now
+            //their children should also disappear 
+            updateVisibility(filteredChildrenNode, disappearChildren)
+
+            console.log('children array', d.children)
+            console.log('bundles', bundles)
 
         }
-        else if (d.children && d.children.length > 0 && !checkIfDirectLinkExist(d, InteractivePartNode, bundles)) {
-            //for special expansion
-            var directChildren = FilterChildrenIfDirectParent(d.id, d._children, InteractivePartNode)
 
-            // add children nodes back
-            var NewInteractiveNode = SetVisibilityChildren(directChildren, InteractivePartNode, true)
+        console.log('interactive part node after transformation', InteractivePartNode)
 
-            //get direct children back to "children container"
-            directChildren.forEach(elem => {
-                d.children.indexOf(elem) === -1 && d.children.push(elem)
-            })
-
-
-            addPathNew(d.id, bundles)
-
-            // still hiding children that are not in d.children
-            d._children = d._children.filter(function (el) {
-                return !d.children.includes(el)
-            })
-
-            //relay expanded children 
-            relayExpandedChildren(d.id, directChildren, NewInteractiveNode)
-
-            console.log('else if', NewInteractiveNode)
-
-        } else {
-            var childrenSelected = d.children;
-
-            //get only "direct" children (these children here are directly related to the clicked node)
-            //note: "direct" children could be across multiple levels
-            //for example, for "CellLine" in NF, the direct children are: "Resource" and "Mutation"
-            var directChildren = FilterChildrenIfDirectParent(d.id, d._children, InteractivePartNode)
-
-            // add children nodes back
-            var NewInteractiveNode = SetVisibilityChildren(directChildren, InteractivePartNode, true)
-
-            //add links back from parents to children 
-            addPathNew(d.id, bundles)
-
-            //only keep direct children in d.children
-            d.children = directChildren
-
-            // still hiding children that are not immediate children
-            d._children = d._children.filter(function (el) {
-                return !directChildren.includes(el)
-            })
-
-            //relay expanded children 
-            // tell parents from higher level that their grand children have been expanded. 
-            // without this step, when the node from higher level collapse, it would ignore collapsing the grand children 
-            // example: collapse "Biospecimen" -> expand "ScRNA-seqLevel1" -> collapse "Biospecimen" again
-            relayExpandedChildren(d.id, directChildren, NewInteractiveNode)
-
-            console.log('else statement', NewInteractiveNode)
-        }
-
-
-        //keep children based on visibility
-        // we want to keep the nodes as long as visible is not false
-        // if visible = true or a node doesn't have attribute 'visible', we would want to keep them
-        var ChangeableNode = NewInteractiveNode.filter(function (obj) {
+        var ChangeableNode = InteractivePartNode.filter(function (obj) {
             return obj.visible != false;
         });
 
-        //update(d)
-        update(ChangeableNode, bundles);
-
-
+        update(ChangeableNode, bundles)
     }
+
+    //     //the if statement controls collapsing node, and the else statement controls expanding nodes. 
+    //     if (d.children && d.children.length > 0 && checkIfDirectLinkExist(d, InteractivePartNode, bundles)) {
+    //         console.log('triggering if statement')
+
+    //         //make exceptions for children that owned by other parents that have not yet been collapsed
+    //         //this function also handles nodes that would get collapsed in this iteration. 
+    //         var notCollapsed = checkSharedChildren(d.children, d.id, InteractivePartNode)
+    //         console.log('not collapsed potential list', notCollapsed)
+
+    //         //remove the children that we don't want to collapse from the array
+    //         var filteredChildrenArr = removeArrFromArr(d.children, notCollapsed)
+
+    //         //children of this node is no longer visible -> set visible = false
+    //         var NewInteractiveNode = SetVisibilityChildren(d.children, InteractivePartNode, false)
+
+    //         //handle the link from children to parents
+    //         HidePathNew(d.id, d.children, notCollapsed, bundles)
+
+    //         //for all the children that will be collapsed, tell them that their children have also been collapsed
+    //         CollapseSubsequentChildren(filteredChildrenArr, NewInteractiveNode)
+
+    //         //tell other parents that their children have also been collapsed
+    //         //not restrict to higher level parents 
+    //         relayCollapsedChildrenNew(filteredChildrenArr, NewInteractiveNode)
+    //         //relayCollapsedChildren(d.id, filteredChildrenArr, NewInteractiveNode)
+
+    //         //update visbility attribute of some children 
+    //         //if those children is also under other parents (and those parents have not yet been collapsed) -> set visibility = true
+    //         //this step is not needed when expanding nodes
+    //         showSharedChildrenNew(notCollapsed, NewInteractiveNode)
+
+    //         if (d._children == null) {
+    //             d._children = d.children;
+    //         } else {
+    //             d.children.forEach(elem => {
+    //                 d._children.indexOf(elem) === -1 && d._children.push(elem)
+    //             })
+    //         }
+
+    //         d.children = null;
+
+    //         console.log('triggering if')
+    //         console.log('New interactive node', NewInteractiveNode)
+
+    //     }
+    //     else if (d.children && d.children.length > 0 && !checkIfDirectLinkExist(d, InteractivePartNode, bundles)) {
+    //         //for special expansion
+    //         var directChildren = FilterChildrenIfDirectParent(d.id, d._children, InteractivePartNode)
+
+    //         // add children nodes back
+    //         var NewInteractiveNode = SetVisibilityChildren(directChildren, InteractivePartNode, true)
+
+    //         //get direct children back to "children container"
+    //         directChildren.forEach(elem => {
+    //             d.children.indexOf(elem) === -1 && d.children.push(elem)
+    //         })
+
+
+    //         addPathNew(d.id, bundles)
+
+    //         // still hiding children that are not in d.children
+    //         d._children = d._children.filter(function (el) {
+    //             return !d.children.includes(el)
+    //         })
+
+    //         //relay expanded children 
+    //         relayExpandedChildren(d.id, directChildren, NewInteractiveNode)
+
+    //         console.log('else if', NewInteractiveNode)
+
+    //     } else {
+    //         var childrenSelected = d.children;
+
+    //         //get only "direct" children (these children here are directly related to the clicked node)
+    //         //note: "direct" children could be across multiple levels
+    //         //for example, for "CellLine" in NF, the direct children are: "Resource" and "Mutation"
+    //         var directChildren = FilterChildrenIfDirectParent(d.id, d._children, InteractivePartNode)
+
+    //         // add children nodes back
+    //         var NewInteractiveNode = SetVisibilityChildren(directChildren, InteractivePartNode, true)
+
+    //         //add links back from parents to children 
+    //         addPathNew(d.id, bundles)
+
+    //         //only keep direct children in d.children
+    //         d.children = directChildren
+
+    //         // still hiding children that are not immediate children
+    //         d._children = d._children.filter(function (el) {
+    //             return !directChildren.includes(el)
+    //         })
+
+    //         //relay expanded children 
+    //         // tell parents from higher level that their grand children have been expanded. 
+    //         // without this step, when the node from higher level collapse, it would ignore collapsing the grand children 
+    //         // example: collapse "Biospecimen" -> expand "ScRNA-seqLevel1" -> collapse "Biospecimen" again
+    //         relayExpandedChildren(d.id, directChildren, NewInteractiveNode)
+
+    //         console.log('else statement', NewInteractiveNode)
+    //     }
+
+
+    //     //keep children based on visibility
+    //     // we want to keep the nodes as long as visible is not false
+    //     // if visible = true or a node doesn't have attribute 'visible', we would want to keep them
+    //     var ChangeableNode = NewInteractiveNode.filter(function (obj) {
+    //         return obj.visible != false;
+    //     });
+
+    //     //update(d)
+    //     update(ChangeableNode, bundles);
+
+
+    // }
 
 
 
 
 }
+
+
 
 function checkIfDirectLinkExist(node, InteractivePartNode, bundles) {
     //this function is for figuring out if there's a direct link between the node being clicked and all its direct children
@@ -465,7 +567,6 @@ function checkIfDirectLinkExist(node, InteractivePartNode, bundles) {
 
     //get all children
     var allChildren = concatArr(node.children, node._children)
-    console.log('allChildren', allChildren)
 
     //figure out direct children
     var childrenNode = filterArrayIfInArray(InteractivePartNode, allChildren, 'id')
@@ -477,8 +578,6 @@ function checkIfDirectLinkExist(node, InteractivePartNode, bundles) {
         }
 
     })
-
-    console.log('direct children', directChildren)
 
     var SavedLinks = [];
 
@@ -538,6 +637,50 @@ function SetVisibilityChildren(childrenArray, poolNode, visibility) {
 
 }
 
+function CollapseChildren(arrayChildrenNode, collapsedLst) {
+    arrayChildrenNode.forEach(node => {
+        node.collapsed = true
+    })
+}
+
+
+function updateVisibility(arrayChildrenNode, collapsedLst) {
+    console.log('collapsedlst', collapsedLst)
+    arrayChildrenNode.forEach(node => {
+        if (collapsedLst.includes(node.id)) {
+            node.visible = false
+
+        }
+    })
+
+    console.log('arraychildrennode', arrayChildrenNode)
+
+}
+
+// function UpdateCollapsedChildren(arrayChildrenNode, collapsedLst) {
+//     Object.keys(arrayChildrenNode).forEach(key => {
+//         if (collapsedLst.includes(key)) {
+//             arrayChildrenNode[key].collapsed = true
+//         }
+//     });
+
+//     //console.log('arrayChildrenNode after transformation', arrayChildrenNode)
+// }
+
+function UpdateChildrenStatus(clickedNode) {
+    var children = clickedNode['children']
+    Object.keys(children).forEach(key => {
+        children[key].collapsed = true
+    });
+
+    //UpdateCollapsedChildren(children, collapsedLst)
+}
+
+function UpdateChildrenNodes(childrenNodes) {
+    childrenNodes.forEach(child => {
+        child.collapsed = true
+    })
+}
 
 function removeArrFromArr(baseArr, toRemove) {
     //////
@@ -550,6 +693,34 @@ function removeArrFromArr(baseArr, toRemove) {
     return baseArr
 }
 
+function checkSharedChildrenNew(directChildren, poolNode) {
+    //check if any direct children nodes have other parents
+    var childrenNode = filterArrayIfInArray(poolNode, directChildren, 'id')
+
+    var notCollapsed = [];
+
+    //get a list of parents of each children node
+    childrenNode.forEach(elem => {
+        // list of direct parents for each node
+        var parents = getLstParents(elem)
+
+        //get the nodes of other parents
+        var otherParentsNodes = filterArrayIfInArray(poolNode, parents, 'id')
+
+        //check status of other parents nodes and see if they have been collapsed
+        var NotCollapsedParentsArr = otherParentsNodes.map(elem => !elem.collapsed)
+
+        if (NotCollapsedParentsArr.length >= 0) {
+            notCollapsed.push(elem)
+        }
+    })
+
+    console.log('a list of direct children that will not be collapsed', notCollapsed)
+
+    return notCollapsed
+
+
+}
 
 
 function checkSharedChildren(childrenArray, clickElem, poolNode) {
