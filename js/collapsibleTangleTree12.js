@@ -261,8 +261,6 @@ function createCollapsibleTree(chart) {
             .attr('stroke', function (d) {
                 //if nodes could be expanded, we change its color to orange
                 //return d._children && d._children.length > 0 && otherThanNull(d._children) ? "orange" : "#575757"
-                console.log('checking', d)
-                console.log('checkingggg', checkIfDirectLinkExist(d, InteractivePartNode, bundles))
                 return d._children && d._children.length > 0 && !checkIfDirectLinkExist(d, InteractivePartNode, bundles) ? "orange" : "#575757"
             })
             .attr('stroke-width', 8) //size of node
@@ -503,8 +501,8 @@ function checkIfDirectLinkExist(node, InteractivePartNode, bundles) {
         }
     })
 
-    console.log('this node is being clicked', node)
-    console.log('the link exist', SavedLinks)
+    // console.log('this node is being clicked', node)
+    // console.log('the link exist', SavedLinks)
 
     if (SavedLinks.length > 0) {
         toCollapse = false
@@ -757,10 +755,10 @@ function relayExpandedChildren(clickElem, childrenArray, poolNode) {
                 }
             })
 
-            console.log('item', item)
+            //console.log('item', item)
 
         }
-        console.log('to remove', toRemove)
+        //console.log('to remove', toRemove)
 
         //make sure that _children container no longer contains children that have been moved to "children" container
         if (item._children != null) {
