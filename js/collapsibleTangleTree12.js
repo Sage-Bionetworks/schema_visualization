@@ -102,55 +102,67 @@ function preprocessChart(chart) {
         if (element['id'] == "Donor") {
             element['children'] = ['CellLine', 'AnimalModel', 'Resource', 'Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Mutation', 'Development']
             element['directChildren'] = ['CellLine', 'AnimalModel']
+            element['directChildrenStatus'] = ['CellLine', 'AnimalModel']
         }
         else if (element['id'] == "CellLine") {
             element['children'] = ['Resource', 'Mutation', 'Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Development']
             element['directChildren'] = ['Resource', 'Mutation']
+            element['directChildrenStatus'] = ['Resource', 'Mutation']
         }
         else if (element['id'] == "AnimalModel") {
             element['children'] = ['Resource', 'Mutation', 'Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Mutation', 'Development']
             element['directChildren'] = ['Resource', 'Mutation']
+            element['directChildrenStatus'] = ['Resource', 'Mutation']
         }
         else if (element['id'] == "GeneticReagent") {
             element['children'] = ['Resource', 'Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Mutation', 'Development']
-            element['directChildren'] = ['Resource', 'Mutation']
+            element['directChildren'] = ['Resource']
+            element['directChildrenStatus'] = ['Resource']
         }
         else if (element['id'] == "Antibody") {
             element['children'] = ['Resource', 'Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Mutation', 'Development']
             element['directChildren'] = ['Resource']
+            element['directChildrenStatus'] = ['Resource']
         }
         else if (element['id'] == "Resource") {
             element['children'] = ['Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Development']
             element['directChildren'] = ['Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Development']
+            element['directChildrenStatus'] = ['Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Development']
         }
         else if (element['id'] == "Vendor") {
             element['children'] = ['VendorItem']
             element['directChildren'] = ['VendorItem']
+            element['directChildrenStatus'] = ['VendorItem']
         }
         else if (element['id'] == "MutationDetails") {
             element['children'] = ['Mutation']
             element['directChildren'] = ['Mutation']
+            element['directChildrenStatus'] = ['Mutation']
         }
         else if (element['id'] == "Investigator") {
             element['children'] = ['Observation', 'Development']
             element['directChildren'] = ['Observation', 'Development']
+            element['directChildrenStatus'] = ['Observation', 'Development']
         }
         else if (element['id'] == "Publication") {
             element['children'] = ['Usage', 'Development']
             element['directChildren'] = ['Usage', 'Development']
+            element['directChildrenStatus'] = ['Usage', 'Development']
         }
         else if (element['id'] == "Funder") {
             element['children'] = ['Development']
             element['directChildren'] = ['Development']
+            element['directChildrenStatus'] = ['Development']
         }
         else {
             element['children'] = []
             element['directChildren'] = []
+            element['directChildrenStatus'] = []
         }
 
         //convert array to a list of object
-        if (element['children'].length > 0) {
-            element['children'] = element['children'].reduce((accumulator, value) => ({ ...accumulator, [value]: { collapsed: false } }), {})
+        if (element['directChildren'].length > 0) {
+            element['directChildrenStatus'] = element['directChildrenStatus'].reduce((accumulator, value) => ({ ...accumulator, [value]: { collapsed: false } }), {})
         }
 
         // if (element['directChildren'].length > 0) {
@@ -382,17 +394,26 @@ function createCollapsibleTree(chart) {
             d.collapsed = true
 
             //list of children 
-            var childrenElem = d.children
-            var childrenArr = Object.keys(childrenElem)
+            var childrenArr = d.children
 
-            //collpase all the direct children
-            var directChildrenNodes = filterArrayIfInArray(InteractivePartNode, d.directChildren, 'id')
-            CollapseChildren(directChildrenNodes)
+            //update children status
+            var directChildrenStatus = d['directChildrenStatus']
+            Object.keys(directChildrenStatus).forEach(function (key) { directChildrenStatus[key]['collapsed'] = true })
+
+            //all the children of the node being clicked get "collapsed"
+            var ChildrenNodes = filterArrayIfInArray(InteractivePartNode, d.children, 'id')
+            CollapseChildren(ChildrenNodes)
+
+            console.log('interactive part node', InteractivePartNode)
+
+            //loop through the tree to also collapse the children of the children 
+            //CollapseSubChildren(d.directChildren, InteractivePartNode)
+            //CollapseSubsequentChildren(filteredChildrenArr, InteractivePartNode)
 
 
             //Find the children that won't disappear after the collapse interaction
-            //Those children usually have other parents that have not yet been collapsed
-            var notDisappear = checkSharedChildrenNew(childrenArr, InteractivePartNode)
+            //Those children are usually direct children that have other parents that have not yet been collapsed
+            var notDisappear = checkSharedChildrenNew(d.directChildren, InteractivePartNode)
             var notDisappearArr = notDisappear.map(elem => elem.id)
             console.log('a list of children nodes that would not disappear', notDisappearArr)
 
@@ -400,20 +421,24 @@ function createCollapsibleTree(chart) {
             var copyChildren = structuredClone(d.children);
             var copyChildrenArr = Object.keys(copyChildren);
             var disappearChildren = filterPureArray(copyChildrenArr, notDisappearArr)
-            var filteredChildrenNode = filterArrayIfInArray(InteractivePartNode, disappearChildren, 'id')
+            var disappearChildrenNodes = filterArrayIfInArray(InteractivePartNode, disappearChildren, 'id')
 
             //handle the link 
-            HidePathNew(d.id, childrenArr, notDisappear, bundles)
+            HidePathNew(d.id, childrenArr, notDisappearArr, bundles)
 
-            //for the node being clicked update children status 
-            UpdateChildrenStatus(d)
+            // //for the node being clicked update children status 
+            //UpdateChildrenStatus(d)
 
-            //for all the children that will disappear, let's update the status of them to "collapsed"
-            UpdateChildrenNodes(filteredChildrenNode)
+            // //for all the children that will disappear, let's update the status of them to "collapsed"
+            // UpdateChildrenNodes(filteredChildrenNode)
 
             //for all the nodes that will disppear, let's make them disappear now
-            //their children should also disappear 
-            updateVisibility(filteredChildrenNode, disappearChildren)
+            //their children should also disappear
+            updateVisibility(disappearChildrenNodes)
+
+            //For the node that get collapsed, their direct children would also disppear
+
+
 
             console.log('children array', d.children)
             console.log('bundles', bundles)
@@ -637,23 +662,53 @@ function SetVisibilityChildren(childrenArray, poolNode, visibility) {
 
 }
 
-function CollapseChildren(arrayChildrenNode, collapsedLst) {
-    arrayChildrenNode.forEach(node => {
-        node.collapsed = true
-    })
+function CollapseChildren(arrayChildrenNode) {
+    if (arrayChildrenNode.length > 0) {
+        arrayChildrenNode.forEach(node => {
+            node.collapsed = true
+        })
+    }
 }
 
-
-function updateVisibility(arrayChildrenNode, collapsedLst) {
-    console.log('collapsedlst', collapsedLst)
-    arrayChildrenNode.forEach(node => {
-        if (collapsedLst.includes(node.id)) {
-            node.visible = false
-
-        }
+function FindChildren(nodes) {
+    nodes.forEach(elem => {
+        var children = elem['directChildren']
     })
 
-    console.log('arraychildrennode', arrayChildrenNode)
+}
+
+function CollapseSubChildren(directChildrenArr, poolNode) {
+
+    var childrenToCheck = directChildrenArr
+
+    if (childrenToCheck.length > 0) {
+
+    }
+
+    // while (childrenToCheck.length > 0) {
+    //     //figure out the children of the direct children
+    //     directChildrenNodes = filterArrayIfInArray(poolNode, childrenToCheck, 'id')
+
+    //     //collapse thse nodes
+    //     CollapseChildren(directChildrenNodes)
+
+    //     directChildrenNodes.forEach(node => {
+    //         var childrenToCheck = node['directChildren']
+    //     })
+
+
+    // }
+
+}
+
+function updateVisibility(arrayChildrenNode) {
+    if (arrayChildrenNode.length > 0) {
+        arrayChildrenNode.forEach(node => {
+            node['visible'] = false
+        })
+    }
+
+
 
 }
 
@@ -715,7 +770,7 @@ function checkSharedChildrenNew(directChildren, poolNode) {
         }
     })
 
-    console.log('a list of direct children that will not be collapsed', notCollapsed)
+    console.log('a list of direct children that will not be disappear', notCollapsed)
 
     return notCollapsed
 
@@ -800,6 +855,8 @@ function CollapseSubsequentChildren(childrenArray, poolNode) {
 }
 
 function HidePathNew(clickElem, childrenArray, notCollapsed, bundles) {
+    console.log('childrenarray', childrenArray)
+    console.log('not collapsed', notCollapsed)
     //hide links
     bundles.forEach(bundles => {
         var linkArr = bundles['links']
