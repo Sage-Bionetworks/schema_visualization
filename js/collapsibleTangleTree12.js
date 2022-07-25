@@ -87,38 +87,50 @@ function preprocessChart(chart) {
     chart['nodes'].forEach(element => {
         if (element['id'] == "Donor") {
             element['children'] = ['CellLine', 'AnimalModel', 'Resource', 'Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Mutation', 'Development']
+            element['direct_children'] = ['CellLine', 'AnimalModel']
         }
         else if (element['id'] == "CellLine") {
             element['children'] = ['Resource', 'Mutation', 'Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Development']
+            element['direct_children'] = ['Resource', 'Mutation']
         }
         else if (element['id'] == "AnimalModel") {
+            element['direct_children'] = ['Resource', 'Mutation']
             element['children'] = ['Resource', 'Mutation', 'Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Mutation', 'Development']
         }
         else if (element['id'] == "GeneticReagent") {
+            element['direct_children'] = ['Resource']
             element['children'] = ['Resource', 'Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Mutation', 'Development']
         }
         else if (element['id'] == "Antibody") {
+            element['direct_children'] = ['Resource']
             element['children'] = ['Resource', 'Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Mutation', 'Development']
         }
         else if (element['id'] == "Resource") {
+            element['direct_children'] = ['Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Development']
             element['children'] = ['Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Development']
         }
         else if (element['id'] == "Vendor") {
+            element['direct_children'] = ['VendorItem']
             element['children'] = ['VendorItem']
         }
         else if (element['id'] == "MutationDetails") {
+            element['direct_children'] = ['Mutation']
             element['children'] = ['Mutation']
         }
         else if (element['id'] == "Investigator") {
+            element['direct_children'] = ['Observation', 'Development']
             element['children'] = ['Observation', 'Development']
         }
         else if (element['id'] == "Publication") {
+            element['direct_children'] = ['Usage', 'Development']
             element['children'] = ['Usage', 'Development']
         }
         else if (element['id'] == "Funder") {
+            element['direct_children'] = ['Development']
             element['children'] = ['Development']
         }
         else {
+            element['direct_children'] = []
             element['children'] = []
         }
 
@@ -127,37 +139,46 @@ function preprocessChart(chart) {
 
     ////////////////////////HTAN
     // chart['nodes'].forEach(element => {
+    //     element['visible'] = true
     //     if (element['id'] == 'Biospecimen') {
+    //         element['direct_children'] = ['ScRNA-seqLevel1', 'BulkRNA-seqLevel1', 'BulkWESLevel1', 'OtherAssay', 'ScATAC-seqLevel1', 'ImagingLevel2']
     //         element['children'] = ['ScRNA-seqLevel1', 'BulkRNA-seqLevel1',
     //             'BulkWESLevel1', 'OtherAssay', 'ScATAC-seqLevel1', 'ImagingLevel2',
     //             'ScRNA-seqLevel2', 'BulkRNA-seqLevel2', 'BulkWESLevel2',
     //             'ScRNA-seqLevel3', 'BulkRNA-seqLevel3', 'BulkWESLevel3', 'ScRNA-seqLevel4']
+
     //     }
     //     else if (element['id'] == 'ImagingLevel2Channels') {
+    //         element['direct_children'] = ['ImagingLevel2']
     //         element['children'] = ['ImagingLevel2']
     //     } else if (element['id'] == 'ScRNA-seqLevel1') {
     //         element['children'] = ['ScRNA-seqLevel2', 'ScRNA-seqLevel3', 'ScRNA-seqLevel4']
+    //         element['direct_children'] = ['ScRNA-seqLevel2']
     //     } else if (element['id'] == 'BulkRNA-seqLevel1') {
     //         element['children'] = ['BulkRNA-seqLevel2', 'BulkRNA-seqLevel3']
+    //         element['direct_children'] = ['BulkRNA-seqLevel2']
     //     } else if (element['id'] == 'BulkRNA-seqLevel2') {
+    //         element['direct_children'] = ['BulkRNA-seqLevel3']
     //         element['children'] = ['BulkRNA-seqLevel3']
     //     }
 
     //     else if (element['id'] == 'BulkWESLevel1') {
     //         element['children'] = ['BulkWESLevel2', 'BulkWESLevel3']
+    //         element['direct_children'] = ['BulkWESLevel2']
     //     }
     //     else if (element['id'] == 'BulkWESLevel2') {
-    //         element['children'] = ['BulkWESLevel3']
+    //         element['direct_children'] = ['BulkWESLevel3']
 
     //     }
     //     else if (element['id'] == 'ScRNA-seqLevel2') {
     //         element['children'] = ['ScRNA-seqLevel3', 'ScRNA-seqLevel4']
+    //         element['direct_children'] = ['ScRNA-seqLevel3']
     //     }
     //     else if (element['id'] == 'ScRNA-seqLevel3') {
-    //         element['children'] = ['ScRNA-seqLevel4']
+    //         element['direct_children'] = ['ScRNA-seqLevel4']
     //     }
     //     else {
-    //         element['children'] = []
+    //         element['direct_children'] = []
     //     }
 
     // })
@@ -328,104 +349,98 @@ function createCollapsibleTree(chart) {
 
     function click(d) {
         //the if statement controls collapsing node, and the else statement controls expanding nodes. 
-        if (d.children && d.children.length > 0 && checkIfDirectLinkExist(d, InteractivePartNode, bundles)) {
+        if (d.direct_children && d.direct_children.length > 0 && checkIfDirectLinkExist(d, InteractivePartNode, bundles)) {
             console.log('triggering if statement')
-            //console.log('begin if statement', InteractivePartNode)
 
-            //make exceptions for children that owned by other parents that have not yet been collapsed
-            var notCollapsed = checkSharedChildren(d.children, d.id, InteractivePartNode)
-            console.log('not collapsed potential list', notCollapsed)
+            console.log('interactive part node', InteractivePartNode)
 
-            //remove the children that we don't want to collapse from the array
-            var filteredChildrenArr = removeArrFromArr(d.children, notCollapsed)
-
-            //children of this node is no longer visible -> set visible = false
-            var NewInteractiveNode = SetVisibilityChildren(d.children, InteractivePartNode, false)
-
-            //handle the link from children to parents
-            HidePathNew(d.id, d.children, notCollapsed, bundles)
-
-            //for all the children that will be collapsed, tell them that their children have also been collapsed
-            CollapseSubsequentChildren(filteredChildrenArr, NewInteractiveNode)
-
-            //tell other parents that their children have also been collapsed
-            //not restrict to higher level parents 
-            relayCollapsedChildrenNew(filteredChildrenArr, NewInteractiveNode)
-            //relayCollapsedChildren(d.id, filteredChildrenArr, NewInteractiveNode)
-
-            //update visbility attribute of some children 
-            //if those children is also under other parents (and those parents have not yet been collapsed) -> set visibility = true
-            //this step is not needed when expanding nodes
-            showSharedChildrenNew(notCollapsed, NewInteractiveNode)
-
-            if (d._children == null) {
-                d._children = d.children;
+            ////when collapsing a node, to indicate that the node has already been "collapsed", we move 
+            /// element from "children" to "_children" if that element does not already exist
+            if (d._direct_children == null) {
+                d._direct_children = d.direct_children;
             } else {
-                d.children.forEach(elem => {
-                    d._children.indexOf(elem) === -1 && d._children.push(elem)
+                d.direct_children.forEach(elem => {
+                    d._direct_children.indexOf(elem) === -1 && d._direct_children.push(elem)
                 })
             }
 
-            d.children = null;
+            // /////Check if any direct children have any shared parents
+            // /////In return, we get a list of direct children that won't be collapsed and a list of direct children that will be collapsed
+            var notCollapsedArr = checkSharedChildren(d.direct_children, d.id, InteractivePartNode)
+            var CollapsedArr = removeArrFromArr(d.children, notCollapsedArr) //also include sub children
+            var CollapsedDirectChildrenArr = removeArrFromArr(d.direct_children, notCollapsedArr)
 
-            console.log('triggering if')
-            console.log('New interactive node', NewInteractiveNode)
+            // //// Handle links
+            HidePathNew(d.id, d.children, notCollapsedArr, bundles)
+
+
+            // ////for the list of children that will be collapsed by the node currently being clicked, we should collapse their children too 
+            CollapseSubsequentChildren(CollapsedArr, InteractivePartNode)
+
+
+            // ////Handle visibility
+            ///visibility is different from "collapse/expand" status
+            ///a node would disppear if it is 
+            //1) direct children of the node being clicked and don't have shared parents; 
+            //2) they belong to the nodes that will disppear (and also don't have other parents)
+
+            if (CollapsedDirectChildrenArr.length > 0) {
+                //get detailed information about the nodes that will get collapsed
+                var collapsedNodes = filterArrayIfInArray(InteractivePartNode, CollapsedDirectChildrenArr, 'id')
+
+                //loop through the nodes that will get collapsed
+                var SavedChildren = [];
+                collapsedNodes.forEach(node => {
+                    //check if any of its direct and indirect children belong to other parents
+                    var children = node["children"]
+
+                    //find a list of children that won't be collapsed
+                    if (children && children.length > 0) {
+
+                        var notCollapsedChildren = checkSharedChildren(children, node.id, InteractivePartNode)
+
+                        //now get a list of children that will be collapsed
+                        var childrenToCollapse = removeArrFromArr(children, notCollapsedChildren)
+
+                        childrenToCollapse.forEach(child => {
+                            SavedChildren.indexOf(child) === -1 && SavedChildren.push(child)
+                        })
+                    }
+
+
+
+                })
+
+                console.log('saved child', SavedChildren)
+
+                var NewInteractiveNode = SetVisibilityChildren(CollapsedDirectChildrenArr, InteractivePartNode, false)
+                var NewInteractiveNode = SetVisibilityChildren(SavedChildren, InteractivePartNode, false)
+
+            } else {
+                var NewInteractiveNode = InteractivePartNode
+            }
+
+            d.direct_children = null;
 
         }
-        else if (d.children && d.children.length > 0 && !checkIfDirectLinkExist(d, InteractivePartNode, bundles)) {
-            //for special expansion
-            var directChildren = FilterChildrenIfDirectParent(d.id, d._children, InteractivePartNode)
 
-            // add children nodes back
+        else {
+            console.log('triggering else')
+
+            //get only direct children
+            var directChildren = d._direct_children
+
+            //add children nodes back
             var NewInteractiveNode = SetVisibilityChildren(directChildren, InteractivePartNode, true)
 
-            //get direct children back to "children container"
-            directChildren.forEach(elem => {
-                d.children.indexOf(elem) === -1 && d.children.push(elem)
-            })
-
-
-            addPathNew(d.id, bundles)
-
-            // still hiding children that are not in d.children
-            d._children = d._children.filter(function (el) {
-                return !d.children.includes(el)
-            })
-
-            //relay expanded children 
-            relayExpandedChildren(d.id, directChildren, NewInteractiveNode)
-
-            console.log('else if', NewInteractiveNode)
-
-        } else {
-            var childrenSelected = d.children;
-
-            //get only "direct" children (these children here are directly related to the clicked node)
-            //note: "direct" children could be across multiple levels
-            //for example, for "CellLine" in NF, the direct children are: "Resource" and "Mutation"
-            var directChildren = FilterChildrenIfDirectParent(d.id, d._children, InteractivePartNode)
-
-            // add children nodes back
-            var NewInteractiveNode = SetVisibilityChildren(directChildren, InteractivePartNode, true)
+            console.log('NewInteractive node', NewInteractiveNode)
 
             //add links back from parents to children 
             addPathNew(d.id, bundles)
 
-            //only keep direct children in d.children
-            d.children = directChildren
+            d.direct_children = d._direct_children
 
-            // still hiding children that are not immediate children
-            d._children = d._children.filter(function (el) {
-                return !directChildren.includes(el)
-            })
-
-            //relay expanded children 
-            // tell parents from higher level that their grand children have been expanded. 
-            // without this step, when the node from higher level collapse, it would ignore collapsing the grand children 
-            // example: collapse "Biospecimen" -> expand "ScRNA-seqLevel1" -> collapse "Biospecimen" again
-            relayExpandedChildren(d.id, directChildren, NewInteractiveNode)
-
-            console.log('else statement', NewInteractiveNode)
+            d._direct_children = null
         }
 
 
@@ -436,7 +451,6 @@ function createCollapsibleTree(chart) {
             return obj.visible != false;
         });
 
-        //update(d)
         update(ChangeableNode, bundles);
 
 
@@ -520,13 +534,11 @@ function SetVisibilityChildren(childrenArray, poolNode, visibility) {
     //get all children nodes from the pool
     var changeableNode = filterArrayIfInArray(poolNode, childrenArray, 'id')
 
+    console.log('changeablenode', changeableNode)
+
     //set the attribute "visible"
     changeableNode.forEach(e => {
-        if (e['visible'] === undefined) {
-            e['visible'] = false //set default as hiding children when click
-        } else {
-            e['visible'] = visibility
-        }
+        e['visible'] = visibility
     })
 
     //add changed nodes back to the pool and replace old ones
@@ -579,7 +591,7 @@ function checkSharedChildren(childrenArray, clickElem, poolNode) {
         filteredOtherParentsNodes.forEach(elem => {
 
             //children array of children node 
-            var children = elem['children']
+            var children = elem['direct_children']
 
             // check which children also have other parents
             if (children && children.includes(e.id)) {
@@ -607,15 +619,15 @@ function CollapseSubsequentChildren(childrenArray, poolNode) {
 
         //collapse children of children
         childrenNode.forEach(e => {
-            if (e._children == null) {
-                e._children = e.children
+            if (e._direct_children == null) {
+                e._direct_children = e.direct_children
             } else {
-                if (e.children) {
-                    e._children = e._children.concat(e.children)
+                if (e.direct_children) {
+                    e._direct_children = e._direct_children.concat(e.direct_children)
                 }
             }
 
-            e.children = null
+            e.direct_children = null
         })
         var NewPoolArray = replaceObjInArry(poolNode, childrenNode)
 
@@ -726,7 +738,7 @@ function relayCollapsedChildrenNew(childrenArray, poolNode) {
         }
     })
 
-    console.log('pool node after replay collapsed', poolNode)
+    console.log('after relaycollapsedChildrennew', poolNode)
 }
 
 function relayExpandedChildren(clickElem, childrenArray, poolNode) {
