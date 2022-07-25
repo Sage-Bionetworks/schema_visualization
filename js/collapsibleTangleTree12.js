@@ -240,8 +240,6 @@ function createCollapsibleTree(chart) {
     var links = chart['links']
     var bundles = chart['bundles']
 
-    //console.log('bundles', bundles)
-
     //by default, all the children have been expanded. 
     update(InteractivePartNode, bundles);
 
@@ -281,9 +279,11 @@ function createCollapsibleTree(chart) {
             .attr('class', 'selectable node')
             .attr('stroke', function (d) {
                 //if nodes could be expanded, we change its color to orange
-                //return d._children && d._children.length > 0 && otherThanNull(d._children) ? "orange" : "#575757"
-                return d._children && d._children.length > 0 && !checkIfDirectLinkExist(d, InteractivePartNode, bundles) ? "orange" : "#575757"
+                return d._direct_children && d._direct_children.length > 0 && !checkIfDirectLinkExist(d, InteractivePartNode, bundles) ? "orange" : "#575757"
             })
+            // .style('fill', function (d) {
+            //     return d._direct_children && d._direct_children.length > 0 && !checkIfDirectLinkExist(d, InteractivePartNode, bundles) ? "orange" : "#575757"
+            // })
             .attr('stroke-width', 8) //size of node
             .attr('d', function (d, i) {
                 return `M${d.x} ${d.y - d.height / 2} L${d.x} ${d.y + d.height / 2}` //location of the nodes
@@ -321,8 +321,6 @@ function createCollapsibleTree(chart) {
         //only select paths that have class "link"
         var link = svg.select("g").selectAll("path.link").data(bundles);
         var flexibleLinkEnter = link.enter();
-
-        console.log('bundles', bundles)
 
         flexibleLinkEnter.append('path').merge(link)
             .attr('class', 'link')
@@ -397,6 +395,7 @@ function createCollapsibleTree(chart) {
                     //find a list of children that won't be collapsed
                     if (children && children.length > 0) {
 
+                        //call checkSharedChildren function again and figure out the children that have other parents that have not yet been collapsed
                         var notCollapsedChildren = checkSharedChildren(children, node.id, InteractivePartNode)
 
                         //now get a list of children that will be collapsed
@@ -475,22 +474,8 @@ function checkIfDirectLinkExist(node, InteractivePartNode, bundles) {
     //this also works for combining an array and a null value
     const concatArr = (...arrays) => [].concat(...arrays.filter(Array.isArray));
 
-    //get all children
-    var allChildren = concatArr(node.children, node._children)
-    console.log('allChildren', allChildren)
-
-    //figure out direct children
-    var childrenNode = filterArrayIfInArray(InteractivePartNode, allChildren, 'id')
-    var directChildren = [];
-    childrenNode.forEach(child => {
-        var parents = getLstParents(child)
-        if (parents.includes(node.id)) {
-            directChildren.push(child.id) && directChildren.indexOf(child.id) === -1
-        }
-
-    })
-
-    console.log('direct children', directChildren)
+    //get all direct children
+    var directChildren = concatArr(node.direct_children, node._direct_children)
 
     var SavedLinks = [];
 
@@ -533,8 +518,6 @@ function otherThanNull(arr) {
 function SetVisibilityChildren(childrenArray, poolNode, visibility) {
     //get all children nodes from the pool
     var changeableNode = filterArrayIfInArray(poolNode, childrenArray, 'id')
-
-    console.log('changeablenode', changeableNode)
 
     //set the attribute "visible"
     changeableNode.forEach(e => {
@@ -694,108 +677,4 @@ function addPathNew(clickElem, bundles) {
 function getLstParents(node) {
     var parents = node['parents'].map(function (elem) { return elem.id })
     return parents
-}
-
-function FilterChildrenIfDirectParent(ClickElem, ChildrenArray, poolNode) {
-    var childrenContainer = [];
-    //get children nodes
-    childrenNodes = filterArrayIfInArray(poolNode, ChildrenArray, 'id')
-
-    //loop through the nodes and see if their parent is the clicked node
-    childrenNodes.forEach(node => {
-        var parents = getLstParents(node)
-        if (parents.includes(ClickElem)) {
-            childrenContainer.push(node.id)
-        }
-
-    })
-
-    return childrenContainer
-
-}
-
-
-function relayCollapsedChildrenNew(childrenArray, poolNode) {
-    poolNode.forEach(item => {
-        var childrenArr = item.children; //children array of other parents
-
-        if (childrenArr instanceof Array && childrenArr.length > 0) {
-            childrenArr.forEach(child => {
-                //if the children that we are collapsing also belong to other parents
-                if (childrenArray.includes(child)) {
-                    // then we want to let those parents know that their grand children have been collapsed
-                    item.children = removeElemFromArr(child, childrenArr)
-                    // and save it to container 
-                    if (item._children == null) {
-                        item._children = []
-                    }
-
-                    item._children.indexOf(child) === -1 && item._children.push(child)
-
-                }
-            })
-
-        }
-    })
-
-    console.log('after relaycollapsedChildrennew', poolNode)
-}
-
-function relayExpandedChildren(clickElem, childrenArray, poolNode) {
-    var levelClicked = checkLevel(poolNode, clickElem)
-
-    poolNode.forEach(item => {
-        var childrenArr = item._children; //children array of other parents
-        var level = item.level; //level of other parents
-        var toRemove = [];
-
-        if (childrenArr != null && childrenArr.length > 0) {
-            console.log('item before transform', item)
-            console.log('children of other parents', childrenArr)
-            childrenArr.forEach(child => {
-                //if the children that we are expanding also belong to other parents from higher level
-                if (childrenArray.includes(child) && levelClicked > level) {
-                    //console.log('the child that will move', child)
-
-                    //save it back to "children" container
-                    if (item.children == null) {
-                        item.children = []
-                    }
-
-                    item.children.indexOf(child) === -1 && item.children.push(child)
-                    toRemove.push(child)
-                }
-            })
-
-            //console.log('item', item)
-
-        }
-        //console.log('to remove', toRemove)
-
-        //make sure that _children container no longer contains children that have been moved to "children" container
-        if (item._children != null) {
-            item._children = removeArrFromArr(item._children, toRemove)
-        }
-
-    })
-
-    console.log('after transformation', poolNode)
-
-}
-
-
-
-function showSharedChildrenNew(childrenArr, poolNode) {
-    childrenArr.forEach(child => {
-        SetVisibilityChildren([child], poolNode, true)
-    })
-}
-
-
-function checkLevel(poolNode, element) {
-    var elementNode = filterArrayIfInArray(poolNode, [element], 'id')
-
-    var level = elementNode[0]['level']
-
-    return level
 }

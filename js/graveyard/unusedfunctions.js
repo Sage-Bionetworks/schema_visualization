@@ -1,4 +1,106 @@
 
+function FilterChildrenIfDirectParent(ClickElem, ChildrenArray, poolNode) {
+    var childrenContainer = [];
+    //get children nodes
+    childrenNodes = filterArrayIfInArray(poolNode, ChildrenArray, 'id')
+
+    //loop through the nodes and see if their parent is the clicked node
+    childrenNodes.forEach(node => {
+        var parents = getLstParents(node)
+        if (parents.includes(ClickElem)) {
+            childrenContainer.push(node.id)
+        }
+
+    })
+
+    return childrenContainer
+
+}
+
+function showSharedChildrenNew(childrenArr, poolNode) {
+    childrenArr.forEach(child => {
+        SetVisibilityChildren([child], poolNode, true)
+    })
+}
+
+
+function checkLevel(poolNode, element) {
+    var elementNode = filterArrayIfInArray(poolNode, [element], 'id')
+
+    var level = elementNode[0]['level']
+
+    return level
+}
+
+function relayExpandedChildren(clickElem, childrenArray, poolNode) {
+    var levelClicked = checkLevel(poolNode, clickElem)
+
+    poolNode.forEach(item => {
+        var childrenArr = item._children; //children array of other parents
+        var level = item.level; //level of other parents
+        var toRemove = [];
+
+        if (childrenArr != null && childrenArr.length > 0) {
+            console.log('item before transform', item)
+            console.log('children of other parents', childrenArr)
+            childrenArr.forEach(child => {
+                //if the children that we are expanding also belong to other parents from higher level
+                if (childrenArray.includes(child) && levelClicked > level) {
+                    //console.log('the child that will move', child)
+
+                    //save it back to "children" container
+                    if (item.children == null) {
+                        item.children = []
+                    }
+
+                    item.children.indexOf(child) === -1 && item.children.push(child)
+                    toRemove.push(child)
+                }
+            })
+
+            //console.log('item', item)
+
+        }
+        //console.log('to remove', toRemove)
+
+        //make sure that _children container no longer contains children that have been moved to "children" container
+        if (item._children != null) {
+            item._children = removeArrFromArr(item._children, toRemove)
+        }
+
+    })
+
+    console.log('after transformation', poolNode)
+
+}
+
+
+function relayCollapsedChildrenNew(childrenArray, poolNode) {
+    poolNode.forEach(item => {
+        var childrenArr = item.children; //children array of other parents
+
+        if (childrenArr instanceof Array && childrenArr.length > 0) {
+            childrenArr.forEach(child => {
+                //if the children that we are collapsing also belong to other parents
+                if (childrenArray.includes(child)) {
+                    // then we want to let those parents know that their grand children have been collapsed
+                    item.children = removeElemFromArr(child, childrenArr)
+                    // and save it to container 
+                    if (item._children == null) {
+                        item._children = []
+                    }
+
+                    item._children.indexOf(child) === -1 && item._children.push(child)
+
+                }
+            })
+
+        }
+    })
+
+    console.log('after relaycollapsedChildrennew', poolNode)
+}
+
 //separarte interactive part and steady part
 function SeparateInteractiveAndSteady(chart) {
     var interactiveKeys = FilterNode(chart);
