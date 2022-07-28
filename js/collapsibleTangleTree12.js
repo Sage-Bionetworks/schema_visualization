@@ -382,42 +382,7 @@ function createCollapsibleTree(chart) {
             //1) direct children of the node being clicked and don't have shared parents; 
             //2) they belong to the nodes that will disppear (and also don't have other parents)
 
-            if (CollapsedDirectChildrenArr.length > 0) {
-                //get detailed information about the nodes that will get collapsed
-                var collapsedNodes = filterArrayIfInArray(InteractivePartNode, CollapsedDirectChildrenArr, 'id')
-
-                //loop through the nodes that will get collapsed
-                var SavedChildren = [];
-                collapsedNodes.forEach(node => {
-                    //check if any of its direct and indirect children belong to other parents
-                    var children = node["children"]
-
-                    //find a list of children that won't be collapsed
-                    if (children && children.length > 0) {
-
-                        //call checkSharedChildren function again and figure out the children that have other parents that have not yet been collapsed
-                        var notCollapsedChildren = checkSharedChildren(children, node.id, InteractivePartNode)
-
-                        //now get a list of children that will be collapsed
-                        var childrenToCollapse = removeArrFromArr(children, notCollapsedChildren)
-
-                        childrenToCollapse.forEach(child => {
-                            SavedChildren.indexOf(child) === -1 && SavedChildren.push(child)
-                        })
-                    }
-
-
-
-                })
-
-                console.log('saved child', SavedChildren)
-
-                var NewInteractiveNode = SetVisibilityChildren(CollapsedDirectChildrenArr, InteractivePartNode, false)
-                var NewInteractiveNode = SetVisibilityChildren(SavedChildren, InteractivePartNode, false)
-
-            } else {
-                var NewInteractiveNode = InteractivePartNode
-            }
+            var NewInteractiveNode = HideChildren(CollapsedDirectChildrenArr, InteractivePartNode)
 
             d.direct_children = null;
 
@@ -677,4 +642,47 @@ function addPathNew(clickElem, bundles) {
 function getLstParents(node) {
     var parents = node['parents'].map(function (elem) { return elem.id })
     return parents
+}
+
+function HideChildren(collapsedChildren, poolNode) {
+    if (collapsedChildren.length > 0) {
+        //get detailed information about the nodes that will get collapsed
+        var collapsedNodes = filterArrayIfInArray(poolNode, collapsedChildren, 'id')
+
+        //loop through the nodes that will get collapsed
+        var SavedChildren = [];
+        collapsedNodes.forEach(node => {
+            //check if any of its direct and indirect children belong to other parents
+            var children = node["children"]
+
+            //find a list of children that won't be collapsed
+            if (children && children.length > 0) {
+
+                //call checkSharedChildren function again and figure out the children that have other parents that have not yet been collapsed
+                var notCollapsedChildren = checkSharedChildren(children, node.id, poolNode)
+
+                //now get a list of children that will be collapsed
+                var childrenToCollapse = removeArrFromArr(children, notCollapsedChildren)
+
+                childrenToCollapse.forEach(child => {
+                    SavedChildren.indexOf(child) === -1 && SavedChildren.push(child)
+                })
+            }
+
+
+
+        })
+        var allChildrenCollapse = SavedChildren.concat(collapsedChildren)
+
+        console.log('all children to collapse', allChildrenCollapse)
+
+        var NewInteractiveNode = SetVisibilityChildren(collapsedChildren, poolNode, false)
+        var NewInteractiveNode = SetVisibilityChildren(SavedChildren, poolNode, false)
+
+    } else {
+        var NewInteractiveNode = poolNode
+    }
+
+    return NewInteractiveNode
+
 }
