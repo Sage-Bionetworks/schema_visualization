@@ -1,3 +1,4 @@
+
 function chart(data) {
     //define levels
     var levels = data
@@ -102,6 +103,7 @@ function chart(data) {
     const min_family_height = 16
 
     // THIS relates to size and placement of nodes
+
     nodes.forEach(n => n.height = (Math.max(1, n.bundles.length) - 1) * metro_d)
 
     var x_offset = padding
@@ -158,129 +160,5 @@ function chart(data) {
     }
 
     return { levels, nodes, nodes_index, links, bundles, layout, }
-
-}
-
-function draw(chart, highlight_data, normal_data) {
-
-    console.log('draw chart function is being used');
-
-    const margins = {
-        top: 20,
-        bottom: 300,
-        left: 30,
-        right: 100,
-    };
-
-    const color = d3.scaleOrdinal(d3.schemeDark2);
-
-    const height = 900;
-    const width = 900;
-
-    const totalWidth = width + margins.left + margins.right;
-
-    //remove previous result
-    d3.select('#visualization').select('svg').remove();
-
-    //create new chart
-    const svg = d3.select('#visualization')
-        .append('svg')
-        .attr('width', totalWidth)
-        .attr('height', chart.layout.height)
-        .attr('id', 'myViz');
-
-    chart.bundles.map(b => {
-        let d = b.links.map(l => `
-              M${l.xt} ${l.yt}
-              L${l.xb - l.c1} ${l.yt}
-              A${l.c1} ${l.c1} 90 0 1 ${l.xb} ${l.yt + l.c1}
-              L${l.xb} ${l.ys - l.c2}
-              A${l.c2} ${l.c2} 90 0 0 ${l.xb + l.c2} ${l.ys}
-              L${l.xs} ${l.ys}`
-        ).join("");
-
-        const path = d3.select('#myViz').append('path')
-            .attr('class', 'link')
-            .attr('d', d)
-            .attr('stroke', 'white')
-            .attr('stroke-width', 5);
-
-        const path_two = d3.select('#myViz').append('path')
-            .attr('class', 'link')
-            .attr('d', d)
-            .attr('stroke-width', 2)
-            .attr('stroke', color(b.id));
-    })
-
-    normal_data.map(n => {
-        const path_three = d3.select('#myViz').append('path')
-            .attr('class', 'selectable node')
-            .attr('data-id', n.id)
-            .attr('stroke', 'black')
-            .attr('stroke-width', 8)
-            .attr('d', `M${n.x} ${n.y - n.height / 2} L${n.x} ${n.y + n.height / 2}`);
-
-        const path_four = d3.select('#myViz').append('path')
-            .attr('class', 'node')
-            .attr('stroke', 'white')
-            .attr('stroke-width', 4)
-            .attr('d', `M${n.x} ${n.y - n.height / 2} L${n.x} ${n.y + n.height / 2}`);
-
-        const text_one = d3.select('#myViz').append('text')
-            .attr('class', 'selectable')
-            .attr('data-id', `${n.id}`)
-            .attr('x', `${n.x + 4}`)
-            .attr('y', `${n.y - n.height / 2 - 4}`)
-            .attr('stroke', 'white')
-            .attr('stroke-width', 2)
-
-        text_one.html(n.id)
-
-        const text_two = d3.select('#myViz').append('text')
-            .attr('x', `${n.x + 4}`)
-            .attr('y', `${n.y - n.height / 2 - 4}`)
-            .attr('style', "pointer-events: none");
-
-        text_two.html(n.id)
-
-
-
-    })
-
-    highlight_data.map((n) => {
-        const path_five = d3.select('#myViz').append('path')
-            .attr('class', 'selectable node')
-            .attr('stroke', 'black')
-            .attr('stroke-width', 8)
-            .attr('d', `M${n.x} ${n.y - n.height / 2} L${n.x} ${n.y + n.height / 2}`);
-
-        const path_six = d3.select('#myViz').append('path')
-            .attr('stroke', 'white')
-            .attr('stroke-width', 4)
-            .attr('d', `M${n.x} ${n.y - n.height / 2} L${n.x} ${n.y + n.height / 2}`);
-
-        const text_three = d3.select('#myViz').append('text')
-            .attr('class', 'selectable')
-            .attr('data-id', n.id)
-            .attr('x', `${n.x + 5}`)
-            .attr('y', `${n.y - n.height / 2 - 4}`)
-            .attr('font-weight', 'bold')
-            .attr('stroke', '#FAEFC2')
-            .attr('stroke-width', '4')
-        text_three.html(n.id)
-
-        const text_four = d3.select('#myViz').append('text')
-            .attr('x', `${n.x + 4}`)
-            .attr('y', `${n.y - n.height / 2 - 4}`)
-            .attr('font-weight', 'bold')
-            .attr('style', 'pointer-events: auto;')
-
-        text_four.html(n.id)
-
-
-
-
-    })
-
 
 }
