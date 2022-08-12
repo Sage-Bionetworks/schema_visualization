@@ -3,12 +3,12 @@ function selectSchema() {
     var selectedSchemaOption = document.getElementById("schema").value;
 
     if (selectedSchemaOption == "HTAN" || selectedSchemaOption == "HTAN RequiresDependency" || selectedSchemaOption == "HTAN Component RequiresDependency") {
-        var merged_data_2 = parseCSVFiles('files/merged@20.vis_data.csv')
+        var merged_data_2 = parseCSVFiles('files/Merged/merged_HTAN.csv')
 
     } else if (selectedSchemaOption == "NF Tools Registry") {
-        var merged_data_2 = parseCSVFiles('files/NF_merged.vis_data.csv')
+        var merged_data_2 = parseCSVFiles('files/Merged/merged_NF.csv')
     } else if (selectedSchemaOption == "AmpAD" || selectedSchemaOption == "AmpAD view Dependencies") {
-        var merged_data_2 = parseCSVFiles('files/ampad_merged@3.vis_data.csv')
+        var merged_data_2 = parseCSVFiles('files/Merged/merged_ampad.csv')
     }
 
     //get all_attribute_info
@@ -30,7 +30,6 @@ function selectSchema() {
 
     })
 
-
 }
 
 
@@ -47,12 +46,14 @@ function selectDataset() {
         var tangled_tree_data = parseJSON('files/JSON/HTAN_tangled_tree@2.json');
         var normal_dependencies = parseCSVFiles('files/NormalDependencies/normal_dependencies@1.csv');
         var highlight_dependencies = parseCSVFiles('files/HighlighDepedencies/highlight_dependencies@1.csv');
+        var merged_data = parseCSVFiles('files/Merged/merged_HTAN.csv');
     }
 
     else if (selectedSchemaOption === "NF Tools Registry") {
         var tangled_tree_data = parseJSON('files/JSON/nf_tangled_tree.json');
         var normal_dependencies = parseCSVFiles('files/NormalDependencies/nf_normal_dependencies.csv');
         var highlight_dependencies = parseCSVFiles('files/HighlighDepedencies/nf_highlight_dependencies.csv');
+        var merged_data = parseCSVFiles('files/Merged/merged_NF.csv');
     }
 
 
@@ -93,4 +94,11 @@ function selectDataset() {
 
 
     })
+
+    merged_data.then(data => {
+        drawTable(data, selectedDatasetOption)
+    })
+
+
+
 }

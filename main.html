@@ -23,6 +23,26 @@
 
         Choose a dataset type
         <select id="dataset" onchange="selectDataset()"></select>
+
+        <div>
+            <form name="table">
+                <label>Please select an option:</label>&nbsp;&nbsp;
+                <input type="radio" name="attribute" id="is_allAttributes" value="All Attributes" , />
+                <label>All Attributes</label>
+
+                <input type="radio" name="attribute" id="is_requiredAttributes" value="Required Attributes" , />
+                <label>Required Attributes</label>
+
+                <input type="radio" name="attribute" id="is_conditionallyRequired"
+                    value="Conditionally Required Attributes" />
+                <label>Conditionally Required Attributes</label>
+
+                <input type="radio" name="attribute" id="is_conditionallyAndRequired"
+                    value="Required and Conditionally Required Attributes" />
+                <label>Required and Conditionally Required Attributes</label>
+            </form>
+        </div>
+
     </div>
 
     <div id="visualization">
@@ -32,6 +52,8 @@
     <div id="visualization2">
 
     </div>
+
+    <div class="center" id="table"></div>
 
 
 </body>
@@ -54,5 +76,6 @@
 <script src="js/chart.js"></script>
 <script type="text/javascript" src="js/PrepareRender.js"></script>
 <script type="text/javascript" src="js/collapsibleTangleTree.js"></script>
+<script type="text/javascript" src="js/DrawTable.js"></script>
 
 </html>
