@@ -84,107 +84,107 @@ function preprocessChart(chart) {
     //console.log(chart)
 
     ///////////////////////NF
-    chart['nodes'].forEach(element => {
-        if (element['id'] == "Donor") {
-            element['children'] = ['CellLine', 'AnimalModel', 'Resource', 'Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Mutation', 'Development']
-            element['direct_children'] = ['CellLine', 'AnimalModel']
-        }
-        else if (element['id'] == "CellLine") {
-            element['children'] = ['Resource', 'Mutation', 'Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Development']
-            element['direct_children'] = ['Resource', 'Mutation']
-        }
-        else if (element['id'] == "AnimalModel") {
-            element['direct_children'] = ['Resource', 'Mutation']
-            element['children'] = ['Resource', 'Mutation', 'Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Mutation', 'Development']
-        }
-        else if (element['id'] == "GeneticReagent") {
-            element['direct_children'] = ['Resource']
-            element['children'] = ['Resource', 'Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Mutation', 'Development']
-        }
-        else if (element['id'] == "Antibody") {
-            element['direct_children'] = ['Resource']
-            element['children'] = ['Resource', 'Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Mutation', 'Development']
-        }
-        else if (element['id'] == "Resource") {
-            element['direct_children'] = ['Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Development']
-            element['children'] = ['Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Development']
-        }
-        else if (element['id'] == "Vendor") {
-            element['direct_children'] = ['VendorItem']
-            element['children'] = ['VendorItem']
-        }
-        else if (element['id'] == "MutationDetails") {
-            element['direct_children'] = ['Mutation']
-            element['children'] = ['Mutation']
-        }
-        else if (element['id'] == "Investigator") {
-            element['direct_children'] = ['Observation', 'Development']
-            element['children'] = ['Observation', 'Development']
-        }
-        else if (element['id'] == "Publication") {
-            element['direct_children'] = ['Usage', 'Development']
-            element['children'] = ['Usage', 'Development']
-        }
-        else if (element['id'] == "Funder") {
-            element['direct_children'] = ['Development']
-            element['children'] = ['Development']
-        }
-        else {
-            element['direct_children'] = []
-            element['children'] = []
-        }
-
-    })
-
-
-    ////////////////////////HTAN
     // chart['nodes'].forEach(element => {
-    //     element['visible'] = true
-    //     if (element['id'] == 'Biospecimen') {
-    //         element['direct_children'] = ['ScRNA-seqLevel1', 'BulkRNA-seqLevel1', 'BulkWESLevel1', 'OtherAssay', 'ScATAC-seqLevel1', 'ImagingLevel2']
-    //         element['children'] = ['ScRNA-seqLevel1', 'BulkRNA-seqLevel1',
-    //             'BulkWESLevel1', 'OtherAssay', 'ScATAC-seqLevel1', 'ImagingLevel2',
-    //             'ScRNA-seqLevel2', 'BulkRNA-seqLevel2', 'BulkWESLevel2',
-    //             'ScRNA-seqLevel3', 'BulkRNA-seqLevel3', 'BulkWESLevel3', 'ScRNA-seqLevel4']
-
+    //     if (element['id'] == "Donor") {
+    //         element['children'] = ['CellLine', 'AnimalModel', 'Resource', 'Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Mutation', 'Development']
+    //         element['direct_children'] = ['CellLine', 'AnimalModel']
     //     }
-    //     else if (element['id'] == 'ImagingLevel2Channels') {
-    //         element['direct_children'] = ['ImagingLevel2']
-    //         element['children'] = ['ImagingLevel2']
-    //     } else if (element['id'] == 'ScRNA-seqLevel1') {
-    //         element['children'] = ['ScRNA-seqLevel2', 'ScRNA-seqLevel3', 'ScRNA-seqLevel4']
-    //         element['direct_children'] = ['ScRNA-seqLevel2']
-    //     } else if (element['id'] == 'BulkRNA-seqLevel1') {
-    //         element['children'] = ['BulkRNA-seqLevel2', 'BulkRNA-seqLevel3']
-    //         element['direct_children'] = ['BulkRNA-seqLevel2']
-    //     } else if (element['id'] == 'BulkRNA-seqLevel2') {
-    //         element['direct_children'] = ['BulkRNA-seqLevel3']
-    //         element['children'] = ['BulkRNA-seqLevel3']
+    //     else if (element['id'] == "CellLine") {
+    //         element['children'] = ['Resource', 'Mutation', 'Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Development']
+    //         element['direct_children'] = ['Resource', 'Mutation']
     //     }
-
-    //     else if (element['id'] == 'BulkWESLevel1') {
-    //         element['children'] = ['BulkWESLevel2', 'BulkWESLevel3']
-    //         element['direct_children'] = ['BulkWESLevel2']
+    //     else if (element['id'] == "AnimalModel") {
+    //         element['direct_children'] = ['Resource', 'Mutation']
+    //         element['children'] = ['Resource', 'Mutation', 'Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Mutation', 'Development']
     //     }
-    //     else if (element['id'] == 'BulkWESLevel2') {
-    //         element['direct_children'] = ['BulkWESLevel3']
-
+    //     else if (element['id'] == "GeneticReagent") {
+    //         element['direct_children'] = ['Resource']
+    //         element['children'] = ['Resource', 'Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Mutation', 'Development']
     //     }
-    //     else if (element['id'] == 'ScRNA-seqLevel2') {
-    //         element['children'] = ['ScRNA-seqLevel3', 'ScRNA-seqLevel4']
-    //         element['direct_children'] = ['ScRNA-seqLevel3']
+    //     else if (element['id'] == "Antibody") {
+    //         element['direct_children'] = ['Resource']
+    //         element['children'] = ['Resource', 'Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Mutation', 'Development']
     //     }
-    //     else if (element['id'] == 'ScRNA-seqLevel3') {
-    //         element['direct_children'] = ['ScRNA-seqLevel4']
+    //     else if (element['id'] == "Resource") {
+    //         element['direct_children'] = ['Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Development']
+    //         element['children'] = ['Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Development']
+    //     }
+    //     else if (element['id'] == "Vendor") {
+    //         element['direct_children'] = ['VendorItem']
+    //         element['children'] = ['VendorItem']
+    //     }
+    //     else if (element['id'] == "MutationDetails") {
+    //         element['direct_children'] = ['Mutation']
+    //         element['children'] = ['Mutation']
+    //     }
+    //     else if (element['id'] == "Investigator") {
+    //         element['direct_children'] = ['Observation', 'Development']
+    //         element['children'] = ['Observation', 'Development']
+    //     }
+    //     else if (element['id'] == "Publication") {
+    //         element['direct_children'] = ['Usage', 'Development']
+    //         element['children'] = ['Usage', 'Development']
+    //     }
+    //     else if (element['id'] == "Funder") {
+    //         element['direct_children'] = ['Development']
+    //         element['children'] = ['Development']
     //     }
     //     else {
     //         element['direct_children'] = []
+    //         element['children'] = []
     //     }
 
     // })
-    // return chart
 
+
+    ////////////////////////HTAN
+    chart['nodes'].forEach(element => {
+        element['visible'] = true
+        if (element['id'] == 'Biospecimen') {
+            element['direct_children'] = ['ScRNA-seqLevel1', 'BulkRNA-seqLevel1', 'BulkWESLevel1', 'OtherAssay', 'ScATAC-seqLevel1', 'ImagingLevel2']
+            element['children'] = ['ScRNA-seqLevel1', 'BulkRNA-seqLevel1',
+                'BulkWESLevel1', 'OtherAssay', 'ScATAC-seqLevel1', 'ImagingLevel2',
+                'ScRNA-seqLevel2', 'BulkRNA-seqLevel2', 'BulkWESLevel2',
+                'ScRNA-seqLevel3', 'BulkRNA-seqLevel3', 'BulkWESLevel3', 'ScRNA-seqLevel4']
+
+        }
+        else if (element['id'] == 'ImagingLevel2Channels') {
+            element['direct_children'] = ['ImagingLevel2']
+            element['children'] = ['ImagingLevel2']
+        } else if (element['id'] == 'ScRNA-seqLevel1') {
+            element['children'] = ['ScRNA-seqLevel2', 'ScRNA-seqLevel3', 'ScRNA-seqLevel4']
+            element['direct_children'] = ['ScRNA-seqLevel2']
+        } else if (element['id'] == 'BulkRNA-seqLevel1') {
+            element['children'] = ['BulkRNA-seqLevel2', 'BulkRNA-seqLevel3']
+            element['direct_children'] = ['BulkRNA-seqLevel2']
+        } else if (element['id'] == 'BulkRNA-seqLevel2') {
+            element['direct_children'] = ['BulkRNA-seqLevel3']
+            element['children'] = ['BulkRNA-seqLevel3']
+        }
+
+        else if (element['id'] == 'BulkWESLevel1') {
+            element['children'] = ['BulkWESLevel2', 'BulkWESLevel3']
+            element['direct_children'] = ['BulkWESLevel2']
+        }
+        else if (element['id'] == 'BulkWESLevel2') {
+            element['direct_children'] = ['BulkWESLevel3']
+
+        }
+        else if (element['id'] == 'ScRNA-seqLevel2') {
+            element['children'] = ['ScRNA-seqLevel3', 'ScRNA-seqLevel4']
+            element['direct_children'] = ['ScRNA-seqLevel3']
+        }
+        else if (element['id'] == 'ScRNA-seqLevel3') {
+            element['direct_children'] = ['ScRNA-seqLevel4']
+        }
+        else {
+            element['direct_children'] = []
+        }
+
+    })
     return chart
+
+    //return chart
 }
 
 function removeElemFromArr(item, array) {
