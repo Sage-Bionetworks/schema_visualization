@@ -1,6 +1,7 @@
 function drawTable(data, selectedDataType) {
     all_attribute_info = d3.group(data, (d) => d.Component)
     //see which radio button get selected
+    //control using radio buttons to filter attribute tables
     var rad = document.table.attribute;
     for (var i = 0; i < rad.length; i++) {
         rad[i].addEventListener('change', function () {
@@ -12,9 +13,14 @@ function drawTable(data, selectedDataType) {
         });
     }
 
-
+    //create new graph by default 
+    //this part gets triggered when users collapse/expand a node
+    d3.select('#table').select('#jsonTable').remove();
+    var attribute_to_load = getAttributes(all_attribute_info, selectedDataType, "All Attributes")
+    createTable(attribute_to_load)
 
 }
+
 
 function getAttributes(all_attribute_info, datatype, radios) {
     if (radios == "Required Attributes") {

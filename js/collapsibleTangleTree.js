@@ -203,8 +203,17 @@ function addElemToArray(newItem, array) {
     return array
 }
 
+function filterAttributeTable(schema, id) {
 
-function createCollapsibleTree(chart) {
+    if (schema == "HTAN") {
+        var merged_data = parseCSVFiles('files/Merged/merged_HTAN.csv');
+    } else if (schema == "NF") {
+        var merged_data = parseCSVFiles('files/Merged/merged_HTAN.csv');
+    }
+
+}
+
+function createCollapsibleTree(chart, schemaOption) {
 
     //preprocess data
     var chart = preprocessChart(chart);
@@ -343,6 +352,21 @@ function createCollapsibleTree(chart) {
 
     }
 
+    function generateAttributeTable(schemaOption, id) {
+        if (schemaOption == 'HTAN') {
+            var merged_data = parseCSVFiles('files/Merged/merged_HTAN.csv');
+
+        } else if (schemaOption == 'NF') {
+            var merged_data = parseCSVFiles('files/Merged/merged_NF.csv');
+        }
+
+        merged_data.then(data => {
+            console.log('id', id)
+            drawTable(data, id)
+        })
+    }
+
+
     function click(d) {
         //the if statement controls collapsing node, and the else statement controls expanding nodes. 
         if (d.direct_children && d.direct_children.length > 0 && checkIfDirectLinkExist(d, InteractivePartNode, bundles)) {
@@ -414,6 +438,8 @@ function createCollapsibleTree(chart) {
         });
 
         update(ChangeableNode, bundles);
+
+        generateAttributeTable(schemaOption, d.id);
 
 
     }
