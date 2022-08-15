@@ -281,13 +281,12 @@ function createCollapsibleTree(chart) {
                 //if nodes could be expanded, we change its color to orange
                 return d._direct_children && d._direct_children.length > 0 && !checkIfDirectLinkExist(d, InteractivePartNode, bundles) ? "orange" : "#575757"
             })
-            // .style('fill', function (d) {
-            //     return d._direct_children && d._direct_children.length > 0 && !checkIfDirectLinkExist(d, InteractivePartNode, bundles) ? "orange" : "#575757"
-            // })
             .attr('stroke-width', 8) //size of node
             .attr('d', function (d, i) {
                 return `M${d.x} ${d.y - d.height / 2} L${d.x} ${d.y + d.height / 2}` //location of the nodes
-            }).on('click', click);
+            }).on('click', function (d) {
+                click;
+            });
 
         //exiting nodes
         flexibleNode.exit().remove();
@@ -310,10 +309,10 @@ function createCollapsibleTree(chart) {
         var flexibletTextEnter = flexibleText.enter();
 
         flexibletTextEnter.append('text').merge(flexibleText)
-            .attr('style', 'pointer-events: none')
             .attr('x', function (d) { return (d.x + 5) })
             .attr('y', function (d) { return (d.y - d.height / 2 - 4) })
-            .text(function (d) { return d.id });
+            .text(function (d) { return d.id })
+            .on('click', click);
 
         flexibleText.exit().remove();
 
@@ -335,7 +334,6 @@ function createCollapsibleTree(chart) {
                 return d
             })
             .attr('stroke', function (b) {
-                //console.log(b.source)
                 return color(b.id)
             })
             .attr('stroke-width', 2)
