@@ -176,6 +176,7 @@ function preprocessChart(chart) {
         }
         else if (element['id'] == 'ScRNA-seqLevel3') {
             element['direct_children'] = ['ScRNA-seqLevel4']
+            element['children'] = ['ScRNA-seqLevel4']
         }
         else {
             element['direct_children'] = []
@@ -330,15 +331,15 @@ function createCollapsibleTree(chart) {
 
         flexibletTextEnter.append('text').merge(flexibleText)
             .attr('style', 'pointer-events: none')
-            //.attr("class", "fa")
+            .attr("class", function (d) {
+                return d._direct_children && d._direct_children.length > 0 && !checkIfDirectLinkExist(d, InteractivePartNode, bundles) ? "fa" : ""
+            })
             .attr('x', function (d) { return (d.x + 5) })
             .attr('y', function (d) { return (d.y - d.height / 2 - 4) })
-            // .text(function (d) { return d.id });
             .text(function (d) {
                 if (d._direct_children && d._direct_children.length > 0 && !checkIfDirectLinkExist(d, InteractivePartNode, bundles)) {
-                    // var label = d.id
-                    // var result = label.concat('\uf118')
-                    var result = '\uf118'
+                    var label = d.id
+                    var result = label.concat('\uf067')
                     return result
                 } else {
                     return d.id
