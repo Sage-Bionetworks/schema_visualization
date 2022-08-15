@@ -175,12 +175,12 @@ function preprocessChart(chart) {
             element['direct_children'] = ['ScRNA-seqLevel3']
         }
         else if (element['id'] == 'ScRNA-seqLevel3') {
-            element['direct_children'] = ['ScRNA-seqLevel4']
             element['children'] = ['ScRNA-seqLevel4']
+            element['direct_children'] = ['ScRNA-seqLevel4']
         }
         else {
-            element['direct_children'] = []
             element['children'] = []
+            element['direct_children'] = []
         }
 
     })
