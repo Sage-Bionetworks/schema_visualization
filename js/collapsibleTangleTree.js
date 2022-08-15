@@ -312,26 +312,6 @@ function createCollapsibleTree(chart, schemaOption) {
         //     }).remove()
 
         // }
-        //////////////////////////////
-        // ///////////////control icons
-        // var hoveredStyle = { "background-color": "lightgray" };
-        // var flexibleIcon = svg.selectAll("i").data(InteractivePartNode);
-        // var flexibleIconEnter = flexibleIcon.enter();
-        // // flexibleIconEnter.append("i").merge(flexibleIcon).attr("class", function (d) {
-        // //     d._direct_children && d._direct_children.length > 0 && !checkIfDirectLinkExist(d, InteractivePartNode, bundles) ? "fa-thin fa-plus" : "random"
-        // // })
-        // //     .on("mouseover", function () {
-        // //         d3.select(this).style(hoveredStyle);
-        // //     })
-
-        // flexibleIconEnter.append("i").merge(flexibleIcon).attr("class", "fa-solid fa-plus")
-        //     .on("mouseover", function () {
-        //         d3.select(this).style(hoveredStyle);
-        //     })
-        //     .attr('x', function (d) { return (d.x + 6) })
-        //     .attr('y', function (d) { return (d.y - d.height / 2 - 4) })
-
-        // flexibleIconEnter.exit().remove();
 
         ///////////////control text
         //only select "text" element and bind those elements to data
