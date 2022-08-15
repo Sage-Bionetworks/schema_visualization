@@ -180,6 +180,7 @@ function preprocessChart(chart) {
         }
         else {
             element['direct_children'] = []
+            element['children'] = []
         }
 
     })
@@ -204,8 +205,17 @@ function addElemToArray(newItem, array) {
     return array
 }
 
+function filterAttributeTable(schema, id) {
 
-function createCollapsibleTree(chart) {
+    if (schema == "HTAN") {
+        var merged_data = parseCSVFiles('files/Merged/merged_HTAN.csv');
+    } else if (schema == "NF") {
+        var merged_data = parseCSVFiles('files/Merged/merged_HTAN.csv');
+    }
+
+}
+
+function createCollapsibleTree(chart, schemaOption) {
 
     //preprocess data
     var chart = preprocessChart(chart);
@@ -282,13 +292,12 @@ function createCollapsibleTree(chart) {
                 //if nodes could be expanded, we change its color to orange
                 return d._direct_children && d._direct_children.length > 0 && !checkIfDirectLinkExist(d, InteractivePartNode, bundles) ? "orange" : "#575757"
             })
-            // .style('fill', function (d) {
-            //     return d._direct_children && d._direct_children.length > 0 && !checkIfDirectLinkExist(d, InteractivePartNode, bundles) ? "orange" : "#575757"
-            // })
             .attr('stroke-width', 8) //size of node
             .attr('d', function (d, i) {
                 return `M${d.x} ${d.y - d.height / 2} L${d.x} ${d.y + d.height / 2}` //location of the nodes
-            }).on('click', click);
+            }).on('click', function (d) {
+                click;
+            });
 
         //exiting nodes
         flexibleNode.exit().remove();
@@ -330,7 +339,6 @@ function createCollapsibleTree(chart) {
         var flexibletTextEnter = flexibleText.enter();
 
         flexibletTextEnter.append('text').merge(flexibleText)
-            .attr('style', 'pointer-events: none')
             .attr("class", function (d) {
                 return d._direct_children && d._direct_children.length > 0 && !checkIfDirectLinkExist(d, InteractivePartNode, bundles) ? "fa" : ""
             })
@@ -345,6 +353,7 @@ function createCollapsibleTree(chart) {
                     return d.id
                 }
             })
+            .on('click', click);
 
         flexibleText.exit().remove();
 
@@ -366,7 +375,6 @@ function createCollapsibleTree(chart) {
                 return d
             })
             .attr('stroke', function (b) {
-                //console.log(b.source)
                 return color(b.id)
             })
             .attr('stroke-width', 2)
@@ -375,6 +383,21 @@ function createCollapsibleTree(chart) {
 
 
     }
+
+    function generateAttributeTable(schemaOption, id) {
+        if (schemaOption == 'HTAN') {
+            var merged_data = parseCSVFiles('files/Merged/merged_HTAN.csv');
+
+        } else if (schemaOption == 'NF') {
+            var merged_data = parseCSVFiles('files/Merged/merged_NF.csv');
+        }
+
+        merged_data.then(data => {
+            console.log('id', id)
+            drawTable(data, id)
+        })
+    }
+
 
     function click(d) {
         //the if statement controls collapsing node, and the else statement controls expanding nodes. 
@@ -447,6 +470,8 @@ function createCollapsibleTree(chart) {
         });
 
         update(ChangeableNode, bundles);
+
+        generateAttributeTable(schemaOption, d.id);
 
 
     }
