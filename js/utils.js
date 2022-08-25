@@ -37,8 +37,17 @@ function GroupDependencies(dependencies) {
 }
 
 
+function onlyUniqueFromArray(arr) {
+    var unique = arr.filter(function (item, pos) {
+        return arr.indexOf(item) == pos;
+    });
 
+    console.log('unique', unique)
+    return unique
+}
 
-// function normaltext_to_load(normal_dependencies_grouped) {
-//     return normal_dependencies_grouped.get(datatype);
-// }
+function RemoveEmptyFromArray(array) {
+    var filterd = array.filter(item => item)
+
+    return filterd
+}

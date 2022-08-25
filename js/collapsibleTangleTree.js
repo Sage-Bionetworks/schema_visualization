@@ -5,50 +5,6 @@ function concatArrayFromArray(array) {
 
 }
 
-function ExtractValsFromArrayObj(array, key) {
-    var NewArray = [];
-
-    for (var i = 0; i < array.length; i++) {
-        if (array[i][key]) {
-            if (array[i][key].length > 0) {
-                NewArray.push(array[i][key]);
-            }
-        }
-    }
-
-
-
-    return NewArray
-
-}
-
-function getParentHasChildren(arrayofObj) {
-    //filter out parents that do not have children. This return an array of objects 
-    var ParentsWithChildrenObjArray = _.filter(arrayofObj, function (item) { return item['children'].length !== 0; });
-    //get the keys of parents. this returns like ['Biospecimen', 'ImagingLevel2Channels']
-    var ParentKeys = ExtractValsFromArrayObj(ParentsWithChildrenObjArray, 'id')
-
-    console.log('parent keys', ParentKeys)
-
-    return ParentKeys
-
-}
-
-function onlyUniqueFromArray(arr) {
-    var unique = arr.filter(function (item, pos) {
-        return arr.indexOf(item) == pos;
-    });
-
-    console.log('unique', unique)
-    return unique
-}
-
-function RemoveEmptyFromArray(array) {
-    var filterd = array.filter(item => item)
-
-    return filterd
-}
-
 function filterArrayIfInArray(baseArray, filter, keyInBase) {
 
     var filteredArray = baseArray.filter(i => filter.includes(i[keyInBase]))
@@ -167,6 +123,7 @@ function preprocessChart(chart) {
             element['direct_children'] = ['BulkWESLevel2']
         }
         else if (element['id'] == 'BulkWESLevel2') {
+            element['children'] = ['BulkWESLevel3']
             element['direct_children'] = ['BulkWESLevel3']
 
         }
@@ -203,16 +160,6 @@ function addElemToArray(newItem, array) {
     }
     array.indexOf(newItem) === -1 && array.push(newItem)
     return array
-}
-
-function filterAttributeTable(schema, id) {
-
-    if (schema == "HTAN") {
-        var merged_data = parseCSVFiles('files/Merged/merged_HTAN.csv');
-    } else if (schema == "NF") {
-        var merged_data = parseCSVFiles('files/Merged/merged_HTAN.csv');
-    }
-
 }
 
 function createCollapsibleTree(chart, schemaOption) {
@@ -373,7 +320,6 @@ function createCollapsibleTree(chart, schemaOption) {
         }
 
         merged_data.then(data => {
-            console.log('id', id)
             drawTable(data, id)
         })
     }

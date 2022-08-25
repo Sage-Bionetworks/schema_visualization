@@ -1,4 +1,34 @@
 
+function ExtractValsFromArrayObj(array, key) {
+    var NewArray = [];
+
+    for (var i = 0; i < array.length; i++) {
+        if (array[i][key]) {
+            if (array[i][key].length > 0) {
+                NewArray.push(array[i][key]);
+            }
+        }
+    }
+
+
+
+    return NewArray
+
+}
+
+function getParentHasChildren(arrayofObj) {
+    //filter out parents that do not have children. This return an array of objects 
+    var ParentsWithChildrenObjArray = _.filter(arrayofObj, function (item) { return item['children'].length !== 0; });
+    //get the keys of parents. this returns like ['Biospecimen', 'ImagingLevel2Channels']
+    var ParentKeys = ExtractValsFromArrayObj(ParentsWithChildrenObjArray, 'id')
+
+    console.log('parent keys', ParentKeys)
+
+    return ParentKeys
+
+}
+
+
 function FilterChildrenIfDirectParent(ClickElem, ChildrenArray, poolNode) {
     var childrenContainer = [];
     //get children nodes
