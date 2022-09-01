@@ -235,6 +235,7 @@ function createCollapsibleTree(chart, schemaOption) {
         //create nodes
         flexibleNodeEnter.append('path').merge(flexibleNode)
             .attr('class', 'selectable node')
+            .attr("id", function (d) { return "node_" + d.id; })
             .attr('stroke', function (d) {
                 //if nodes could be expanded, we change its color to orange
                 return d._direct_children && d._direct_children.length > 0 && !checkIfDirectLinkExist(d, InteractivePartNode, bundles) ? "orange" : "#575757"
@@ -244,7 +245,7 @@ function createCollapsibleTree(chart, schemaOption) {
                 return `M${d.x} ${d.y - d.height / 2} L${d.x} ${d.y + d.height / 2}` //location of the nodes
             }).on('click', function (d) {
                 click;
-            });
+            })
 
         //exiting nodes
         flexibleNode.exit().remove();
@@ -271,6 +272,7 @@ function createCollapsibleTree(chart, schemaOption) {
             })
             .attr('x', function (d) { return (d.x + 5) })
             .attr('y', function (d) { return (d.y - d.height / 2 - 4) })
+            .attr("id", function (d) { return "text_" + d.id; })
             .text(function (d) {
                 if (d._direct_children && d._direct_children.length > 0 && !checkIfDirectLinkExist(d, InteractivePartNode, bundles)) {
                     var label = d.id
@@ -280,7 +282,9 @@ function createCollapsibleTree(chart, schemaOption) {
                     return d.id
                 }
             })
-            .on('click', click);
+            .on('click', click)
+            .on('mouseover', mouseover)
+            .on('mouseout', mouseout)
 
         flexibleText.exit().remove();
 
@@ -291,6 +295,7 @@ function createCollapsibleTree(chart, schemaOption) {
 
         flexibleLinkEnter.append('path').merge(link)
             .attr('class', 'link')
+            .attr("id", function (d) { return "link_" + d.id; })
             .attr('d', function (b) {
                 let d = b.links.map(l => `
                     M${l.xt} ${l.yt}
@@ -322,6 +327,33 @@ function createCollapsibleTree(chart, schemaOption) {
         merged_data.then(data => {
             drawTable(data, id)
         })
+    }
+
+    function mouseover(d) {
+        var textId = d.id
+
+        //change the stroke width of node
+        d3.selectAll("#node_" + textId).style("stroke-width", "10");
+
+        //change the stroke width of links
+        d3.selectAll("path.link").filter(function (d) {
+            var linkId = d.id
+            return linkId.includes(textId)
+        }).style("stroke-width", "4")
+    }
+
+    function mouseout(d) {
+        var textId = d.id
+
+        //change the stroke width of node
+        d3.selectAll("#node_" + textId).style("stroke-width", "8");
+
+        //change the stroke width of links
+        d3.selectAll("path.link").filter(function (d) {
+            var linkId = d.id
+            return linkId.includes(textId)
+        }).style("stroke-width", "2")
+
     }
 
 
