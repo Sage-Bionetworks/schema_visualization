@@ -165,7 +165,7 @@ function addElemToArray(newItem, array) {
 function createCollapsibleTree(chart, schemaOption) {
 
     //preprocess data
-    var chart = preprocessChart(chart);
+    //var chart = preprocessChart(chart);
 
     console.log('nodes after processsing', chart['nodes'])
 
@@ -320,7 +320,7 @@ function createCollapsibleTree(chart, schemaOption) {
         if (schemaOption == 'HTAN') {
             var merged_data = parseCSVFiles('files/Merged/merged_HTAN.csv');
 
-        } else if (schemaOption == 'NF') {
+        } else if (schemaOption == 'NF Tools Registry') {
             var merged_data = parseCSVFiles('files/Merged/merged_NF.csv');
         }
 
@@ -376,12 +376,22 @@ function createCollapsibleTree(chart, schemaOption) {
 
             // /////Check if any direct children have any shared parents
             // /////In return, we get a list of direct children that won't be collapsed and a list of direct children that will be collapsed
-            var notCollapsedArr = checkSharedChildren(d.direct_children, d.id, InteractivePartNode)
-            var CollapsedArr = removeArrFromArr(d.children, notCollapsedArr) //also include sub children
-            var CollapsedDirectChildrenArr = removeArrFromArr(d.direct_children, notCollapsedArr)
+            //var notCollapsedArr = checkSharedChildren(d.direct_children, d.id, InteractivePartNode)
+            var notDisappearArr = checkSharedChildren(d.direct_children, d.id, InteractivePartNode)
+            var CollapsedArr = d.children
+            //var CollapsedArr = removeArrFromArr(d.children, notCollapsedArr) //also include sub children
+            //var CollapsedDirectChildrenArr = removeArrFromArr(d.direct_children, notCollapsedArr)
+            var CollapsedDirectChildrenArr = d.direct_children
+            var DisappearDirectChildrenArr = removeArrFromArr(d.direct_children, notDisappearArr)
+
+            //console.log('notCollapsed direct children', notCollapsedArr)
+            console.log('children that will be collapsed', CollapsedArr)
+            console.log('collapse direct children', CollapsedDirectChildrenArr)
+            console.log('disappear direct children', DisappearDirectChildrenArr)
 
             // //// Handle links
-            HidePathNew(d.id, d.children, notCollapsedArr, bundles)
+            //HidePathNew(d.id, d.children, notCollapsedArr, bundles)
+            HidePathNew(d.id, d.children, notDisappearArr, bundles)
 
 
             // ////for the list of children that will be collapsed by the node currently being clicked, we should collapse their children too 
@@ -394,7 +404,8 @@ function createCollapsibleTree(chart, schemaOption) {
             //1) direct children of the node being clicked and don't have shared parents; 
             //2) they belong to the nodes that will disppear (and also don't have other parents)
 
-            var NewInteractiveNode = HideChildren(CollapsedDirectChildrenArr, InteractivePartNode)
+            //var NewInteractiveNode = HideChildren(CollapsedDirectChildrenArr, InteractivePartNode)
+            var NewInteractiveNode = HideChildren(DisappearDirectChildrenArr, InteractivePartNode)
 
             d.direct_children = null;
 
@@ -601,6 +612,7 @@ function CollapseSubsequentChildren(childrenArray, poolNode) {
 }
 
 function HidePathNew(clickElem, childrenArray, notCollapsed, bundles) {
+    console.log('childrenArray', childrenArray)
     //hide links
     bundles.forEach(bundles => {
         var linkArr = bundles['links']
