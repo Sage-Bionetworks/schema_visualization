@@ -165,7 +165,7 @@ function addElemToArray(newItem, array) {
 function createCollapsibleTree(chart, schemaOption) {
 
     //preprocess data
-    var chart = preprocessChart(chart);
+    //var chart = preprocessChart(chart);
 
     console.log('nodes after processsing', chart['nodes'])
 
@@ -320,7 +320,7 @@ function createCollapsibleTree(chart, schemaOption) {
         if (schemaOption == 'HTAN') {
             var merged_data = parseCSVFiles('files/Merged/merged_HTAN.csv');
 
-        } else if (schemaOption == 'NF') {
+        } else if (schemaOption == 'NF Tools Registry') {
             var merged_data = parseCSVFiles('files/Merged/merged_NF.csv');
         }
 
@@ -375,26 +375,23 @@ function createCollapsibleTree(chart, schemaOption) {
             }
 
             // /////Check if any direct children have any shared parents
-            // /////In return, we get a list of direct children that won't be collapsed and a list of direct children that will be collapsed
-            var notCollapsedArr = checkSharedChildren(d.direct_children, d.id, InteractivePartNode)
-            var CollapsedArr = removeArrFromArr(d.children, notCollapsedArr) //also include sub children
-            var CollapsedDirectChildrenArr = removeArrFromArr(d.direct_children, notCollapsedArr)
+            /////// In return, we get a list of direct children that won't be collapsed and a list of direct children that will be collapsed
+            /////// In return, we get a list of direct children that won't disappear and a list of direct children that will disappear
+            var notDisappearArr = checkSharedChildren(d.direct_children, d.id, InteractivePartNode)
 
-            // //// Handle links
-            HidePathNew(d.id, d.children, notCollapsedArr, bundles)
+            //all children of the node being clicked would still get collapsed 
+            var CollapsedNodes = d.children
+            CollapseSubsequentChildren(CollapsedNodes, InteractivePartNode)
 
-
-            // ////for the list of children that will be collapsed by the node currently being clicked, we should collapse their children too 
-            CollapseSubsequentChildren(CollapsedArr, InteractivePartNode)
-
+            //handle links 
+            HidePathNew(d.id, d.children, bundles)
 
             // ////Handle visibility
             ///visibility is different from "collapse/expand" status
             ///a node would disppear if it is 
-            //1) direct children of the node being clicked and don't have shared parents; 
-            //2) they belong to the nodes that will disppear (and also don't have other parents)
-
-            var NewInteractiveNode = HideChildren(CollapsedDirectChildrenArr, InteractivePartNode)
+            //1) direct children of the node being clicked and don't have other shared parents; 
+            //2) they belong to the nodes that will collapse (and also don't have other parents)
+            var NewInteractiveNode = HideChildren(d.direct_children, notDisappearArr, InteractivePartNode)
 
             d.direct_children = null;
 
@@ -600,7 +597,8 @@ function CollapseSubsequentChildren(childrenArray, poolNode) {
 
 }
 
-function HidePathNew(clickElem, childrenArray, notCollapsed, bundles) {
+function HidePathNew(clickElem, childrenArray, bundles) {
+    console.log('childrenArray', childrenArray)
     //hide links
     bundles.forEach(bundles => {
         var linkArr = bundles['links']
@@ -613,7 +611,8 @@ function HidePathNew(clickElem, childrenArray, notCollapsed, bundles) {
             //collapse the link if the following occurs: 
             //if "target" is the clicked node, and "source" is one of the children
             //OR if "target" is one of the children (and for NF, target has to NOT belong in the "not collapsed" group)
-            if (((childrenArray.includes(link.source.id) && clickElem == link.target.id)) || (childrenArray.includes(link.target.id)) && !notCollapsed.includes(link.target.id)) {
+            //&& !notCollapsed.includes(link.target.id)
+            if (((childrenArray.includes(link.source.id) && clickElem == link.target.id)) || (childrenArray.includes(link.target.id))) {
                 //then we collapse the link by hiding it in '_link' bucket
                 bundles['_links'].push(link) && bundles['_links'].indexOf(link) === -1
             }
@@ -658,7 +657,7 @@ function getLstParents(node) {
     return parents
 }
 
-function HideChildren(collapsedChildren, poolNode) {
+function HideChildren(collapsedChildren, notDisappearArr, poolNode) {
     if (collapsedChildren.length > 0) {
         //get detailed information about the nodes that will get collapsed
         var collapsedNodes = filterArrayIfInArray(poolNode, collapsedChildren, 'id')
@@ -692,6 +691,7 @@ function HideChildren(collapsedChildren, poolNode) {
 
         var NewInteractiveNode = SetVisibilityChildren(collapsedChildren, poolNode, false)
         var NewInteractiveNode = SetVisibilityChildren(SavedChildren, poolNode, false)
+        var NewInteractiveNode = SetVisibilityChildren(notDisappearArr, poolNode, true)
 
     } else {
         var NewInteractiveNode = poolNode
