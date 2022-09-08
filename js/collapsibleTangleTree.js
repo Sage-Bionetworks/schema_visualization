@@ -320,11 +320,12 @@ function createCollapsibleTree(chart, schemaOption) {
 
     function generateAttributeTable(schemaOption, id) {
         if (schemaOption == 'HTAN') {
-            var merged_data = parseCSVFiles('files/Merged/merged_HTAN.csv');
-
+            var schema_name = 'HTAN'
         } else if (schemaOption == 'NF Tools Registry') {
-            var merged_data = parseCSVFiles('files/Merged/merged_NF.csv');
+            var schema_name = 'NF'
         }
+
+        var merged_data = getRequestedCSV(schema_name);
 
         merged_data.then(data => {
             drawTable(data, id)
