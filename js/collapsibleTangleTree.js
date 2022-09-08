@@ -198,7 +198,6 @@ function createCollapsibleTree(chart, schemaOption) {
 
     //begin to draw tree
     var InteractivePartNode = chart['nodes']
-    var links = chart['links']
     var bundles = chart['bundles']
 
     //by default, all the children have been expanded. 
@@ -338,6 +337,9 @@ function createCollapsibleTree(chart, schemaOption) {
         //change the stroke width of node
         d3.selectAll("#node_" + textId).style("stroke-width", "10");
 
+        //change the size of text
+        d3.selectAll("#text_" + textId).style("font-size", "12")
+
         //change the stroke width of links
         d3.selectAll("path.link").filter(function (d) {
             var linkId = d.id
@@ -350,6 +352,9 @@ function createCollapsibleTree(chart, schemaOption) {
 
         //change the stroke width of node
         d3.selectAll("#node_" + textId).style("stroke-width", "8");
+
+        //change the size of text
+        d3.selectAll("#text_" + textId).style("font-size", "10")
 
         //change the stroke width of links
         d3.selectAll("path.link").filter(function (d) {
