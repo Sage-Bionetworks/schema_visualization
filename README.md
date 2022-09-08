@@ -3,7 +3,7 @@ This repository is for extracting D3 and Javascript code from observables to pro
 
 # Running the code
 
-Simply clone the repository and run `python3 -m http.server`
+Simply clone the repository and run `python3 -m http.server`. Also, since this visualization pull data from `schematic` APIs, please also clone `schematic` and run the API endpoints from the branch `develop-schema-viz-tool-cors`
 
 # journey of figuring things out
 
