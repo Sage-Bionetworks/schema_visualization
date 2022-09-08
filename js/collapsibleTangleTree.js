@@ -383,7 +383,6 @@ function createCollapsibleTree(chart, schemaOption) {
             }
 
             // /////Check if any direct children have any shared parents
-            /////// In return, we get a list of direct children that won't be collapsed and a list of direct children that will be collapsed
             /////// In return, we get a list of direct children that won't disappear and a list of direct children that will disappear
             var notDisappearArr = checkSharedChildren(d.direct_children, d.id, InteractivePartNode)
 
@@ -399,6 +398,7 @@ function createCollapsibleTree(chart, schemaOption) {
             ///a node would disppear if it is 
             //1) direct children of the node being clicked and don't have other shared parents; 
             //2) they belong to the nodes that will collapse (and also don't have other parents)
+            //Note: for children that will not disppear, we also change their visibility status here
             var NewInteractiveNode = HideChildren(d.direct_children, notDisappearArr, InteractivePartNode)
 
             d.direct_children = null;
@@ -531,7 +531,7 @@ function removeArrFromArr(baseArr, toRemove) {
 
 function checkSharedChildren(childrenArray, clickElem, poolNode) {
     /*this function finds out the children that have not yet been collapsed by other direct parents*/
-    //this function returns a list of children that should not be collapsed 
+    //this function returns a list of children that should not disappear
 
     var NotCollapsed = [];
     var Collapsed = [];
@@ -606,7 +606,6 @@ function CollapseSubsequentChildren(childrenArray, poolNode) {
 }
 
 function HidePathNew(clickElem, childrenArray, bundles) {
-    console.log('childrenArray', childrenArray)
     //hide links
     bundles.forEach(bundles => {
         var linkArr = bundles['links']
@@ -665,6 +664,7 @@ function getLstParents(node) {
     return parents
 }
 
+
 function HideChildren(collapsedChildren, notDisappearArr, poolNode) {
     if (collapsedChildren.length > 0) {
         //get detailed information about the nodes that will get collapsed
@@ -673,13 +673,18 @@ function HideChildren(collapsedChildren, notDisappearArr, poolNode) {
         //loop through the nodes that will get collapsed
         var SavedChildren = [];
         collapsedNodes.forEach(node => {
-            //check if any of its direct and indirect children belong to other parents
+            ////check if any of its direct and indirect children belong to other parents
+
+            //get all the children
             var children = node["children"]
 
             //find a list of children that won't be collapsed
             if (children && children.length > 0) {
 
-                //call checkSharedChildren function again and figure out the children that have other parents that have not yet been collapsed
+                //call checkSharedChildren function again and figure out the children that have other parents
+                //if other parents are still in the pool (and those parents have not yet been collapsed)
+                //and if those parents own the children (a direct parent-children relationship)
+                //then we don't want to make those children disappear
                 var notCollapsedChildren = checkSharedChildren(children, node.id, poolNode)
 
                 //now get a list of children that will be collapsed
