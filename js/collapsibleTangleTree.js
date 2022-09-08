@@ -191,7 +191,10 @@ function createCollapsibleTree(chart, schemaOption) {
         .append('svg')
         .attr('width', totalWidth)
         .attr('height', chart.layout.height)
-        .attr('id', 'myViz');
+        .attr('id', 'myViz')
+        .call(d3.zoom().on("zoom", function () {
+            svg.attr("transform", d3.event.transform) //related to zoom 
+        }));
 
     //begin to draw tree
     var InteractivePartNode = chart['nodes']
