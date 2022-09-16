@@ -212,6 +212,34 @@ function createCollapsibleTree(chart, schemaOption) {
             .attr('d', `M${n.x} ${n.y - n.height / 2} L${n.x} ${n.y + n.height / 2}`);
     })
 
+    // /////add content line 
+    // function AddContentLine(InteractivePartNode) {
+    //     // find all the source nodes
+    //     // to make sure that the original array doesn't get changed, save data in a different variable 
+    //     let nodes = InteractivePartNode
+    //     var sourceNodes = nodes.filter(el => el.parents.length == 0)
+
+    //     //add content lines for these nodes
+    //     var g = svg.append("g")
+    //     var line = svg.select("g").selectAll("line").data(sourceNodes)
+    //     line.append("path")
+    //         .style("stroke", "black")
+    //         .attr("x1", 50)
+    //         .attr("y1", 48) //hard-coded this one for now
+    //         .attr("x2", function (d) {
+    //             d.x
+    //         })
+    //         .attr("y2", function (d) {
+    //             d.y
+    //         })
+
+    // }
+
+    // AddContentLine(InteractivePartNode);
+
+
+    //////define the update function
+
     function update(InteractivePartNode, bundles) {
         ///////////////do not touch the following section
         //always bind the changed data to our node element
@@ -317,6 +345,26 @@ function createCollapsibleTree(chart, schemaOption) {
 
 
     }
+    //////////////////add content lines
+    let nodes = InteractivePartNode
+    var sourceNodes = nodes.filter(el => el.parents.length == 0)
+
+    ////add content lines for these nodes
+    var lines = svg.select("g").selectAll("line").data(sourceNodes)
+    var contentLines = lines.enter();
+    contentLines.append("line")
+        .style("stroke", "black")
+        .attr("x1", 50)
+        .attr("y1", 48) //hard-coded this one for now
+        .attr("x2", function (d) {
+            console.log(d.x)
+            d.x
+        })
+        .attr("y2", function (d) {
+            console.log(d.y)
+            d.y
+        })
+
 
     //////////////////generate data for attribute table 
     var merged_data = generateAttributeData(schemaOption)
