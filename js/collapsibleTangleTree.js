@@ -318,7 +318,10 @@ function createCollapsibleTree(chart, schemaOption) {
 
     }
 
-    function generateAttributeTable(schemaOption, id) {
+    //////////////////generate data for attribute table 
+    var merged_data = generateAttributeData(schemaOption)
+
+    function generateAttributeData(schemaOption) {
         if (schemaOption == 'HTAN') {
             var schema_name = 'HTAN'
         } else if (schemaOption == 'NF Tools Registry') {
@@ -327,11 +330,17 @@ function createCollapsibleTree(chart, schemaOption) {
 
         var merged_data = getRequestedCSV(schema_name);
 
+        return merged_data
+    }
+
+    //define function related to generating attribute table
+    function generateAttributeTable(id) {
         merged_data.then(data => {
             drawTable(data, id)
         })
     }
 
+    //define mouseover and mouseout effect
     function mouseover(d) {
         var textId = d.id
 
@@ -435,7 +444,7 @@ function createCollapsibleTree(chart, schemaOption) {
 
         update(ChangeableNode, bundles);
 
-        generateAttributeTable(schemaOption, d.id);
+        generateAttributeTable(d.id);
 
 
     }
