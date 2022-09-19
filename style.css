@@ -64,30 +64,48 @@ body h1 {
   padding: 10px;
 }
 
-tr:nth-child(even) td {background: #f2f2f2}
+tr:nth-child(even) td {
+  background: #f2f2f2
+}
 
-table{
-	border-collapse: collapse;
-  width: 1300px; 
-  height: 400px; 
-  display: block; 
-  overflow-y: scroll; 
+table {
+  border-collapse: collapse;
+  width: 1300px;
+  height: 400px;
+  display: block;
+  overflow-y: scroll;
   padding: 10px;
 }
 
-table td, table th{
-	border: 1px solid black;
-  text-align: left; 
+table td,
+table th {
+  border: 1px solid black;
+  text-align: left;
 }
 
-table thead{
-	background:#ccc;
+table thead {
+  background: #ccc;
 }
 
 .center {
   display: flex;
   justify-content: center;
-} 
+}
+
+
+div.tooltip {
+  position: absolute;
+  text-align: center;
+  width: 60px;
+  height: 28px;
+  padding: 2px;
+  font: 12px sans-serif;
+  background: lightsteelblue;
+  border: 0px;
+  border-radius: 8px;
+  pointer-events: none;
+}
+
 /* .link {
   fill: none;
   stroke: #ccc;
