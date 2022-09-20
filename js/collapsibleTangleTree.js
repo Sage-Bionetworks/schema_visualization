@@ -209,37 +209,10 @@ function createCollapsibleTree(chart, schemaOption) {
             .attr('class', 'node')
             .attr('stroke', 'white')
             .attr('stroke-width', 3)
-            .attr('d', `M${n.x} ${n.y - n.height / 2} L${n.x} ${n.y + n.height / 2}`);
+            .attr('d', `M${n.x + 5} ${n.y - n.height / 2} L${n.x + 5} ${n.y + n.height / 2}`);
     })
 
-    // /////add content line 
-    // function AddContentLine(InteractivePartNode) {
-    //     // find all the source nodes
-    //     // to make sure that the original array doesn't get changed, save data in a different variable 
-    //     let nodes = InteractivePartNode
-    //     var sourceNodes = nodes.filter(el => el.parents.length == 0)
-
-    //     //add content lines for these nodes
-    //     var g = svg.append("g")
-    //     var line = svg.select("g").selectAll("line").data(sourceNodes)
-    //     line.append("path")
-    //         .style("stroke", "black")
-    //         .attr("x1", 50)
-    //         .attr("y1", 48) //hard-coded this one for now
-    //         .attr("x2", function (d) {
-    //             d.x
-    //         })
-    //         .attr("y2", function (d) {
-    //             d.y
-    //         })
-
-    // }
-
-    // AddContentLine(InteractivePartNode);
-
-
     //////define the update function
-
     function update(InteractivePartNode, bundles) {
         ///////////////do not touch the following section
         //always bind the changed data to our node element
@@ -272,7 +245,7 @@ function createCollapsibleTree(chart, schemaOption) {
             })
             .attr('stroke-width', 8) //size of node
             .attr('d', function (d, i) {
-                return `M${d.x} ${d.y - d.height / 2} L${d.x} ${d.y + d.height / 2}` //location of the nodes
+                return `M${d.x + 5} ${d.y - d.height / 2} L${d.x + 5} ${d.y + d.height / 2}` //location of the nodes
             }).on('click', function (d) {
                 click;
             })
@@ -300,7 +273,7 @@ function createCollapsibleTree(chart, schemaOption) {
             .attr("class", function (d) {
                 return d._direct_children && d._direct_children.length > 0 && !checkIfDirectLinkExist(d, InteractivePartNode, bundles) ? "fa" : ""
             })
-            .attr('x', function (d) { return (d.x + 5) })
+            .attr('x', function (d) { return (d.x + 10) })
             .attr('y', function (d) { return (d.y - d.height / 2 - 4) })
             .attr("id", function (d) { return "text_" + d.id; })
             .text(function (d) {
@@ -348,23 +321,63 @@ function createCollapsibleTree(chart, schemaOption) {
     //////////////////add content lines
     let nodes = InteractivePartNode
     var sourceNodes = nodes.filter(el => el.parents.length == 0)
+    var nodesObj = Array.from(sourceNodes)
+    var TallestNode = Math.min(...nodesObj.map(o => o.y))
+    var LowestNode = Math.max(...nodesObj.map(o => o.y))
+
+    // Define the div for the tooltip
+    var div = d3.select("body").append("div")
+        .attr("class", "tooltip")
+        .style("opacity", 0);
+
 
     ////add content lines for these nodes
     var lines = svg.select("g").selectAll("line").data(sourceNodes)
     var contentLines = lines.enter();
     contentLines.append("line")
-        .style("stroke", "black")
-        .attr("x1", 50)
-        .attr("y1", 48) //hard-coded this one for now
-        .attr("x2", function (d) {
-            console.log(d.x)
-            d.x
+        .style("stroke-dasharray", (3, 3))
+        .style("stroke", "#575757")
+        .style("stroke-width", 2)
+        .attr("x1", function (d) {
+            return d.x
         })
+        .attr("y1", function (d) {
+            return d.y + d.height / 2
+        })
+        .attr("x2", 1)
         .attr("y2", function (d) {
-            console.log(d.y)
-            d.y
+            return d.y + d.height / 2
         })
+        .on("mouseover", mouseovertooltip)
+        .on("mouseout", mouseoutooltip);
 
+    // add a line in the begining
+    var NewLine = svg.select("g")
+    NewLine.append("rect")
+        .attr("rx", "4")
+        .attr("ry", "4")
+        .attr("x", 0)
+        .attr("y", TallestNode)
+        .attr("width", 8)
+        .attr("height", LowestNode - TallestNode)
+        .attr("stroke", "#575757")
+        .style("fill", "#575757")
+
+    function mouseovertooltip(d) {
+        div.transition()
+            .duration(200)
+            .style("opacity", .9);
+        div.html("this is a root node")
+            .style("left", (d3.event.pageX) + "px")
+            .style("top", (d3.event.pageY - 28) + "px");
+    }
+
+    function mouseoutooltip(d) {
+        div.transition()
+            .duration(800)
+            .style("opacity", 0);
+
+    }
 
     //////////////////generate data for attribute table 
     var merged_data = generateAttributeData(schemaOption)
