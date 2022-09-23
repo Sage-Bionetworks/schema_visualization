@@ -351,17 +351,31 @@ function createCollapsibleTree(chart, schemaOption) {
         .on("mouseover", mouseovertooltip)
         .on("mouseout", mouseoutooltip);
 
-    // add a line in the begining
-    var NewLine = svg.select("g")
-    NewLine.append("rect")
-        .attr("rx", "4")
-        .attr("ry", "4")
-        .attr("x", 0)
-        .attr("y", TallestNode)
-        .attr("width", 8)
-        .attr("height", LowestNode - TallestNode)
-        .attr("stroke", "#575757")
-        .style("fill", "#575757")
+    // add a line in the beginning
+    //for rounded rectangle 
+    //////////////////////////////////
+    // var NewLine = svg.select("g")
+    // NewLine.append("rect")
+    //     .attr("rx", "4")
+    //     .attr("ry", "4")
+    //     .attr("x", 0)
+    //     .attr("y", TallestNode)
+    //     .attr("width", 8)
+    //     .attr("height", LowestNode - TallestNode)
+    //     .attr("stroke", "#575757")
+    //     .style("fill", "#575757")
+    //////////////////////////////////
+    //add a line in the beginning 
+    contentLines.append("line")
+        .style("stroke-dasharray", (3, 3))
+        .style("stroke", "#575757")
+        .style("stroke-width", 2)
+        .attr("x1", 1)
+        .attr("y1", TallestNode)
+        .attr("x2", 1)
+        .attr("y2", LowestNode)
+        .on("mouseover", mouseovertooltip)
+        .on("mouseout", mouseoutooltip);
 
     function mouseovertooltip(d) {
         div.transition()
