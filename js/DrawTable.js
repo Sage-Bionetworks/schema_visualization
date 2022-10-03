@@ -1,17 +1,18 @@
 function drawTable(data, selectedDataType) {
     all_attribute_info = d3.group(data, (d) => d.Component)
-    //see which radio button get selected
-    //control using radio buttons to filter attribute tables
-    var rad = document.table.attribute;
-    for (var i = 0; i < rad.length; i++) {
-        rad[i].addEventListener('change', function () {
-            //remove previous graph 
-            d3.select('#table').select('#jsonTable').remove();
-            //create new graph
-            var attribute_to_load = getAttributes(all_attribute_info, selectedDataType, this.value)
-            createTable(attribute_to_load)
-        });
-    }
+
+    //when the filter changes, apply filter effect from dropdown
+    $("#filterBy").change(function (e) {
+        var dropdownSelection = document.getElementById("filterBy")
+        var dropdownVal = dropdownSelection.value;
+
+        //remove previous table 
+        d3.select('#table').select('#jsonTable').remove();
+        //load new table
+        var attribute_to_load = getAttributes(all_attribute_info, selectedDataType, dropdownVal)
+        createTable(attribute_to_load)
+    })
+
 
     //create new graph by default 
     //this part gets triggered when users collapse/expand a node
@@ -22,30 +23,42 @@ function drawTable(data, selectedDataType) {
 }
 
 
-function getAttributes(all_attribute_info, datatype, radios) {
-    if (radios == "Required Attributes") {
+function getAttributes(all_attribute_info, datatype, opt) {
+    console.log('opt', opt)
+    if (opt == "Required Attributes") {
         var attributes_to_load = all_attribute_info
             .get(datatype)
             .filter((d) => d.Required == "True");
         return attributes_to_load;
-    } else if (radios == "Conditionally Required Attributes") {
+    } else if (opt == "Conditionally Required Attributes") {
         var attributes_to_load = all_attribute_info
             .get(datatype)
             .filter((d) => d.Cond_Req == "True");
         return attributes_to_load;
-    } else if (radios == "Required and Conditionally Required Attributes") {
+    } else if (opt == "Required and Conditionally Required Attributes") {
         var attributes_to_load = all_attribute_info
             .get(datatype)
             .filter((d) => d.Required === "True" || d.Cond_Req === "True");
         return attributes_to_load;
-    } else if (radios == "All Attributes") {
+    } else if (opt == "All Attributes") {
         var attributes_to_load = all_attribute_info.get(datatype);
         return attributes_to_load;
     }
 }
 
+function toggleAttributeTable() {
+    if ($('#chart-placeholder').hasClass('show-attributes-table')) {
+        $('#chart-placeholder').removeClass('show-attributes-table')
+    } else {
+        $('#chart-placeholder').addClass('show-attributes-table')
+    }
 
+}
 function createTable(object) {
+    //create table
+    $('#toggle-table').append('<button id="toggle-attributes-table" onclick="toggleAttributeTable()">Show Attribute Table</button>');
+
+    //show the top part of the table 
     $('#table').append('<table id="jsonTable"><thead><tr></tr></thead><tbody></tbody></table>');
 
     $.each(Object.keys(object[0]), function (index, key) {
