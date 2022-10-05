@@ -173,6 +173,19 @@ table th {
   text-align: center;
 } */
 
+
+#placeholder {
+  background-color: white;
+  height: 100vh;
+}
+
+#placeholder p {
+  color: black;
+  font-size: 18px;
+  padding: 20px;
+
+}
+
 .title {
   position: fixed;
   top: 0;

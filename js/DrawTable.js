@@ -16,15 +16,16 @@ function drawTable(data, selectedDataType) {
 
     //create new graph by default 
     //this part gets triggered when users collapse/expand a node
+    var dropdownSelection = document.getElementById("filterBy")
+    var dropdownVal = dropdownSelection.value;
     d3.select('#table').select('#jsonTable').remove();
-    var attribute_to_load = getAttributes(all_attribute_info, selectedDataType, "All Attributes")
+    var attribute_to_load = getAttributes(all_attribute_info, selectedDataType, dropdownVal);
     createTable(attribute_to_load)
 
 }
 
 
 function getAttributes(all_attribute_info, datatype, opt) {
-    console.log('opt', opt)
     if (opt == "Required Attributes") {
         var attributes_to_load = all_attribute_info
             .get(datatype)
@@ -61,17 +62,34 @@ function createTable(object) {
     //show the top part of the table 
     $('#table').append('<table id="jsonTable"><thead><tr></tr></thead><tbody></tbody></table>');
 
-    $.each(Object.keys(object[0]), function (index, key) {
-        $('#jsonTable thead tr').append('<th>' + key + '</th>');
-    });
-    $.each(object, function (index, jsonObject) {
-        if (Object.keys(jsonObject).length > 0) {
-            var tableRow = '<tr>';
-            $.each(Object.keys(jsonObject), function (i, key) {
-                tableRow += '<td>' + jsonObject[key] + '</td>';
-            });
-            tableRow += "</tr>";
-            $('#jsonTable tbody').append(tableRow);
+    if (object[0] != null) {
+        $.each(Object.keys(object[0]), function (index, key) {
+            $('#jsonTable thead tr').append('<th>' + key + '</th>');
+        });
+        $.each(object, function (index, jsonObject) {
+            if (Object.keys(jsonObject).length > 0) {
+                var tableRow = '<tr>';
+                $.each(Object.keys(jsonObject), function (i, key) {
+                    tableRow += '<td>' + jsonObject[key] + '</td>';
+                });
+                tableRow += "</tr>";
+                $('#jsonTable tbody').append(tableRow);
+            }
+        });
+
+        //and remove previous sign of "no row to show"
+        var tag = document.querySelector('#placeholder p')
+
+        //only remove it if it exists
+        if (tag != null) {
+            tag.remove();
         }
-    });
+    }//if there's no attributes to show, we could show a line that says "no row to show"
+    else {
+        var tag = document.querySelector('#placeholder p')
+        //only add it if it doesn't exist
+        if (tag == null) {
+            $('#placeholder').append('<p id="no-row-sign">No Row to show</p>')
+        }
+    }
 }
