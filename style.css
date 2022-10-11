@@ -155,6 +155,13 @@ table th {
   box-shadow: inset 0px -1px var(--gray-300);
 }
 
+.read-more {
+  display: none;
+  font-size: 13px;
+  /* font-family: Lato; */
+  color: "black";
+
+}
 
 /* other */
 /* controlling the title of schema viz */
