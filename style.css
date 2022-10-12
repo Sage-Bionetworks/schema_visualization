@@ -135,6 +135,31 @@ table {
   table-layout: fixed;
 }
 
+/* I just wanted to show a way to specify the width of columns */
+table .col-1 {
+  width: 500px;
+}
+
+table .col-2 {
+  width: 300px;
+}
+
+table .col-3 {
+  width: 200px;
+}
+
+table .col-4 {
+  width: 320px;
+}
+
+table .col-5 {
+  width: 300px;
+}
+
+table .col-6 {
+  width: 300px;
+}
+
 table thead {
   background-color: var(--gray-100);
 }
@@ -145,6 +170,32 @@ table th {
 
 table td {
   background-color: #fff;
+}
+
+table td .content-wrapper {
+  /* new */
+  width: calc(100% - 32px);
+  /* <-- this is the cool way to do it */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+}
+
+table td .content-wrapper.expanded {
+  /* new */
+  white-space: initial;
+}
+
+table td button.toggle-row {
+  /* new */
+  width: 24px;
+  height: 24px;
+  background-color: red;
+  background: #fff;
+  border: 1px solid var(--gray-300);
+  border-radius: 3px;
+  float: right;
 }
 
 table td,
