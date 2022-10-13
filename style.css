@@ -145,7 +145,7 @@ table td {
   background-color: white;
 }
 
-table .col-1 {
+/* table .col-1 {
   width: 500px;
 }
 
@@ -172,7 +172,6 @@ table .col-6 {
 table td.truncated {
   position: relative;
   padding-right: calc(var(--toggle-button-size) + 10px);
-  /* 10px of padding between button and text */
 
 }
 
@@ -196,9 +195,9 @@ table td button.toggle-row {
 
 table td.truncated button.toggle-row {
   display: block;
-}
+} */
 
-table td,
+/* table td,
 table th {
   vertical-align: top;
   text-align: left;
@@ -208,8 +207,32 @@ table th {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+} */
+
+table {
+  border-collapse: collapse;
+  table-layout: fixed;
 }
 
+table thead {
+  background-color: var(--gray-100);
+}
+
+table th {
+  font-weight: 800;
+}
+
+table td {
+  background-color: #fff;
+}
+
+table td,
+table th {
+  text-align: left;
+  font-weight: 400;
+  padding: 8px 20px;
+  box-shadow: inset 0px -1px var(--gray-300);
+}
 
 .read-more {
   display: none;
