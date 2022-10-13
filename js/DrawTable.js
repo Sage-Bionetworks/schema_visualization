@@ -56,30 +56,32 @@ function toggleAttributeTable() {
 
 }
 
-function readMore(btnId) {
-    var btnIdArr = btnId.split('-')
-    var last_two_idx = btnIdArr.splice(btnIdArr.length - 2, 2).join('-')
+// function readMore(btnId) {
+//     var btnIdArr = btnId.split('-')
+//     var last_two_idx = btnIdArr.splice(btnIdArr.length - 2, 2).join('-')
 
-    var dotId = 'dots-' + last_two_idx
-    var btnId = 'read-more-btn-' + last_two_idx
-    var moreText = 'read-more-' + last_two_idx
+//     var dotId = 'dots-' + last_two_idx
+//     var btnId = 'read-more-btn-' + last_two_idx
+//     var moreText = 'read-more-' + last_two_idx
 
-    var dot = document.getElementById(dotId);
-    var btnText = document.getElementById(btnId);
-    var moreTextElem = document.getElementById(moreText);
+//     var dot = document.getElementById(dotId);
+//     var btnText = document.getElementById(btnId);
+//     var moreTextElem = document.getElementById(moreText);
 
-    if (dot.style.display === "none") {
-        dot.style.display = "inline";
-        btnText.innerHTML = '&plus;'
-        moreTextElem.style.display = "none";
-    } else {
-        dot.style.display = "none";
-        btnText.innerHTML = '&#8722'
-        moreTextElem.style.display = "inline";
-    }
+//     if (dot.style.display === "none") {
+//         dot.style.display = "inline";
+//         btnText.innerHTML = '&plus;'
+//         moreTextElem.style.display = "none";
+//     } else {
+//         dot.style.display = "none";
+//         btnText.innerHTML = '&#8722'
+//         moreTextElem.style.display = "inline";
+//     }
 
 
-}
+// }
+
+
 
 function createTable(object) {
     //create table
@@ -90,27 +92,36 @@ function createTable(object) {
 
     if (object[0] != null) {
         $.each(Object.keys(object[0]), function (index, key) {
-            console.log('key from here', key)
-            $('#jsonTable thead tr').append('<th>' + key + '</th>');
+            //ignore emtpy key like ""
+            if (key.length > 0) {
+                $('#jsonTable thead tr').append('<th>' + key + '</th>');
+            }
         });
         $.each(object, function (index, jsonObject) {
             if (Object.keys(jsonObject).length > 0) {
                 var tableRow = '<tr>';
+
                 $.each(Object.keys(jsonObject), function (i, key) {
+                    //ignore emtpy key like ""
+                    if (key.length > 0) {
+                        var td_class = "col-" + i;
+                        tableRow += `<td class=${td_class}>` + jsonObject[key]
+                        tableRow += `<button class="toggle-row">&plus;</button></td>`
+                    }
                     //count the number of words
-                    var numWord = WordCount(jsonObject[key])
+                    //var numWord = WordCount(jsonObject[key])
 
                     //if the text is very long 
-                    if (numWord > 20) {
-                        var first20 = jsonObject[key].split(" ").slice(0, 20).join(" ")
-                        var remaining = jsonObject[key].split(" ").slice(20, numWord).join(" ")
-                        var id_dot = 'dots-' + index.toString() + '-' + i.toString();
-                        var btnId = 'read-more-btn-' + index.toString() + '-' + i.toString();
-                        var read_more = 'read-more-' + index.toString() + '-' + i.toString();
-                        tableRow += '<td>' + first20 + `<span id=${id_dot}>...</span><div class="read-more" id=${read_more}>` + remaining + "</div>" + `<button class="read-more-btn" id=${btnId} onclick="readMore(this.id)">&plus;</button></td>`;
-                    } else {
-                        tableRow += '<td>' + jsonObject[key] + '</td>';
-                    }
+                    // if (numWord > 20) {
+                    //     var first20 = jsonObject[key].split(" ").slice(0, 20).join(" ")
+                    //     var remaining = jsonObject[key].split(" ").slice(20, numWord).join(" ")
+                    //     var id_dot = 'dots-' + index.toString() + '-' + i.toString();
+                    //     var btnId = 'read-more-btn-' + index.toString() + '-' + i.toString();
+                    //     var read_more = 'read-more-' + index.toString() + '-' + i.toString();
+                    //     tableRow += '<td>' + first20 + `< span id = ${ id_dot }>...</span > <div class="read-more" id=${read_more}>` + remaining + "</div>" + `<button class="read - more - btn" id=${btnId} onclick="readMore(this.id)">&plus;</button></td>`;
+                    // } else {
+                    //     tableRow += '<td>' + jsonObject[key] + '</td>';
+                    // }
 
                 });
                 tableRow += "</tr>";
@@ -133,4 +144,35 @@ function createTable(object) {
             $('#placeholder').append('<p id="no-row-sign">No Row to show</p>')
         }
     }
+
+    //add additional formats
+    const isEllipsisActive = e => {
+        return (e.offsetWidth < e.scrollWidth);
+    }
+
+    $("td").each(function (index, object) {
+
+        if (isEllipsisActive(object)) {
+            $(object).addClass('truncated')
+        } else {
+            console.log('else is being triggered')
+            $(object).removeClass('truncated')
+        }
+
+    })
+
+    //configure toggle button (+ / -)
+    $(".toggle-row").click(function () {
+        console.log('this', $(this).parent('td'));
+        $(this).parent('td').toggleClass('expanded');
+
+        if ($(this).parent('.expanded').length) {
+            $(object).addClass('truncated')
+            $(this).html("&plus;")
+        } else {
+            $(this).html("-")
+        }
+    })
+
+
 }

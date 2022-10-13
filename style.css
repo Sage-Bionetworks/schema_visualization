@@ -1,17 +1,11 @@
 @import url("https://fonts.googleapis.com/css2?family=Lato:wght@200..900&display=swap");
 
 :root {
-  --gray-100: #fbfbfc
-    /* background of table areas */
-  ;
-  --gray-300: #eaecee
-    /* divider */
-  ;
-  --schema-wrapper-height: 700px
-    /* this will be the size of the whole schema component */
-  ;
+  --gray-100: #fbfbfc;
+  --gray-300: #eaecee;
+  --schema-wrapper-height: 600px;
   --attr-table-height: 400px;
-  /* the size of the attributes table */
+  --toggle-button-size: 24px;
 }
 
 * {
@@ -23,7 +17,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  /* font-family: Lato; */
+  font-family: Lato;
   font-size: 13px;
 }
 
@@ -56,7 +50,7 @@ body {
   border: 1px solid var(--gray-300);
   box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.05), 0px 1px 1px rgba(0, 0, 0, 0.03);
   border-radius: 3px;
-  /* font-family: 'Lato'; */
+  font-family: "Lato";
   font-style: normal;
   font-weight: 400;
   font-size: 13px;
@@ -68,7 +62,8 @@ body {
 }
 
 #chart-placeholder.show-attributes-table button#toggle-attributes-table {
-  transform: translate(20px, calc(var(--schema-wrapper-height) - var(--attr-table-height) - 60px));
+  transform: translate(20px,
+      calc(var(--schema-wrapper-height) - var(--attr-table-height) - 60px));
 }
 
 #chart-placeholder.show-attributes-table #attributes-table-wrapper {
@@ -90,6 +85,8 @@ body {
 }
 
 #table-top {
+  z-index: 100;
+  /* Lingling: this is new! I noticed I forgot to put it in earlier. */
   background-color: var(--gray-100);
   display: flex;
   align-items: stretch;
@@ -131,33 +128,9 @@ body {
 }
 
 table {
+  width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
-}
-
-/* I just wanted to show a way to specify the width of columns */
-table .col-1 {
-  width: 500px;
-}
-
-table .col-2 {
-  width: 300px;
-}
-
-table .col-3 {
-  width: 200px;
-}
-
-table .col-4 {
-  width: 320px;
-}
-
-table .col-5 {
-  width: 300px;
-}
-
-table .col-6 {
-  width: 300px;
 }
 
 table thead {
@@ -169,28 +142,51 @@ table th {
 }
 
 table td {
-  background-color: #fff;
+  background-color: white;
 }
 
-table td .content-wrapper {
-  /* new */
-  width: calc(100% - 32px);
-  /* <-- this is the cool way to do it */
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: inline-block;
+table .col-1 {
+  width: 500px;
 }
 
-table td .content-wrapper.expanded {
-  /* new */
+table .col-2 {
+  width: 100px;
+}
+
+table .col-3 {
+  width: 250px;
+}
+
+table .col-4 {
+  width: 250px;
+}
+
+table .col-5 {
+  width: 250px;
+}
+
+table .col-6 {
+  width: 250px;
+}
+
+table td.truncated {
+  position: relative;
+  padding-right: calc(var(--toggle-button-size) + 10px);
+  /* 10px of padding between button and text */
+
+}
+
+table td.expanded {
   white-space: initial;
 }
 
 table td button.toggle-row {
-  /* new */
-  width: 24px;
-  height: 24px;
+  display: none;
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  width: var(--toggle-button-size);
+  height: var(--toggle-button-size);
   background-color: red;
   background: #fff;
   border: 1px solid var(--gray-300);
@@ -198,13 +194,22 @@ table td button.toggle-row {
   float: right;
 }
 
+table td.truncated button.toggle-row {
+  display: block;
+}
+
 table td,
 table th {
+  vertical-align: top;
   text-align: left;
   font-weight: 400;
   padding: 8px 20px;
   box-shadow: inset 0px -1px var(--gray-300);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
+
 
 .read-more {
   display: none;
