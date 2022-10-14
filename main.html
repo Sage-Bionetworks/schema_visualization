@@ -8,10 +8,15 @@
 
 <body>
 
-    <h1>Schema visualization</h1>
+    <!-- header -->
+    <div class="title">
+        <h1>Schema visualization</h1>
+    </div>
 
+    <!-- Dropdown: selecting a schema-->
     <div class="main">
         Choose a Schema type
+        <!-- select a schema -->
         <select name="schema" onchange="selectSchema()" id="schema">
             <option selected="selected"></option>
             <option value="NF Tools Registry">NF Tools Registry</option>
@@ -20,43 +25,41 @@
             <option value="AmpAD">AmpAD</option>
             <option value="AmpAD view Dependencies">AmpAD view Dependencies</option>
         </select>
-
         <br>
+    </div>
 
-        <!-- Choose a dataset type -->
-        <!-- <select id="dataset" onchange="selectDataset()"></select> -->
+    <!-- Generate visualization and attribute table -->
+    <div id="chart-placeholder" class="">
+        <!-- generate visualization -->
+        <span id="visualization"></span>
+        <!-- attribute table -->
+        <div id="toggle-table"></div>
 
-        <div>
-            <form name="table">
-                <label>Please select an option:</label>&nbsp;&nbsp;
-                <input type="radio" name="attribute" id="is_allAttributes" value="All Attributes" , />
-                <label>All Attributes</label>
+        <div id="attributes-table-hidden" class="hidden">
+            <div id="attributes-table-wrapper" class="shown">
+                <div id="table-top">
+                    <div class="left">
+                        <button class="custom-button">Download selected</button>
+                        <button class="custom-button">Clear</button>
+                    </div>
+                    <div class="right">
+                        <select class="custom-select" id="filterBy">
+                            <option value="All Attributes">All attributes</option>
+                            <option value="Required Attributes">Required Attributes</option>
+                            <option value="Conditionally Required Attributes">Conditionally Required Attributes
+                            </option>
+                            <option value="Required and Conditionally Required Attributes">Required and
+                                Conditionally Required Attributes</option>
+                        </select>
+                    </div>
+                </div>
 
-                <input type="radio" name="attribute" id="is_requiredAttributes" value="Required Attributes" , />
-                <label>Required Attributes</label>
+                <div class="table-wrapper" id="table"></div>
+                <div id="placeholder"></div>
 
-                <input type="radio" name="attribute" id="is_conditionallyRequired"
-                    value="Conditionally Required Attributes" />
-                <label>Conditionally Required Attributes</label>
-
-                <input type="radio" name="attribute" id="is_conditionallyAndRequired"
-                    value="Required and Conditionally Required Attributes" />
-                <label>Required and Conditionally Required Attributes</label>
-            </form>
+            </div>
         </div>
 
-    </div>
-
-
-    <div id="visualization">
-
-    </div>
-
-    <div id="visualization2">
-
-    </div>
-
-    <div class="center" id="table"></div>
 
 
 </body>
