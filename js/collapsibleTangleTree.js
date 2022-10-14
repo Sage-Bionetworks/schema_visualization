@@ -163,12 +163,6 @@ function addElemToArray(newItem, array) {
 }
 
 function createCollapsibleTree(chart, schemaOption) {
-
-    //preprocess data
-    //var chart = preprocessChart(chart);
-
-    console.log('nodes after processsing', chart['nodes'])
-
     //prepare for rendering charts
     //draw tangled tree like we did before
     const margins = {
@@ -212,6 +206,7 @@ function createCollapsibleTree(chart, schemaOption) {
             .attr('d', `M${n.x} ${n.y - n.height / 2} L${n.x} ${n.y + n.height / 2}`);
     })
 
+    //////define the update function
     function update(InteractivePartNode, bundles) {
         ///////////////do not touch the following section
         //always bind the changed data to our node element
@@ -315,6 +310,80 @@ function createCollapsibleTree(chart, schemaOption) {
 
         link.exit().remove();
 
+
+    }
+    //////////////////add content lines
+    let nodes = InteractivePartNode
+    var sourceNodes = nodes.filter(el => el.parents.length == 0)
+    var nodesObj = Array.from(sourceNodes)
+    var TallestNode = Math.min(...nodesObj.map(o => o.y))
+    var LowestNode = Math.max(...nodesObj.map(o => o.y))
+
+    // Define the div for the tooltip
+    var div = d3.select("body").append("div")
+        .attr("class", "tooltip")
+        .style("opacity", 0);
+
+
+    //////add content lines for these nodes
+    var lines = svg.select("g").selectAll("line").data(sourceNodes)
+    var contentLines = lines.enter();
+    contentLines.append("line")
+        .style("stroke-dasharray", (3, 3))
+        .style("stroke", "#575757")
+        .style("stroke-width", 2)
+        .attr("x1", function (d) {
+            return d.x
+        })
+        .attr("y1", function (d) {
+            return d.y + d.height / 2
+        })
+        .attr("x2", 1)
+        .attr("y2", function (d) {
+            return d.y + d.height / 2
+        })
+        .on("mouseover", mouseovertooltip)
+        .on("mouseout", mouseoutooltip);
+
+    // add a line in the beginning
+    //for rounded rectangle 
+    //////////////////////////////////
+    // var NewLine = svg.select("g")
+    // NewLine.append("rect")
+    //     .attr("rx", "4")
+    //     .attr("ry", "4")
+    //     .attr("x", 0)
+    //     .attr("y", TallestNode)
+    //     .attr("width", 8)
+    //     .attr("height", LowestNode - TallestNode)
+    //     .attr("stroke", "#575757")
+    //     .style("fill", "#575757")
+    //////////////////////////////////
+    //add a line in the beginning 
+    contentLines.append("line")
+        .style("stroke-dasharray", (3, 3))
+        .style("stroke", "#575757")
+        .style("stroke-width", 2)
+        .attr("x1", 1)
+        .attr("y1", TallestNode)
+        .attr("x2", 1)
+        .attr("y2", LowestNode)
+        .on("mouseover", mouseovertooltip)
+        .on("mouseout", mouseoutooltip);
+
+    function mouseovertooltip(d) {
+        div.transition()
+            .duration(200)
+            .style("opacity", .9);
+        div.html("this is a root node")
+            .style("left", (d3.event.pageX) + "px")
+            .style("top", (d3.event.pageY - 28) + "px");
+    }
+
+    function mouseoutooltip(d) {
+        div.transition()
+            .duration(800)
+            .style("opacity", 0);
 
     }
 
