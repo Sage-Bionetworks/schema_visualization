@@ -163,12 +163,6 @@ function addElemToArray(newItem, array) {
 }
 
 function createCollapsibleTree(chart, schemaOption) {
-
-    //preprocess data
-    //var chart = preprocessChart(chart);
-
-    console.log('nodes after processsing', chart['nodes'])
-
     //prepare for rendering charts
     //draw tangled tree like we did before
     const margins = {
@@ -209,7 +203,7 @@ function createCollapsibleTree(chart, schemaOption) {
             .attr('class', 'node')
             .attr('stroke', 'white')
             .attr('stroke-width', 3)
-            .attr('d', `M${n.x + 5} ${n.y - n.height / 2} L${n.x + 5} ${n.y + n.height / 2}`);
+            .attr('d', `M${n.x} ${n.y - n.height / 2} L${n.x} ${n.y + n.height / 2}`);
     })
 
     //////define the update function
@@ -245,7 +239,7 @@ function createCollapsibleTree(chart, schemaOption) {
             })
             .attr('stroke-width', 8) //size of node
             .attr('d', function (d, i) {
-                return `M${d.x + 5} ${d.y - d.height / 2} L${d.x + 5} ${d.y + d.height / 2}` //location of the nodes
+                return `M${d.x} ${d.y - d.height / 2} L${d.x} ${d.y + d.height / 2}` //location of the nodes
             }).on('click', function (d) {
                 click;
             })
@@ -273,7 +267,7 @@ function createCollapsibleTree(chart, schemaOption) {
             .attr("class", function (d) {
                 return d._direct_children && d._direct_children.length > 0 && !checkIfDirectLinkExist(d, InteractivePartNode, bundles) ? "fa" : ""
             })
-            .attr('x', function (d) { return (d.x + 10) })
+            .attr('x', function (d) { return (d.x + 5) })
             .attr('y', function (d) { return (d.y - d.height / 2 - 4) })
             .attr("id", function (d) { return "text_" + d.id; })
             .text(function (d) {
@@ -331,7 +325,7 @@ function createCollapsibleTree(chart, schemaOption) {
         .style("opacity", 0);
 
 
-    ////add content lines for these nodes
+    //////add content lines for these nodes
     var lines = svg.select("g").selectAll("line").data(sourceNodes)
     var contentLines = lines.enter();
     contentLines.append("line")
