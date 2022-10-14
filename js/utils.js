@@ -91,3 +91,9 @@ function RemoveEmptyFromArray(array) {
 
     return filterd
 }
+
+function WordCount(str) {
+    return str.split(' ')
+        .filter(function (n) { return n != '' })
+        .length;
+}

@@ -173,7 +173,7 @@ function createCollapsibleTree(chart, schemaOption) {
     };
 
     const color = d3.scaleOrdinal(d3.schemeDark2);
-    const height = 900;
+    const height = 600;
     const width = 1000;
     const totalWidth = width + margins.left + margins.right;
 
@@ -201,7 +201,7 @@ function createCollapsibleTree(chart, schemaOption) {
     InteractivePartNode.map(n => {
         d3.select('#myViz').append('path')
             .attr('class', 'node')
-            .attr('stroke', 'white')
+            .attr('stroke', '#f0f0f0') //this color should match the background color of the visualization
             .attr('stroke-width', 3)
             .attr('d', `M${n.x} ${n.y - n.height / 2} L${n.x} ${n.y + n.height / 2}`);
     })
