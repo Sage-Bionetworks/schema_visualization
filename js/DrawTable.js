@@ -1,4 +1,9 @@
 function drawTable(data, selectedDataType) {
+    //create table
+    if ($('#toggle-table').is(":empty")) {
+        $('#toggle-table').append('<button id="toggle-attributes-table" onclick="toggleAttributeTable(this.id)">Show Attribute Table</button>');
+    }
+
     all_attribute_info = d3.group(data, (d) => d.Component)
 
     //when the filter changes, apply filter effect from dropdown
@@ -24,7 +29,7 @@ function drawTable(data, selectedDataType) {
 
 }
 
-
+//filter attribute table 
 function getAttributes(all_attribute_info, datatype, opt) {
     if (opt == "Required Attributes") {
         var attributes_to_load = all_attribute_info
@@ -47,46 +52,66 @@ function getAttributes(all_attribute_info, datatype, opt) {
     }
 }
 
+//format truncated rows 
+function formatTruncatedRows() {
+    const isEllipsisActive = e => {
+        return (e.offsetWidth < e.scrollWidth);
+    }
+
+    $("td").each(function (index, object) {
+        if (isEllipsisActive(object)) {
+            $(object).addClass('truncated')
+        } else {
+            $(object).removeClass('truncated')
+        }
+
+    })
+
+}
+
+
+//toggle attribute table by toggling class attached to "Show attribute table" button
 function toggleAttributeTable() {
     if ($('#chart-placeholder').hasClass('show-attributes-table')) {
         $('#chart-placeholder').removeClass('show-attributes-table')
     } else {
         $('#chart-placeholder').addClass('show-attributes-table')
+        formatTruncatedRows();
     }
 
 }
 
-// function readMore(btnId) {
-//     var btnIdArr = btnId.split('-')
-//     var last_two_idx = btnIdArr.splice(btnIdArr.length - 2, 2).join('-')
+//toggle text in attribute table
+function toggleText(object) {
+    //configure toggle button (+ / -)
+    $(".toggle-row").click(function () {
+        $(this).parent('td').toggleClass('expanded');
 
-//     var dotId = 'dots-' + last_two_idx
-//     var btnId = 'read-more-btn-' + last_two_idx
-//     var moreText = 'read-more-' + last_two_idx
+        if ($(this).parent('.expanded').length) {
+            $(object).addClass('truncated')
+            $(this).html("-")
+        } else {
+            $(this).html("+")
+        }
+    })
+}
 
-//     var dot = document.getElementById(dotId);
-//     var btnText = document.getElementById(btnId);
-//     var moreTextElem = document.getElementById(moreText);
+//remove "No row to show" sign 
+function RemoveNoRowToShow() {
+    var placeholderText = $("#placeholder p");
+    if (placeholderText.length > 0) {
+        $("#placeholder p").remove()
+    }
+}
 
-//     if (dot.style.display === "none") {
-//         dot.style.display = "inline";
-//         btnText.innerHTML = '&plus;'
-//         moreTextElem.style.display = "none";
-//     } else {
-//         dot.style.display = "none";
-//         btnText.innerHTML = '&#8722'
-//         moreTextElem.style.display = "inline";
-//     }
+//add "No row to show" sign 
+function AddNowRowToShow() {
+    var placeholder = $("#placeholder");
+    placeholder.append('<p id="no-row-sign">No Row to show</p>');
+}
 
-
-// }
-
-
-
+//Actually creating the attribute table
 function createTable(object) {
-    //create table
-    $('#toggle-table').append('<button id="toggle-attributes-table" onclick="toggleAttributeTable(this.id)">Show Attribute Table</button>');
-
     //show the top part of the table 
     $('#table').append('<table id="jsonTable"><thead><tr></tr></thead><tbody></tbody></table>');
 
@@ -108,20 +133,6 @@ function createTable(object) {
                         tableRow += `<td class=${td_class}>` + jsonObject[key]
                         tableRow += `<button class="toggle-row">&plus;</button></td>`
                     }
-                    //count the number of words
-                    //var numWord = WordCount(jsonObject[key])
-
-                    //if the text is very long 
-                    // if (numWord > 20) {
-                    //     var first20 = jsonObject[key].split(" ").slice(0, 20).join(" ")
-                    //     var remaining = jsonObject[key].split(" ").slice(20, numWord).join(" ")
-                    //     var id_dot = 'dots-' + index.toString() + '-' + i.toString();
-                    //     var btnId = 'read-more-btn-' + index.toString() + '-' + i.toString();
-                    //     var read_more = 'read-more-' + index.toString() + '-' + i.toString();
-                    //     tableRow += '<td>' + first20 + `< span id = ${ id_dot }>...</span > <div class="read-more" id=${read_more}>` + remaining + "</div>" + `<button class="read - more - btn" id=${btnId} onclick="readMore(this.id)">&plus;</button></td>`;
-                    // } else {
-                    //     tableRow += '<td>' + jsonObject[key] + '</td>';
-                    // }
 
                 });
                 tableRow += "</tr>";
@@ -129,50 +140,22 @@ function createTable(object) {
             }
         });
 
-        //and remove previous sign of "no row to show"
-        var tag = document.querySelector('#placeholder p')
+        console.log('this is working, if statement')
 
-        //only remove it if it exists
-        if (tag != null) {
-            tag.remove();
-        }
+        RemoveNoRowToShow();
+
     }//if there's no attributes to show, we could show a line that says "no row to show"
     else {
-        var tag = document.querySelector('#placeholder p')
-        //only add it if it doesn't exist
-        if (tag == null) {
-            $('#placeholder').append('<p id="no-row-sign">No Row to show</p>')
-        }
+        console.log('this is working, else statement');
+
+        AddNowRowToShow();
     }
 
     //add additional formats
-    const isEllipsisActive = e => {
-        return (e.offsetWidth < e.scrollWidth);
-    }
+    formatTruncatedRows();
 
-    $("td").each(function (index, object) {
-
-        if (isEllipsisActive(object)) {
-            $(object).addClass('truncated')
-        } else {
-            console.log('else is being triggered')
-            $(object).removeClass('truncated')
-        }
-
-    })
-
-    //configure toggle button (+ / -)
-    $(".toggle-row").click(function () {
-        console.log('this', $(this).parent('td'));
-        $(this).parent('td').toggleClass('expanded');
-
-        if ($(this).parent('.expanded').length) {
-            $(object).addClass('truncated')
-            $(this).html("&plus;")
-        } else {
-            $(this).html("-")
-        }
-    })
+    //toggle text
+    toggleText(object);
 
 
 }

@@ -86,7 +86,6 @@ body {
 
 #table-top {
   z-index: 100;
-  /* Lingling: this is new! I noticed I forgot to put it in earlier. */
   background-color: var(--gray-100);
   display: flex;
   align-items: stretch;
@@ -178,6 +177,7 @@ table td.truncated {
 
 table td.expanded {
   white-space: initial;
+  word-wrap: break-word;
 }
 
 table td button.toggle-row {
