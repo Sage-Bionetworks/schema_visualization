@@ -1,7 +1,7 @@
 //get CSV file by using flask API
 async function getRequestedCSV(schema_name) {
     if (schema_name == 'HTAN') {
-        let data = await fetch('http://localhost:3001/v1/visualize/attributes?schema_url=https%3A%2F%2Fraw.githubusercontent.com%2Fmialy-defelice%2Fdata_models%2Fmain%2FHTAN%2FHTAN_schema_v21_10.model.jsonld')
+        let data = await fetch('http://localhost:3001/v1/visualize/attributes?schema_url=https%3A%2F%2Fraw.githubusercontent.com%2Fncihtan%2Fdata-models%2Fdevelop-test-newschema%2FHTAN.model.jsonld')
             .then(response => response.text())
             .then(data => {
                 var data = d3.csvParse(data)
@@ -23,7 +23,7 @@ async function getRequestedCSV(schema_name) {
 //get JSON file by flask API
 async function getRequestedJson(schema_name) {
     if (schema_name == 'HTAN') {
-        let data = await fetch('http://localhost:3001/v1/visualize/tangled_tree/layers?schema_url=https%3A%2F%2Fraw.githubusercontent.com%2Fmialy-defelice%2Fdata_models%2Fmain%2FHTAN%2FHTAN_schema_v21_10.model.jsonld&figure_type=component')
+        let data = await fetch('http://localhost:3001/v1/visualize/tangled_tree/layers?schema_url=https%3A%2F%2Fraw.githubusercontent.com%2Fncihtan%2Fdata-models%2Fdevelop-test-newschema%2FHTAN.model.jsonld&figure_type=component')
             .then(response => response.json())
             .then(data => { return data })
         return data
