@@ -36,116 +36,6 @@ function replaceObjInArry(arrayofObjBase, arrayofObjReplacement) {
 ////////////////////////call create collapsible tree function to create my collapsible tree
 //preprocessing data -- now is a hard-coded function
 //assume that we could let biospecimen node knows all its children
-function preprocessChart(chart) {
-    //console.log(chart)
-
-    ///////////////////////NF
-    // chart['nodes'].forEach(element => {
-    //     if (element['id'] == "Donor") {
-    //         element['children'] = ['CellLine', 'AnimalModel', 'Resource', 'Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Mutation', 'Development']
-    //         element['direct_children'] = ['CellLine', 'AnimalModel']
-    //     }
-    //     else if (element['id'] == "CellLine") {
-    //         element['children'] = ['Resource', 'Mutation', 'Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Development']
-    //         element['direct_children'] = ['Resource', 'Mutation']
-    //     }
-    //     else if (element['id'] == "AnimalModel") {
-    //         element['direct_children'] = ['Resource', 'Mutation']
-    //         element['children'] = ['Resource', 'Mutation', 'Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Mutation', 'Development']
-    //     }
-    //     else if (element['id'] == "GeneticReagent") {
-    //         element['direct_children'] = ['Resource']
-    //         element['children'] = ['Resource', 'Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Mutation', 'Development']
-    //     }
-    //     else if (element['id'] == "Antibody") {
-    //         element['direct_children'] = ['Resource']
-    //         element['children'] = ['Resource', 'Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Mutation', 'Development']
-    //     }
-    //     else if (element['id'] == "Resource") {
-    //         element['direct_children'] = ['Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Development']
-    //         element['children'] = ['Usage', 'Biobank', 'VendorItem', 'Observation', 'ResourceApplication', 'Development']
-    //     }
-    //     else if (element['id'] == "Vendor") {
-    //         element['direct_children'] = ['VendorItem']
-    //         element['children'] = ['VendorItem']
-    //     }
-    //     else if (element['id'] == "MutationDetails") {
-    //         element['direct_children'] = ['Mutation']
-    //         element['children'] = ['Mutation']
-    //     }
-    //     else if (element['id'] == "Investigator") {
-    //         element['direct_children'] = ['Observation', 'Development']
-    //         element['children'] = ['Observation', 'Development']
-    //     }
-    //     else if (element['id'] == "Publication") {
-    //         element['direct_children'] = ['Usage', 'Development']
-    //         element['children'] = ['Usage', 'Development']
-    //     }
-    //     else if (element['id'] == "Funder") {
-    //         element['direct_children'] = ['Development']
-    //         element['children'] = ['Development']
-    //     }
-    //     else {
-    //         element['direct_children'] = []
-    //         element['children'] = []
-    //     }
-
-    // })
-
-
-    ////////////////////////HTAN
-    chart['nodes'].forEach(element => {
-        element['visible'] = true
-        if (element['id'] == 'Biospecimen') {
-            element['direct_children'] = ['ScRNA-seqLevel1', 'BulkRNA-seqLevel1', 'BulkWESLevel1', 'OtherAssay', 'ScATAC-seqLevel1', 'ImagingLevel2']
-            element['children'] = ['ScRNA-seqLevel1', 'BulkRNA-seqLevel1',
-                'BulkWESLevel1', 'OtherAssay', 'ScATAC-seqLevel1', 'ImagingLevel2',
-                'ScRNA-seqLevel2', 'BulkRNA-seqLevel2', 'BulkWESLevel2',
-                'ScRNA-seqLevel3', 'BulkRNA-seqLevel3', 'BulkWESLevel3', 'ScRNA-seqLevel4']
-
-        }
-        else if (element['id'] == 'ImagingLevel2Channels') {
-            element['direct_children'] = ['ImagingLevel2']
-            element['children'] = ['ImagingLevel2']
-        } else if (element['id'] == 'ScRNA-seqLevel1') {
-            element['children'] = ['ScRNA-seqLevel2', 'ScRNA-seqLevel3', 'ScRNA-seqLevel4']
-            element['direct_children'] = ['ScRNA-seqLevel2']
-        } else if (element['id'] == 'BulkRNA-seqLevel1') {
-            element['children'] = ['BulkRNA-seqLevel2', 'BulkRNA-seqLevel3']
-            element['direct_children'] = ['BulkRNA-seqLevel2']
-        } else if (element['id'] == 'BulkRNA-seqLevel2') {
-            element['direct_children'] = ['BulkRNA-seqLevel3']
-            element['children'] = ['BulkRNA-seqLevel3']
-        }
-
-        else if (element['id'] == 'BulkWESLevel1') {
-            element['children'] = ['BulkWESLevel2', 'BulkWESLevel3']
-            element['direct_children'] = ['BulkWESLevel2']
-        }
-        else if (element['id'] == 'BulkWESLevel2') {
-            element['children'] = ['BulkWESLevel3']
-            element['direct_children'] = ['BulkWESLevel3']
-
-        }
-        else if (element['id'] == 'ScRNA-seqLevel2') {
-            element['children'] = ['ScRNA-seqLevel3', 'ScRNA-seqLevel4']
-            element['direct_children'] = ['ScRNA-seqLevel3']
-        }
-        else if (element['id'] == 'ScRNA-seqLevel3') {
-            element['children'] = ['ScRNA-seqLevel4']
-            element['direct_children'] = ['ScRNA-seqLevel4']
-        }
-        else {
-            element['children'] = []
-            element['direct_children'] = []
-        }
-
-    })
-    return chart
-
-    //return chart
-}
-
 function removeElemFromArr(item, array) {
     var index = array.indexOf(item);
     if (index !== -1) {
@@ -174,7 +64,7 @@ function createCollapsibleTree(chart, schemaOption) {
 
     const color = d3.scaleOrdinal(d3.schemeDark2);
     const height = 600;
-    const width = 1000;
+    const width = 1200;
     const totalWidth = width + margins.left + margins.right;
 
     //remove previous result
@@ -206,6 +96,7 @@ function createCollapsibleTree(chart, schemaOption) {
             .attr('d', `M${n.x} ${n.y - n.height / 2} L${n.x} ${n.y + n.height / 2}`);
     })
 
+
     //////define the update function
     function update(InteractivePartNode, bundles) {
         ///////////////do not touch the following section
@@ -222,7 +113,8 @@ function createCollapsibleTree(chart, schemaOption) {
         ///////////////control nodes 
 
         //create g element to store all the nodes 
-        var g = svg.append("g")
+        //var g = svg.append("g")
+        const g = svg.select('g').node() ? svg.select("g") : svg.append("g")
 
         //create nodes
         //only select path that have class "node"
@@ -283,10 +175,12 @@ function createCollapsibleTree(chart, schemaOption) {
             .on('mouseover', mouseover)
             .on('mouseout', mouseout)
 
+
         flexibleText.exit().remove();
 
         ///////////////control links
         //only select paths that have class "link"
+        console.log('bundles', bundles)
         var link = svg.select("g").selectAll("path.link").data(bundles);
         var flexibleLinkEnter = link.enter();
 
@@ -331,6 +225,7 @@ function createCollapsibleTree(chart, schemaOption) {
     contentLines.append("line")
         .style("stroke-dasharray", (3, 3))
         .style("stroke", "#575757")
+        .style("opacity", 0.4)
         .style("stroke-width", 2)
         .attr("x1", function (d) {
             return d.x
@@ -360,8 +255,9 @@ function createCollapsibleTree(chart, schemaOption) {
     //     .style("fill", "#575757")
     //////////////////////////////////
     //add a line in the beginning 
-    contentLines.append("line")
+    svg.append("line")
         .style("stroke-dasharray", (3, 3))
+        .style("opacity", 0.4)
         .style("stroke", "#575757")
         .style("stroke-width", 2)
         .attr("x1", 1)
@@ -563,9 +459,6 @@ function checkIfDirectLinkExist(node, InteractivePartNode, bundles) {
         }
     })
 
-    // console.log('this node is being clicked', node)
-    // console.log('the link exist', SavedLinks)
-
     if (SavedLinks.length > 0) {
         toCollapse = false
     }
@@ -621,8 +514,6 @@ function checkSharedChildren(childrenArray, clickElem, poolNode) {
     childrenNode.forEach(e => {
         //get a list of direct parents
         var parents = getLstParents(e)
-        //console.log('this child', e)
-        //console.log('list of parents', parents)
 
         //ignore the current node that gets clicked
         var otherParents = removeArrFromArr(parents, clickElem)
