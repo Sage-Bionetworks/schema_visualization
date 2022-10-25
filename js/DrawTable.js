@@ -107,7 +107,11 @@ function RemoveNoRowToShow() {
 //add "No row to show" sign 
 function AddNowRowToShow() {
     var placeholder = $("#placeholder");
-    placeholder.append('<p id="no-row-sign">No Row to show</p>');
+
+    // if "no row to show" sign does not already exist
+    if (($('#placeholder p').length == 0)) {
+        placeholder.append('<p id="no-row-sign">No Row to show</p>');
+    }
 }
 
 //Actually creating the attribute table
