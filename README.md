@@ -16,6 +16,7 @@ You should be able to see that the flask server is running. If you open `http://
 3. Scroll to the `visualization operation` section on swagger UI and run the following endpoints: 
 
 For generating `HTAN_attribute_table.csv`: 
+
 1) `/visualize/attributes`
 
 See detailed steps:
@@ -26,7 +27,8 @@ See detailed steps:
 <li>Download the respose by clicking the "download" button on swagger UI and save the csv to "~/schema_visualization/files/Merged/HTAN_attribute_table.csv"</li>
 </ol>
 
-For generating `HTAN_tangled_tree.json`
+For generating `HTAN_tangled_tree.json`:
+
 2) `/visualize/tangled_tree/layers`
 
 See detailed steps:
