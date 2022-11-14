@@ -1,1 +1,809 @@
-[[{"id": "Demographics"}, {"id": "FamilyHistory"}, {"id": "Exposure"}, {"id": "FollowUp"}, {"id": "Diagnosis"}, {"id": "Therapy"}, {"id": "MolecularTest"}], [{"id": "Patient", "parents": ["Demographics", "FamilyHistory", "Exposure", "FollowUp", "Diagnosis", "Therapy", "MolecularTest"]}], [{"id": "Biospecimen", "parents": ["Patient"]}, {"id": "ClinicalDataTier2", "parents": ["Patient"]}, {"id": "SRRSClinicalDataTier2", "parents": ["Patient"]}, {"id": "LungCancerTier3", "parents": ["Patient"]}, {"id": "ColorectalCancerTier3", "parents": ["Patient"]}, {"id": "BreastCancerTier3", "parents": ["Patient"]}, {"id": "NeuroblastomaandGliomaTier3", "parents": ["Patient"]}, {"id": "AcuteLymphoblasticLeukemiaTier3", "parents": ["Patient"]}, {"id": "OvarianCancerTier3", "parents": ["Patient"]}, {"id": "ProstateCancerTier3", "parents": ["Patient"]}, {"id": "SarcomaTier3", "parents": ["Patient"]}, {"id": "PancreaticCancerTier3", "parents": ["Patient"]}, {"id": "MelanomaTier3", "parents": ["Patient"]}, {"id": "SRRSBiospecimen", "parents": ["Patient"]}, {"id": "ImagingLevel2Channels"}], [{"id": "ScRNA-seqLevel1", "parents": ["Biospecimen"]}, {"id": "BulkRNA-seqLevel1", "parents": ["Biospecimen"]}, {"id": "BulkWESLevel1", "parents": ["Biospecimen"]}, {"id": "OtherAssay", "parents": ["Biospecimen"]}, {"id": "ScATAC-seqLevel1", "parents": ["Biospecimen"]}, {"id": "ImagingLevel2", "parents": ["Biospecimen", "ImagingLevel2Channels"]}], [{"id": "ScRNA-seqLevel2", "parents": ["ScRNA-seqLevel1"]}, {"id": "BulkRNA-seqLevel2", "parents": ["BulkRNA-seqLevel1"]}, {"id": "BulkWESLevel2", "parents": ["BulkWESLevel1"]}], [{"id": "ScRNA-seqLevel3", "parents": ["ScRNA-seqLevel2"]}, {"id": "BulkRNA-seqLevel3", "parents": ["BulkRNA-seqLevel2"]}, {"id": "BulkWESLevel3", "parents": ["BulkWESLevel2"]}], [{"id": "ScRNA-seqLevel4", "parents": ["ScRNA-seqLevel3"]}]]
+[
+  [
+    {
+      "id": "Demographics",
+      "parents": [],
+      "direct_children": [
+        "Patient"
+      ],
+      "children": [
+        "SarcomaTier3",
+        "ScATAC-seqLevel2",
+        "ColorectalCancerTier3",
+        "Biospecimen",
+        "HTANRPPAAntibodyTable",
+        "ImagingLevel1",
+        "NeuroblastomaandGliomaTier3",
+        "ScATAC-seqLevel3",
+        "OvarianCancerTier3",
+        "SRRSClinicalDataTier2",
+        "ScATAC-seqLevel1",
+        "BulkWESLevel1",
+        "SRRSImagingLevel2",
+        "BulkWESLevel3",
+        "ProstateCancerTier3",
+        "Patient",
+        "OtherAssay",
+        "BulkWESLevel2",
+        "ScRNA-seqLevel4",
+        "BulkRNA-seqLevel3",
+        "ScRNA-seqLevel3",
+        "RPPALevel2",
+        "LungCancerTier3",
+        "MelanomaTier3",
+        "ScATAC-seqLevel4",
+        "PancreaticCancerTier3",
+        "AcuteLymphoblasticLeukemiaTier3",
+        "ImagingLevel3Segmentation",
+        "BreastCancerTier3",
+        "ScRNA-seqLevel1",
+        "BulkRNA-seqLevel2",
+        "ImagingLevel3Image",
+        "ClinicalDataTier2",
+        "SRRSBiospecimen",
+        "ScRNA-seqLevel2",
+        "BulkRNA-seqLevel1",
+        "ImagingLevel2"
+      ]
+    },
+    {
+      "id": "FamilyHistory",
+      "parents": [],
+      "direct_children": [
+        "Patient"
+      ],
+      "children": [
+        "SarcomaTier3",
+        "ScATAC-seqLevel2",
+        "ColorectalCancerTier3",
+        "Biospecimen",
+        "HTANRPPAAntibodyTable",
+        "ImagingLevel1",
+        "NeuroblastomaandGliomaTier3",
+        "ScATAC-seqLevel3",
+        "OvarianCancerTier3",
+        "SRRSClinicalDataTier2",
+        "ScATAC-seqLevel1",
+        "BulkWESLevel1",
+        "SRRSImagingLevel2",
+        "BulkWESLevel3",
+        "ProstateCancerTier3",
+        "Patient",
+        "OtherAssay",
+        "BulkWESLevel2",
+        "ScRNA-seqLevel4",
+        "BulkRNA-seqLevel3",
+        "ScRNA-seqLevel3",
+        "RPPALevel2",
+        "LungCancerTier3",
+        "MelanomaTier3",
+        "ScATAC-seqLevel4",
+        "PancreaticCancerTier3",
+        "AcuteLymphoblasticLeukemiaTier3",
+        "ImagingLevel3Segmentation",
+        "BreastCancerTier3",
+        "ScRNA-seqLevel1",
+        "BulkRNA-seqLevel2",
+        "ImagingLevel3Image",
+        "ClinicalDataTier2",
+        "SRRSBiospecimen",
+        "ScRNA-seqLevel2",
+        "BulkRNA-seqLevel1",
+        "ImagingLevel2"
+      ]
+    },
+    {
+      "id": "Exposure",
+      "parents": [],
+      "direct_children": [
+        "Patient"
+      ],
+      "children": [
+        "SarcomaTier3",
+        "ScATAC-seqLevel2",
+        "ColorectalCancerTier3",
+        "Biospecimen",
+        "HTANRPPAAntibodyTable",
+        "ImagingLevel1",
+        "NeuroblastomaandGliomaTier3",
+        "ScATAC-seqLevel3",
+        "OvarianCancerTier3",
+        "SRRSClinicalDataTier2",
+        "ScATAC-seqLevel1",
+        "BulkWESLevel1",
+        "SRRSImagingLevel2",
+        "BulkWESLevel3",
+        "ProstateCancerTier3",
+        "Patient",
+        "OtherAssay",
+        "BulkWESLevel2",
+        "ScRNA-seqLevel4",
+        "BulkRNA-seqLevel3",
+        "ScRNA-seqLevel3",
+        "RPPALevel2",
+        "LungCancerTier3",
+        "MelanomaTier3",
+        "ScATAC-seqLevel4",
+        "PancreaticCancerTier3",
+        "AcuteLymphoblasticLeukemiaTier3",
+        "ImagingLevel3Segmentation",
+        "BreastCancerTier3",
+        "ScRNA-seqLevel1",
+        "BulkRNA-seqLevel2",
+        "ImagingLevel3Image",
+        "ClinicalDataTier2",
+        "SRRSBiospecimen",
+        "ScRNA-seqLevel2",
+        "BulkRNA-seqLevel1",
+        "ImagingLevel2"
+      ]
+    },
+    {
+      "id": "FollowUp",
+      "parents": [],
+      "direct_children": [
+        "Patient"
+      ],
+      "children": [
+        "SarcomaTier3",
+        "ScATAC-seqLevel2",
+        "ColorectalCancerTier3",
+        "Biospecimen",
+        "HTANRPPAAntibodyTable",
+        "ImagingLevel1",
+        "NeuroblastomaandGliomaTier3",
+        "ScATAC-seqLevel3",
+        "OvarianCancerTier3",
+        "SRRSClinicalDataTier2",
+        "ScATAC-seqLevel1",
+        "BulkWESLevel1",
+        "SRRSImagingLevel2",
+        "BulkWESLevel3",
+        "ProstateCancerTier3",
+        "Patient",
+        "OtherAssay",
+        "BulkWESLevel2",
+        "ScRNA-seqLevel4",
+        "BulkRNA-seqLevel3",
+        "ScRNA-seqLevel3",
+        "RPPALevel2",
+        "LungCancerTier3",
+        "MelanomaTier3",
+        "ScATAC-seqLevel4",
+        "PancreaticCancerTier3",
+        "AcuteLymphoblasticLeukemiaTier3",
+        "ImagingLevel3Segmentation",
+        "BreastCancerTier3",
+        "ScRNA-seqLevel1",
+        "BulkRNA-seqLevel2",
+        "ImagingLevel3Image",
+        "ClinicalDataTier2",
+        "SRRSBiospecimen",
+        "ScRNA-seqLevel2",
+        "BulkRNA-seqLevel1",
+        "ImagingLevel2"
+      ]
+    },
+    {
+      "id": "Diagnosis",
+      "parents": [],
+      "direct_children": [
+        "Patient"
+      ],
+      "children": [
+        "SarcomaTier3",
+        "ScATAC-seqLevel2",
+        "ColorectalCancerTier3",
+        "Biospecimen",
+        "HTANRPPAAntibodyTable",
+        "ImagingLevel1",
+        "NeuroblastomaandGliomaTier3",
+        "ScATAC-seqLevel3",
+        "OvarianCancerTier3",
+        "SRRSClinicalDataTier2",
+        "ScATAC-seqLevel1",
+        "BulkWESLevel1",
+        "SRRSImagingLevel2",
+        "BulkWESLevel3",
+        "ProstateCancerTier3",
+        "Patient",
+        "OtherAssay",
+        "BulkWESLevel2",
+        "ScRNA-seqLevel4",
+        "BulkRNA-seqLevel3",
+        "ScRNA-seqLevel3",
+        "RPPALevel2",
+        "LungCancerTier3",
+        "MelanomaTier3",
+        "ScATAC-seqLevel4",
+        "PancreaticCancerTier3",
+        "AcuteLymphoblasticLeukemiaTier3",
+        "ImagingLevel3Segmentation",
+        "BreastCancerTier3",
+        "ScRNA-seqLevel1",
+        "BulkRNA-seqLevel2",
+        "ImagingLevel3Image",
+        "ClinicalDataTier2",
+        "SRRSBiospecimen",
+        "ScRNA-seqLevel2",
+        "BulkRNA-seqLevel1",
+        "ImagingLevel2"
+      ]
+    },
+    {
+      "id": "Therapy",
+      "parents": [],
+      "direct_children": [
+        "Patient"
+      ],
+      "children": [
+        "SarcomaTier3",
+        "ScATAC-seqLevel2",
+        "ColorectalCancerTier3",
+        "Biospecimen",
+        "HTANRPPAAntibodyTable",
+        "ImagingLevel1",
+        "NeuroblastomaandGliomaTier3",
+        "ScATAC-seqLevel3",
+        "OvarianCancerTier3",
+        "SRRSClinicalDataTier2",
+        "ScATAC-seqLevel1",
+        "BulkWESLevel1",
+        "SRRSImagingLevel2",
+        "BulkWESLevel3",
+        "ProstateCancerTier3",
+        "Patient",
+        "OtherAssay",
+        "BulkWESLevel2",
+        "ScRNA-seqLevel4",
+        "BulkRNA-seqLevel3",
+        "ScRNA-seqLevel3",
+        "RPPALevel2",
+        "LungCancerTier3",
+        "MelanomaTier3",
+        "ScATAC-seqLevel4",
+        "PancreaticCancerTier3",
+        "AcuteLymphoblasticLeukemiaTier3",
+        "ImagingLevel3Segmentation",
+        "BreastCancerTier3",
+        "ScRNA-seqLevel1",
+        "BulkRNA-seqLevel2",
+        "ImagingLevel3Image",
+        "ClinicalDataTier2",
+        "SRRSBiospecimen",
+        "ScRNA-seqLevel2",
+        "BulkRNA-seqLevel1",
+        "ImagingLevel2"
+      ]
+    },
+    {
+      "id": "MolecularTest",
+      "parents": [],
+      "direct_children": [
+        "Patient"
+      ],
+      "children": [
+        "SarcomaTier3",
+        "ScATAC-seqLevel2",
+        "ColorectalCancerTier3",
+        "Biospecimen",
+        "HTANRPPAAntibodyTable",
+        "ImagingLevel1",
+        "NeuroblastomaandGliomaTier3",
+        "ScATAC-seqLevel3",
+        "OvarianCancerTier3",
+        "SRRSClinicalDataTier2",
+        "ScATAC-seqLevel1",
+        "BulkWESLevel1",
+        "SRRSImagingLevel2",
+        "BulkWESLevel3",
+        "ProstateCancerTier3",
+        "Patient",
+        "OtherAssay",
+        "BulkWESLevel2",
+        "ScRNA-seqLevel4",
+        "BulkRNA-seqLevel3",
+        "ScRNA-seqLevel3",
+        "RPPALevel2",
+        "LungCancerTier3",
+        "MelanomaTier3",
+        "ScATAC-seqLevel4",
+        "PancreaticCancerTier3",
+        "AcuteLymphoblasticLeukemiaTier3",
+        "ImagingLevel3Segmentation",
+        "BreastCancerTier3",
+        "ScRNA-seqLevel1",
+        "BulkRNA-seqLevel2",
+        "ImagingLevel3Image",
+        "ClinicalDataTier2",
+        "SRRSBiospecimen",
+        "ScRNA-seqLevel2",
+        "BulkRNA-seqLevel1",
+        "ImagingLevel2"
+      ]
+    }
+  ],
+  [
+    {
+      "id": "Patient",
+      "parents": [
+        "Demographics",
+        "FamilyHistory",
+        "Exposure",
+        "FollowUp",
+        "Diagnosis",
+        "Therapy",
+        "MolecularTest"
+      ],
+      "direct_children": [
+        "Biospecimen",
+        "ClinicalDataTier2",
+        "SRRSClinicalDataTier2",
+        "LungCancerTier3",
+        "ColorectalCancerTier3",
+        "BreastCancerTier3",
+        "NeuroblastomaandGliomaTier3",
+        "AcuteLymphoblasticLeukemiaTier3",
+        "OvarianCancerTier3",
+        "ProstateCancerTier3",
+        "SarcomaTier3",
+        "PancreaticCancerTier3",
+        "MelanomaTier3",
+        "SRRSBiospecimen"
+      ],
+      "children": [
+        "SarcomaTier3",
+        "ScATAC-seqLevel2",
+        "ColorectalCancerTier3",
+        "Biospecimen",
+        "HTANRPPAAntibodyTable",
+        "ImagingLevel1",
+        "NeuroblastomaandGliomaTier3",
+        "ScATAC-seqLevel3",
+        "OvarianCancerTier3",
+        "SRRSClinicalDataTier2",
+        "ScATAC-seqLevel1",
+        "BulkWESLevel1",
+        "SRRSImagingLevel2",
+        "BulkWESLevel3",
+        "ProstateCancerTier3",
+        "OtherAssay",
+        "BulkWESLevel2",
+        "ScRNA-seqLevel4",
+        "BulkRNA-seqLevel3",
+        "ScRNA-seqLevel3",
+        "RPPALevel2",
+        "LungCancerTier3",
+        "MelanomaTier3",
+        "ScATAC-seqLevel4",
+        "PancreaticCancerTier3",
+        "AcuteLymphoblasticLeukemiaTier3",
+        "ImagingLevel3Segmentation",
+        "BreastCancerTier3",
+        "ScRNA-seqLevel1",
+        "BulkRNA-seqLevel2",
+        "ImagingLevel3Image",
+        "ClinicalDataTier2",
+        "SRRSBiospecimen",
+        "ScRNA-seqLevel2",
+        "BulkRNA-seqLevel1",
+        "ImagingLevel2"
+      ]
+    }
+  ],
+  [
+    {
+      "id": "Biospecimen",
+      "parents": [
+        "Patient"
+      ],
+      "direct_children": [
+        "OtherAssay",
+        "ScRNA-seqLevel1",
+        "BulkRNA-seqLevel1",
+        "BulkWESLevel1",
+        "ScATAC-seqLevel1",
+        "ImagingLevel1",
+        "SRRSImagingLevel2",
+        "RPPALevel2"
+      ],
+      "children": [
+        "ScATAC-seqLevel2",
+        "BulkRNA-seqLevel3",
+        "ScRNA-seqLevel3",
+        "RPPALevel2",
+        "HTANRPPAAntibodyTable",
+        "ScATAC-seqLevel4",
+        "ImagingLevel3Segmentation",
+        "ImagingLevel1",
+        "ScATAC-seqLevel3",
+        "ScRNA-seqLevel1",
+        "BulkRNA-seqLevel2",
+        "ImagingLevel3Image",
+        "ScATAC-seqLevel1",
+        "BulkWESLevel1",
+        "SRRSImagingLevel2",
+        "BulkWESLevel3",
+        "ScRNA-seqLevel2",
+        "BulkRNA-seqLevel1",
+        "ScRNA-seqLevel4",
+        "BulkWESLevel2",
+        "OtherAssay",
+        "ImagingLevel2"
+      ]
+    },
+    {
+      "id": "ClinicalDataTier2",
+      "parents": [
+        "Patient"
+      ],
+      "direct_children": [],
+      "children": []
+    },
+    {
+      "id": "SRRSClinicalDataTier2",
+      "parents": [
+        "Patient"
+      ],
+      "direct_children": [],
+      "children": []
+    },
+    {
+      "id": "LungCancerTier3",
+      "parents": [
+        "Patient"
+      ],
+      "direct_children": [],
+      "children": []
+    },
+    {
+      "id": "ColorectalCancerTier3",
+      "parents": [
+        "Patient"
+      ],
+      "direct_children": [],
+      "children": []
+    },
+    {
+      "id": "BreastCancerTier3",
+      "parents": [
+        "Patient"
+      ],
+      "direct_children": [],
+      "children": []
+    },
+    {
+      "id": "NeuroblastomaandGliomaTier3",
+      "parents": [
+        "Patient"
+      ],
+      "direct_children": [],
+      "children": []
+    },
+    {
+      "id": "AcuteLymphoblasticLeukemiaTier3",
+      "parents": [
+        "Patient"
+      ],
+      "direct_children": [],
+      "children": []
+    },
+    {
+      "id": "OvarianCancerTier3",
+      "parents": [
+        "Patient"
+      ],
+      "direct_children": [],
+      "children": []
+    },
+    {
+      "id": "ProstateCancerTier3",
+      "parents": [
+        "Patient"
+      ],
+      "direct_children": [],
+      "children": []
+    },
+    {
+      "id": "SarcomaTier3",
+      "parents": [
+        "Patient"
+      ],
+      "direct_children": [],
+      "children": []
+    },
+    {
+      "id": "PancreaticCancerTier3",
+      "parents": [
+        "Patient"
+      ],
+      "direct_children": [],
+      "children": []
+    },
+    {
+      "id": "MelanomaTier3",
+      "parents": [
+        "Patient"
+      ],
+      "direct_children": [],
+      "children": []
+    },
+    {
+      "id": "SRRSBiospecimen",
+      "parents": [
+        "Patient"
+      ],
+      "direct_children": [],
+      "children": []
+    }
+  ],
+  [
+    {
+      "id": "ScRNA-seqLevel1",
+      "parents": [
+        "Biospecimen"
+      ],
+      "direct_children": [
+        "ScRNA-seqLevel2"
+      ],
+      "children": [
+        "ScRNA-seqLevel3",
+        "ScRNA-seqLevel4",
+        "ScRNA-seqLevel2"
+      ]
+    },
+    {
+      "id": "ScATAC-seqLevel1",
+      "parents": [
+        "Biospecimen"
+      ],
+      "direct_children": [
+        "ScATAC-seqLevel2"
+      ],
+      "children": [
+        "ScATAC-seqLevel4",
+        "ScATAC-seqLevel2",
+        "ScATAC-seqLevel3"
+      ]
+    },
+    {
+      "id": "BulkRNA-seqLevel1",
+      "parents": [
+        "Biospecimen"
+      ],
+      "direct_children": [
+        "BulkRNA-seqLevel2"
+      ],
+      "children": [
+        "BulkRNA-seqLevel2",
+        "BulkRNA-seqLevel3"
+      ]
+    },
+    {
+      "id": "BulkWESLevel1",
+      "parents": [
+        "Biospecimen"
+      ],
+      "direct_children": [
+        "BulkWESLevel2"
+      ],
+      "children": [
+        "BulkWESLevel2",
+        "BulkWESLevel3"
+      ]
+    },
+    {
+      "id": "ImagingLevel1",
+      "parents": [
+        "Biospecimen"
+      ],
+      "direct_children": [
+        "ImagingLevel2"
+      ],
+      "children": [
+        "ImagingLevel3Image",
+        "ImagingLevel3Segmentation",
+        "ImagingLevel2"
+      ]
+    },
+    {
+      "id": "RPPALevel2",
+      "parents": [
+        "Biospecimen"
+      ],
+      "direct_children": [
+        "HTANRPPAAntibodyTable"
+      ],
+      "children": [
+        "HTANRPPAAntibodyTable"
+      ]
+    },
+    {
+      "id": "OtherAssay",
+      "parents": [
+        "Biospecimen"
+      ],
+      "direct_children": [],
+      "children": []
+    },
+    {
+      "id": "SRRSImagingLevel2",
+      "parents": [
+        "Biospecimen"
+      ],
+      "direct_children": [],
+      "children": []
+    }
+  ],
+  [
+    {
+      "id": "ScRNA-seqLevel2",
+      "parents": [
+        "ScRNA-seqLevel1"
+      ],
+      "direct_children": [
+        "ScRNA-seqLevel3"
+      ],
+      "children": [
+        "ScRNA-seqLevel3",
+        "ScRNA-seqLevel4"
+      ]
+    },
+    {
+      "id": "ScATAC-seqLevel2",
+      "parents": [
+        "ScATAC-seqLevel1"
+      ],
+      "direct_children": [
+        "ScATAC-seqLevel3"
+      ],
+      "children": [
+        "ScATAC-seqLevel4",
+        "ScATAC-seqLevel3"
+      ]
+    },
+    {
+      "id": "BulkRNA-seqLevel2",
+      "parents": [
+        "BulkRNA-seqLevel1"
+      ],
+      "direct_children": [
+        "BulkRNA-seqLevel3"
+      ],
+      "children": [
+        "BulkRNA-seqLevel3"
+      ]
+    },
+    {
+      "id": "BulkWESLevel2",
+      "parents": [
+        "BulkWESLevel1"
+      ],
+      "direct_children": [
+        "BulkWESLevel3"
+      ],
+      "children": [
+        "BulkWESLevel3"
+      ]
+    },
+    {
+      "id": "ImagingLevel2",
+      "parents": [
+        "ImagingLevel1"
+      ],
+      "direct_children": [
+        "ImagingLevel3Segmentation",
+        "ImagingLevel3Image"
+      ],
+      "children": [
+        "ImagingLevel3Image",
+        "ImagingLevel3Segmentation"
+      ]
+    },
+    {
+      "id": "HTANRPPAAntibodyTable",
+      "parents": [
+        "RPPALevel2"
+      ],
+      "direct_children": [],
+      "children": []
+    },
+    {
+      "id": "ImagingLevel3Channels",
+      "parents": [],
+      "direct_children": [
+        "ImagingLevel3Image",
+        "ImagingLevel4"
+      ],
+      "children": [
+        "ImagingLevel4",
+        "ImagingLevel3Image"
+      ]
+    }
+  ],
+  [
+    {
+      "id": "ScRNA-seqLevel3",
+      "parents": [
+        "ScRNA-seqLevel2"
+      ],
+      "direct_children": [
+        "ScRNA-seqLevel4"
+      ],
+      "children": [
+        "ScRNA-seqLevel4"
+      ]
+    },
+    {
+      "id": "ScATAC-seqLevel3",
+      "parents": [
+        "ScATAC-seqLevel2"
+      ],
+      "direct_children": [
+        "ScATAC-seqLevel4"
+      ],
+      "children": [
+        "ScATAC-seqLevel4"
+      ]
+    },
+    {
+      "id": "BulkRNA-seqLevel3",
+      "parents": [
+        "BulkRNA-seqLevel2"
+      ],
+      "direct_children": [],
+      "children": []
+    },
+    {
+      "id": "BulkWESLevel3",
+      "parents": [
+        "BulkWESLevel2"
+      ],
+      "direct_children": [],
+      "children": []
+    },
+    {
+      "id": "ImagingLevel3Segmentation",
+      "parents": [
+        "ImagingLevel2"
+      ],
+      "direct_children": [],
+      "children": []
+    },
+    {
+      "id": "ImagingLevel3Image",
+      "parents": [
+        "ImagingLevel3Channels",
+        "ImagingLevel2"
+      ],
+      "direct_children": [],
+      "children": []
+    },
+    {
+      "id": "ImagingLevel4",
+      "parents": [
+        "ImagingLevel3Channels"
+      ],
+      "direct_children": [],
+      "children": []
+    }
+  ],
+  [
+    {
+      "id": "ScRNA-seqLevel4",
+      "parents": [
+        "ScRNA-seqLevel3"
+      ],
+      "direct_children": [],
+      "children": []
+    },
+    {
+      "id": "ScATAC-seqLevel4",
+      "parents": [
+        "ScATAC-seqLevel3"
+      ],
+      "direct_children": [],
+      "children": []
+    }
+  ]
+]
