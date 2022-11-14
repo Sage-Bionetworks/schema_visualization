@@ -19,28 +19,19 @@ For generating `HTAN_attribute_table.csv`:
 1) `/visualize/attributes`
 
 See detailed steps: 
-
     a. Click on `try it out`
-
     b. Update `schema_url` parameter. Replace the example schema with HTAN schema.
-
     c. Click on `execute` to run the endpoint. 
-    
     d. Download the respose by clicking the "download" button on swagger UI and save the csv to `~/schema_visualization/files/Merged/HTAN_attribute_table.csv`
 
 2) `/visualize/tangled_tree/layers`
 
 See detailed steps: 
-
     a. Click on `try it out`
-
     b. Update `schema_url` parameter. Replace the example schema with HTAN schema.
-
     c. Use the default `figure_type`: `component`
-
-    c. Click on `execute` to run the endpoint. 
-
-    d. Download the respose by clicking the "download" button on swagger UI and save the json to `~/schema_visualization/files/JSON/HTAN_tangled_tree.json`
+    d. Click on `execute` to run the endpoint. 
+    e. Download the respose by clicking the "download" button on swagger UI and save the json to `~/schema_visualization/files/JSON/HTAN_tangled_tree.json`
 
 
 # Other resources
