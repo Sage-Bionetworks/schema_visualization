@@ -18,20 +18,25 @@ You should be able to see that the flask server is running. If you open `http://
 For generating `HTAN_attribute_table.csv`: 
 1) `/visualize/attributes`
 
-See detailed steps: 
-    a. Click on `try it out`
-    b. Update `schema_url` parameter. Replace the example schema with HTAN schema.
-    c. Click on `execute` to run the endpoint. 
-    d. Download the respose by clicking the "download" button on swagger UI and save the csv to `~/schema_visualization/files/Merged/HTAN_attribute_table.csv`
+See detailed steps:
+<ol type="a">
+<li>Click on `try it out`</li>
+<li>Update `schema_url` parameter. Replace the example schema with HTAN schema.</li>
+<li>Click on `execute` to run the endpoint. </li>
+<li>Download the respose by clicking the "download" button on swagger UI and save the csv to `~/schema_visualization/files/Merged/HTAN_attribute_table.csv`</li>
+</ol>
+
 
 2) `/visualize/tangled_tree/layers`
 
-See detailed steps: 
-    a. Click on `try it out`
-    b. Update `schema_url` parameter. Replace the example schema with HTAN schema.
-    c. Use the default `figure_type`: `component`
-    d. Click on `execute` to run the endpoint. 
-    e. Download the respose by clicking the "download" button on swagger UI and save the json to `~/schema_visualization/files/JSON/HTAN_tangled_tree.json`
+See detailed steps:
+<ol type="a">
+<li>Click on `try it out`</li>
+<li>Update `schema_url` parameter. Replace the example schema with HTAN schema.</li>
+<li>Use the default `figure_type`: `component`</li>
+<li>Click on `execute` to run the endpoint. </li>
+<li>Download the respose by clicking the "download" button on swagger UI and save the json to `~/schema_visualization/files/JSON/HTAN_tangled_tree.json`</li>
+</ol>
 
 
 # Other resources
