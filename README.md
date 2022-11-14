@@ -20,10 +20,10 @@ For generating `HTAN_attribute_table.csv`:
 
 See detailed steps:
 <ol type="a">
-<li>Click on `try it out`</li>
-<li>Update `schema_url` parameter. Replace the example schema with HTAN schema.</li>
-<li>Click on `execute` to run the endpoint. </li>
-<li>Download the respose by clicking the "download" button on swagger UI and save the csv to `~/schema_visualization/files/Merged/HTAN_attribute_table.csv`</li>
+<li>Click on "try it out"</li>
+<li>Update "schema_url" parameter. Replace the example schema with HTAN schema.</li>
+<li>Click on "execute" to run the endpoint. </li>
+<li>Download the respose by clicking the "download" button on swagger UI and save the csv to "~/schema_visualization/files/Merged/HTAN_attribute_table.csv"</li>
 </ol>
 
 
@@ -31,11 +31,11 @@ See detailed steps:
 
 See detailed steps:
 <ol type="a">
-<li>Click on `try it out`</li>
-<li>Update `schema_url` parameter. Replace the example schema with HTAN schema.</li>
-<li>Use the default `figure_type`: `component`</li>
-<li>Click on `execute` to run the endpoint. </li>
-<li>Download the respose by clicking the "download" button on swagger UI and save the json to `~/schema_visualization/files/JSON/HTAN_tangled_tree.json`</li>
+<li>Click on "try it out"</li>
+<li>Update "schema_url" parameter. Replace the example schema with HTAN schema.</li>
+<li>Use the default "figure_type": "component"</li>
+<li>Click on "execute" to run the endpoint. </li>
+<li>Download the respose by clicking the "download" button on swagger UI and save the json to "~/schema_visualization/files/JSON/HTAN_tangled_tree.json"</li>
 </ol>
 
 
