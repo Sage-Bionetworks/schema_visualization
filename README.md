@@ -26,7 +26,7 @@ See detailed steps:
 <li>Download the respose by clicking the "download" button on swagger UI and save the csv to "~/schema_visualization/files/Merged/HTAN_attribute_table.csv"</li>
 </ol>
 
-
+For generating `HTAN_tangled_tree.json`
 2) `/visualize/tangled_tree/layers`
 
 See detailed steps:
