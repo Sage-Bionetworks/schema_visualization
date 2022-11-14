@@ -2,70 +2,33 @@
 This repository is for extracting D3 and Javascript code from observables to produce a stand-alone visualization. Please view links to the original design and Mialy's work in the last section. 
 
 # Running the code
+Simply clone the repository and run `python3 -m http.server`. 
 
-Simply clone the repository and run `python3 -m http.server`. Also, since this visualization pull data from `schematic` APIs, please also clone `schematic` and run the API endpoints from the branch `develop-schema-viz-tool-cors`
-
-# journey of figuring things out
-
-Main difficulty: the origin design is on Observable, and we could not just copy and paste all the code to make it work. For one thing, code on observables is not entirely Javascript(see [here](https://observablehq.com/@observablehq/observables-not-javascript)). For another, there are some built-in functions that Observable is using under the hood. For example, take a look at this code taken from the original tangled tree design: 
-
+# Update Static files
+Currently, the schema visualization requires the following files: `files/JSON/HTAN_tangled_tree.json` for the tangled tree and `files/Merged/HTAN_attribute_table.csv` for the attribute table. If the schema changes, please follow the following steps to update the schema: 
+1. Install the latest version of `schematicpy` by following the instructions [here](https://github.com/Sage-Bionetworks/schematic/blob/develop/README.md#installation:~:text=various%20data%20contributors.-,Installation,-Installation%20Requirements)
+2. Start schematic APIs in your virtual environment by doing: 
 ```
-    return svg`<svg width="${tangleLayout.layout.width}" height="${tangleLayout.layout.height
-        }" style="background-color: ${background_color}">
-
+python3 run_api.py
 ```
+You should be able to see that the flask server is running. If you open `http://localhost:3001/v1/ui/` on your local machine, you should be able to see swagger UI. 
 
-You could see that the `svg` here right after `return` is a built-in observable function that we could not easily borrow. 
+3. Scroll to the `visualization operation` section on swagger UI and run the following endpoints: 
 
-Initially, I was thinking of borrowing other tangled tree code on Stack overflow. There are a couple of examples but they didn't work well after I replaced their datasets with our tangled tree data. In the end, I decided to focus on replacing the code on Observable and make it work locally. 
+For generating `HTAN_attribute_table.csv`: 
+1) `/visualize/attributes`
 
+a. Click on `try it out`
+b. Update `schema_url` parameter. Replace the example schema with HTAN schema.
+c. Click on `execute` to run the endpoint. 
+d. Download the respose by clicking the "download" button on swagger UI and save the csv to `~/schema_visualization/files/Merged/HTAN_attribute_table.csv`
 
-How? 
-
-The way that Observable works is actually very similar to React. If you take a closer look at the code below: 
-```
-    ${tangleLayout.bundles.map((b) => {
-            let d = b.links
-                .map(
-                    (l) => `
-        M${l.xt} ${l.yt}
-        L${l.xb - l.c1} ${l.yt}
-        A${l.c1} ${l.c1} 90 0 1 ${l.xb} ${l.yt + l.c1}
-        L${l.xb} ${l.ys - l.c2}
-        A${l.c2} ${l.c2} 90 0 0 ${l.xb + l.c2} ${l.ys}
-        L${l.xs} ${l.ys}`
-                )
-                .join("");
-            return `
-        <path class="link" d="${d}" stroke="${background_color}" stroke-width="5"/>
-      `;
-        })}
-```
-
-This is very similar to returning HTML elements using a map function in React. And we could transform the code in Javascript by doing something like this: 
-
-```
-    tangleLayout.bundles.map(b => {
-        let d = b.links.map(l => `
-              M${l.xt} ${l.yt}
-              L${l.xb - l.c1} ${l.yt}
-              A${l.c1} ${l.c1} 90 0 1 ${l.xb} ${l.yt + l.c1}
-              L${l.xb} ${l.ys - l.c2}
-              A${l.c2} ${l.c2} 90 0 0 ${l.xb + l.c2} ${l.ys}
-              L${l.xs} ${l.ys}`
-        ).join("");
-
-        const path = d3.select('#myViz').append('path')
-            .attr('class', 'link')
-            .attr('d', d)
-            .attr('stroke', 'white')
-            .attr('stroke-width', 5);
-    })
-
-```
-
-By doing the above, we are also appending the `path` HTML element with the return statement. Eventually, I was able to transform most of the code in Observable without starting everything from scratch. 
-
+2) `/visualize/tangled_tree/layers`
+a. Click on `try it out`
+b. Update `schema_url` parameter. Replace the example schema with HTAN schema.
+c. Use the default `figure_type`: `component`
+c. Click on `execute` to run the endpoint. 
+d. Download the respose by clicking the "download" button on swagger UI and save the json to `~/schema_visualization/files/JSON/HTAN_tangled_tree.json`
 
 
 # Other resources
