@@ -1,23 +1,29 @@
-//return an array based on user selection 
-function selectSchema() {
-    var selectedSchemaOption = document.getElementById("schema").value;
+$.get('files/config.yml').done(function (data) {
+    //loading content of the config file
+    var config_content = jsyaml.load(data)
 
-    if (selectedSchemaOption == "HTAN" || selectedSchemaOption == "HTAN RequiresDependency" || selectedSchemaOption == "HTAN Component RequiresDependency") {
-        //var tangled_tree_data = parseJSON('files/JSON/HTAN_tangled_tree_new.json');
-        var schemaName = 'HTAN'
+    //check the schema name
+    var schema = config_content["schema"]
 
-    } else if (selectedSchemaOption == "NF Tools Registry") {
-        //var tangled_tree_data = parseJSON('files/JSON/nf_tangled_tree.json');
-        var schemaName = 'NF'
-    } else if (selectedSchemaOption == "AmpAD" || selectedSchemaOption == "AmpAD view Dependencies") {
-        var tangled_tree_data = parseJSON('files/JSON/ampad_tangled_tree.json');
+    ////////////////for using APIs
+    // getRequestedJson(schema).then(tangled_tree_data => {
+    //     console.log('api tangled_tree_data', tangled_tree_data)
+    //     var chart_dta = chart(tangled_tree_data);
+    //     createCollapsibleTree(chart_dta, schema)
+    // })
+    //////////////////////////////
+
+    //////////////////for using static files
+    if (schema == "HTAN") {
+        var tangled_tree_data = parseJSON('files/JSON/HTAN_tangled_tree.json');
     }
 
-    getRequestedJson(schemaName).then(tangled_tree_data => {
-        var chart_dta = chart(tangled_tree_data);
-        createCollapsibleTree(chart_dta, selectedSchemaOption);
+    tangled_tree_data.then(tangled_tree_dta => {
+        //get tangle tree layout
+        var chart_dta = chart(tangled_tree_dta);
+
+        //draw collapsible tree
+        createCollapsibleTree(chart_dta, schema);
     })
 
-
-
-}
+})
