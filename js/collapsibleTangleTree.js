@@ -294,7 +294,7 @@ function createCollapsibleTree(chart, schemaOption) {
 
         ///////////////for using static file
         if (schemaOption == 'HTAN') {
-            var schema_file_name = 'files/Merged/merged_HTAN.csv'
+            var schema_file_name = 'files/Merged/HTAN_attribute_table.csv'
         }
         var merged_data = parseCSVFiles(schema_file_name)
 
