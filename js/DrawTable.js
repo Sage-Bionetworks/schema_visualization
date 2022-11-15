@@ -74,8 +74,10 @@ function formatTruncatedRows() {
 function toggleAttributeTable() {
     if ($('#chart-placeholder').hasClass('show-attributes-table')) {
         $('#chart-placeholder').removeClass('show-attributes-table')
+        $('#toggle-attributes-table').text('Show Attribute Table')
     } else {
-        $('#chart-placeholder').addClass('show-attributes-table')
+        $('#chart-placeholder').addClass('show-attributes-table');
+        $('#toggle-attributes-table').text('Hide Attribute Table')
         formatTruncatedRows();
     }
 
