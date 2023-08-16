@@ -2,13 +2,13 @@ $.get('files/config.yml').done(function (data) {
     //loading content of the config file
     var config_content = jsyaml.load(data)
 
-    //check the schema name
-    var schema = config_content["schema"]
+    //get schema url 
+    var schema_url = config_content["schema_url"]
 
     //////////////////for using schematic API
-    getRequestedJson(schema).then(tangled_tree_data => {
+    getRequestedJson(schema_url).then(tangled_tree_data => {
         var chart_dta = chart(tangled_tree_data);
-        createCollapsibleTree(chart_dta, schema)
+        createCollapsibleTree(chart_dta, schema_url)
     })
 
     //////////////////for using static files

@@ -52,7 +52,7 @@ function addElemToArray(newItem, array) {
     return array
 }
 
-function createCollapsibleTree(chart, schemaOption) {
+function createCollapsibleTree(chart, schema_url) {
     //prepare for rendering charts
     //draw tangled tree like we did before
     const margins = {
@@ -284,11 +284,11 @@ function createCollapsibleTree(chart, schemaOption) {
     }
 
     //////////////////generate data for attribute table 
-    var merged_data = generateAttributeData(schemaOption)
+    var merged_data = generateAttributeData(schema_url)
 
-    function generateAttributeData(schemaOption) {
+    function generateAttributeData(schema_url) {
         /////////////////for using API
-        var merged_data = getRequestedCSV(schemaOption);
+        var merged_data = getRequestedCSV(schema_url);
         /////////////////
 
         ///////////////for using static file

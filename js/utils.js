@@ -1,54 +1,30 @@
 //get CSV file by using flask API
-async function getRequestedCSV(schema_name) {
-    if (schema_name == 'HTAN') {
-        let data = await fetch('http://localhost:3001/v1/visualize/attributes?schema_url=https%3A%2F%2Fraw.githubusercontent.com%2Fncihtan%2Fdata-models%2Fmain%2FHTAN.model.jsonld')
-            .then(response => response.text())
-            .then(data => {
-                var data = d3.csvParse(data)
-                return data
-            })
-        return data
-    } else if (schema_name == 'NF') {
-        let data = await fetch('http://localhost:3001/v1/visualize/attributes?schema_url=https%3A%2F%2Fraw.githubusercontent.com%2Fnf-osi%2Fnf-research-tools-schema%2Fmain%2Fnf-research-tools.jsonld')
-            .then(response => response.text())
-            .then(data => {
-                var data = d3.csvParse(data)
-                return data
-            })
-        return data
-    } else if (schema_name == 'Example') {
-        let data = await fetch('https://schematic-dev.api.sagebionetworks.org/v1/visualize/attributes?schema_url=https%3A%2F%2Fraw.githubusercontent.com%2FSage-Bionetworks%2Fschematic%2Fdevelop%2Ftests%2Fdata%2Fexample.model.jsonld')
-            .then(response => response.text())
-            .then(data => {
-                console.log('data', data)
-                var data = d3.csvParse(data)
-                return data
-            })
-        return data
-    } 
+async function getRequestedCSV(schema_url) {
+    //format url 
+    let url = new URL("https://schematic.api.sagebionetworks.org/v1/visualize/attributes");
+    url.searchParams.append('schema_url', schema_url);
 
+    let data = await fetch(url.toString())
+            .then(response => response.text())
+            .then(data => {
+                var data = d3.csvParse(data)
+                return data
+            })
+    return data
 }
 
 //get JSON file by flask API
-async function getRequestedJson(schema_name) {
-    if (schema_name == 'HTAN') {
-        let data = await fetch('http://localhost:3001/v1/visualize/tangled_tree/layers?schema_url=https%3A%2F%2Fraw.githubusercontent.com%2Fncihtan%2Fdata-models%2Fmain%2FHTAN.model.jsonld&figure_type=component')
-            .then(response => response.json())
-            .then(data => { return data })
-        return data
-    } else if (schema_name == 'NF') {
-        let data = await fetch('http://localhost:3001/v1/visualize/tangled_tree/layers?schema_url=https%3A%2F%2Fraw.githubusercontent.com%2Fnf-osi%2Fnf-research-tools-schema%2Fmain%2Fnf-research-tools.jsonld&figure_type=component')
-            .then(response => response.json())
-            .then(data => { return data })
-        return data
-    } else if (schema_name == "Example"){
-        let data = await fetch('https://schematic-dev.api.sagebionetworks.org/v1/visualize/tangled_tree/layers?schema_url=https%3A%2F%2Fraw.githubusercontent.com%2FSage-Bionetworks%2Fschematic%2Fdevelop%2Ftests%2Fdata%2Fexample.model.jsonld&figure_type=component')
-        .then(response => response.json())
-        .then(data => { return data })
+async function getRequestedJson(schema_url) {
+    //format url 
+    let url = new URL("https://schematic.api.sagebionetworks.org/v1/visualize/tangled_tree/layers");
+    url.searchParams.append('schema_url', schema_url);
+    url.searchParams.append('figure_type', "component");
+
+    let data = await fetch(url.toString())
+    .then(response => response.json())
+    .then(data => { return data })
+
     return data
-    }
-
-
 }
 
 
