@@ -284,19 +284,18 @@ function createCollapsibleTree(chart, schemaOption) {
     }
 
     //////////////////generate data for attribute table 
-    //var merged_data = generateAttributeData(schemaOption)
     var merged_data = generateAttributeData(schemaOption)
 
     function generateAttributeData(schemaOption) {
         /////////////////for using API
-        // var merged_data = getRequestedCSV(schemaOption);
+        var merged_data = getRequestedCSV(schemaOption);
         /////////////////
 
         ///////////////for using static file
-        if (schemaOption == 'HTAN') {
-            var schema_file_name = 'files/Merged/HTAN_attribute_table.csv'
-        }
-        var merged_data = parseCSVFiles(schema_file_name)
+        // if (schemaOption == 'HTAN') {
+        //     var schema_file_name = 'files/Merged/HTAN_attribute_table.csv'
+        // }
+        // var merged_data = parseCSVFiles(schema_file_name)
 
         return merged_data
     }
