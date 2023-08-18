@@ -10,24 +10,10 @@
 
     <!-- header -->
     <div class="title">
-        <h1>Schema visualization</h1>
+        <h1>Schema visualization (beta)</h1>
     </div>
 
     <!-- Dropdown: selecting a schema-->
-    <div class="main">
-        Choose a Schema type
-        <!-- select a schema -->
-        <select name="schema" onchange="selectSchema()" id="schema">
-            <option selected="selected"></option>
-            <option value="NF Tools Registry">NF Tools Registry</option>
-            <option value="HTAN">HTAN</option>
-            <option value="HTAN Component RequiresDependency">HTAN Component RequiresDependency</option>
-            <option value="AmpAD">AmpAD</option>
-            <option value="AmpAD view Dependencies">AmpAD view Dependencies</option>
-        </select>
-        <br>
-    </div>
-
     <!-- Generate visualization and attribute table -->
     <div id="chart-placeholder" class="">
         <!-- generate visualization -->
@@ -38,10 +24,10 @@
         <div id="attributes-table-hidden" class="hidden">
             <div id="attributes-table-wrapper" class="shown">
                 <div id="table-top">
-                    <div class="left">
+                    <!-- <div class="left">
                         <button class="custom-button">Download selected</button>
                         <button class="custom-button">Clear</button>
-                    </div>
+                    </div> -->
                     <div class="right">
                         <select class="custom-select" id="filterBy">
                             <option value="All Attributes">All attributes</option>
@@ -77,6 +63,9 @@
 <script src="https://cdn.jsdelivr.net/npm/d3-interpolate@3"></script>
 <script src="https://cdn.jsdelivr.net/npm/d3-timer@3"></script>
 <script src="https://cdn.jsdelivr.net/npm/d3-transition@3"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"
+    integrity="sha512-CSBhVREyzHAjAFfBlIBakjoRUKp5h7VSweP0InR/pAJyptH7peuhCsqAI/snV+TwZmXZqoUklpXp6R6wMnYf5Q=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.5/lodash.min.js"></script>
 <script type="text/javascript" src="js/utils.js"></script>
 <script src="js/chart.js"></script>

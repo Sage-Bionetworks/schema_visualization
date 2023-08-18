@@ -52,7 +52,7 @@ function addElemToArray(newItem, array) {
     return array
 }
 
-function createCollapsibleTree(chart, schemaOption) {
+function createCollapsibleTree(chart, schema_url) {
     //prepare for rendering charts
     //draw tangled tree like we did before
     const margins = {
@@ -284,16 +284,18 @@ function createCollapsibleTree(chart, schemaOption) {
     }
 
     //////////////////generate data for attribute table 
-    var merged_data = generateAttributeData(schemaOption)
+    var merged_data = generateAttributeData(schema_url)
 
-    function generateAttributeData(schemaOption) {
-        if (schemaOption == 'HTAN') {
-            var schema_name = 'HTAN'
-        } else if (schemaOption == 'NF Tools Registry') {
-            var schema_name = 'NF'
-        }
+    function generateAttributeData(schema_url) {
+        /////////////////for using API
+        var merged_data = getRequestedCSV(schema_url);
+        /////////////////
 
-        var merged_data = getRequestedCSV(schema_name);
+        ///////////////for using static file
+        // if (schemaOption == 'HTAN') {
+        //     var schema_file_name = 'files/Merged/HTAN_attribute_table.csv'
+        // }
+        // var merged_data = parseCSVFiles(schema_file_name)
 
         return merged_data
     }
