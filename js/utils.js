@@ -1,7 +1,7 @@
 //get CSV file by using flask API
 async function getRequestedCSV(schema_url) {
     //format url 
-    let url = new URL("https://schematic.api.sagebionetworks.org/v1/visualize/attributes");
+    let url = new URL("https://schematic-staging.api.sagebionetworks.org/v1/visualize/attributes");
     url.searchParams.append('schema_url', schema_url);
 
     let data = await fetch(url.toString())
@@ -16,7 +16,7 @@ async function getRequestedCSV(schema_url) {
 //get JSON file by flask API
 async function getRequestedJson(schema_url) {
     //format url 
-    let url = new URL("https://schematic.api.sagebionetworks.org/v1/visualize/tangled_tree/layers");
+    let url = new URL("https://schematic-staging.api.sagebionetworks.org/v1/visualize/tangled_tree/layers");
     url.searchParams.append('schema_url', schema_url);
     url.searchParams.append('figure_type', "component");
 
