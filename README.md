@@ -12,8 +12,8 @@ Simply clone the repository and run `python3 -m http.server`.
 * Fork this repository. If you have forked this repo, make sure that the `main` branch of your forked repository is in sync with the `main` branch of this repo. 
 * In your forked repository, open `files/config.yml` and update the schema url that you want to use for your project. Please note that by default we are using schematic prod environment when making API calls.
 * Run schema viz locally by running `python3 -m http.server` and see the schema viz locally. If some parts of the visualization gets cut, please adjust the width of your visualization in `createCollapsibleTree function` in `collapsibleTangleTree.js` (See around line 66 in `collapsibleTangleTree.js`)
-* Enable Github action in your repo. Click on "Settings" > "Pages". Under section "Build and deployment", select "main" branch or a branch that you desire to build github pages. 
-* After building GitHub Pages site successfully, you should be able to visit the site. 
+* Enable Github action in your repo. Click on "Settings" > "Pages". Under section "Build and deployment", select "main" branch or a branch that you desire to build github pages. (Please see more instructions [here](https://github.com/ncihtan/schema_visualization/tree/develop-update-schema-viz))
+* After your site gets published successfully, to visit your published site, under "GitHub Pages", click `Visit site`
 
 > Note: if the tangled tree or the attribute table is not showing up, it is likely that there is an error when using your schema to make API calls to the following endpoints: 1) `GET /visualize/tangled_tree/layers`; 2) `Get /visualize/attributes`. Please start by using schematic prod: https://schematic.api.sagebionetworks.org/v1/ui/ and see if you could use these two endpoints with your schema. If you could not, please contact FAIR data service desk. 
 
