@@ -416,7 +416,69 @@ function createCollapsibleTree(chart, schema_url) {
 
     }
 
+    var collapseButton = document.getElementById("searchButton");
 
+    //   function
+    collapseButton.addEventListener("click", function () {
+      const searchInput = document.getElementById("searchInput");
+      const searchQuery = searchInput.value;
+  
+      // node found
+      const foundNode = nodes.find(
+        (node) => node.id && node.id.toLowerCase() === searchQuery.toLowerCase()
+      );
+  
+      if (!foundNode) {
+        alert("The Node with this name doesn't exist");
+        return;
+      }
+      // animating the found node
+      d3.select("#node_" + foundNode.id)
+        .transition()
+        .duration(500)
+        .attr("stroke-width", 12);
+  
+      d3.select("#text_" + foundNode.id)
+        .transition()
+        .duration(500)
+        .style("font-size", "14px");
+  
+      // For now hiding the child of the found element
+  
+      if (foundNode._direct_children == null) {
+        foundNode._direct_children = foundNode.direct_children;
+      } else {
+        foundNode.direct_children.forEach((elem) => {
+          foundNode._direct_children.indexOf(elem) === -1 &&
+            foundNode._direct_children.push(elem);
+        });
+      }
+  
+      var notDisappearArr = checkSharedChildren(
+        foundNode.direct_children,
+        foundNode.id,
+        InteractivePartNode
+      );
+  
+      var CollapsedNodes = foundNode.children;
+      CollapseSubsequentChildren(CollapsedNodes, InteractivePartNode);
+      // hiding their paths also.
+      HidePathNew(foundNode.id, foundNode.children, bundles);
+  
+      var NewInteractiveNode = HideChildren(
+        foundNode.direct_children,
+        notDisappearArr,
+        InteractivePartNode
+      );
+  
+      foundNode.direct_children = null;
+      // uodating the InteractiveNode
+      var ChangeableNode = NewInteractiveNode.filter(function (obj) {
+        return obj.visible != false;
+      });
+      update(ChangeableNode, bundles);
+      generateAttributeTable(foundNode.id);
+    });
 
 
 }
