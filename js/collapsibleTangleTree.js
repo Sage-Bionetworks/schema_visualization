@@ -180,7 +180,7 @@ function createCollapsibleTree(chart, schema_url) {
 
         ///////////////control links
         //only select paths that have class "link"
-
+        console.log('bundles', bundles)
         var link = svg.select("g").selectAll("path.link").data(bundles);
         var flexibleLinkEnter = link.enter();
 
@@ -345,10 +345,10 @@ function createCollapsibleTree(chart, schema_url) {
     function click(d) {
         //the if statement controls collapsing node, and the else statement controls expanding nodes. 
         if (d.direct_children && d.direct_children.length > 0 && checkIfDirectLinkExist(d, InteractivePartNode, bundles)) {
+            console.log('triggering if statement')
 
-          
+            console.log('interactive part node', InteractivePartNode)
 
-          
             ////when collapsing a node, to indicate that the node has already been "collapsed", we move 
             /// element from "children" to "_children" if that element does not already exist
             if (d._direct_children == null) {
@@ -383,16 +383,16 @@ function createCollapsibleTree(chart, schema_url) {
         }
 
         else {
+            console.log('triggering else')
 
-          
             //get only direct children
             var directChildren = d._direct_children
 
             //add children nodes back
             var NewInteractiveNode = SetVisibilityChildren(directChildren, InteractivePartNode, true)
 
+            console.log('NewInteractive node', NewInteractiveNode)
 
-            
             //add links back from parents to children 
             addPathNew(d.id, bundles)
 
@@ -415,8 +415,7 @@ function createCollapsibleTree(chart, schema_url) {
 
 
     }
-    // **** Added the Search Functionality *****
-    
+
     var collapseButton = document.getElementById("searchButton");
 
     //   function
@@ -473,7 +472,7 @@ function createCollapsibleTree(chart, schema_url) {
       );
   
       foundNode.direct_children = null;
-      // updating the InteractiveNode
+      // uodating the InteractiveNode
       var ChangeableNode = NewInteractiveNode.filter(function (obj) {
         return obj.visible != false;
       });
@@ -608,7 +607,7 @@ function checkSharedChildren(childrenArray, clickElem, poolNode) {
 
     })
 
-
+    console.log('not collapsed', NotCollapsed)
     return NotCollapsed
 
 }
@@ -735,8 +734,8 @@ function HideChildren(collapsedChildren, notDisappearArr, poolNode) {
         })
         var allChildrenCollapse = SavedChildren.concat(collapsedChildren)
 
+        console.log('all children to collapse', allChildrenCollapse)
 
-        
         var NewInteractiveNode = SetVisibilityChildren(collapsedChildren, poolNode, false)
         var NewInteractiveNode = SetVisibilityChildren(SavedChildren, poolNode, false)
         var NewInteractiveNode = SetVisibilityChildren(notDisappearArr, poolNode, true)
