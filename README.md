@@ -1,6 +1,3 @@
-# schema_visualization
-This repository is for extracting D3 and Javascript code from observables to produce a stand-alone visualization. Please view links to the original design and Mialy's work in the last section. 
-
 # Running the code
 Simply clone the repository and run `python3 -m http.server`. 
 
